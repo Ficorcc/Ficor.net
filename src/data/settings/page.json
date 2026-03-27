@@ -1,0 +1,26 @@
+{
+  "essay": {
+    "title": "随笔",
+    "subtitle": "随笔与杂记"
+  },
+  "archive": {
+    "title": "归档",
+    "subtitle": null
+  },
+  "bits": {
+    "title": "絮语",
+    "subtitle": "生活不只是长篇",
+    "defaultAuthor": {
+      "name": "Ficor",
+      "avatar": "author/avatar.webp"
+    }
+  },
+  "memo": {
+    "title": null,
+    "subtitle": null
+  },
+  "about": {
+    "title": "关于",
+    "subtitle": null
+  }
+}

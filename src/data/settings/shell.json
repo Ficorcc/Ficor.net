@@ -1,0 +1,41 @@
+{
+  "brandTitle": "荒野菲克",
+  "quote": "永远相信\n美好的事情\n即将发生",
+  "nav": [
+    {
+      "id": "essay",
+      "label": "随笔",
+      "ornament": "·",
+      "order": 1,
+      "visible": true
+    },
+    {
+      "id": "bits",
+      "label": "絮语",
+      "ornament": "·",
+      "order": 2,
+      "visible": true
+    },
+    {
+      "id": "memo",
+      "label": "小记",
+      "ornament": "·",
+      "order": 3,
+      "visible": true
+    },
+    {
+      "id": "archive",
+      "label": "归档",
+      "ornament": "·",
+      "order": 4,
+      "visible": true
+    },
+    {
+      "id": "about",
+      "label": "关于",
+      "ornament": "·",
+      "order": 5,
+      "visible": true
+    }
+  ]
+}

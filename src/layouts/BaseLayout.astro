@@ -1,0 +1,132 @@
+---
+import Sidebar from '../components/Sidebar.astro';
+import Icon from '../components/Icon.astro';
+import globalStylesHref from '../styles/global.css?url';
+import { hasSiteUrl } from '../../site.config.mjs';
+import { createWithBase } from '../utils/format';
+import { getThemeSettings, type SidebarNavId } from '../lib/theme-settings';
+
+const {
+  title,
+  description,
+  image,
+  ogType = 'website',
+  bodyClass,
+  deferGlobalStyles = false,
+  activeNavId
+} = Astro.props as {
+  title?: string;
+  description?: string;
+  image?: string;
+  ogType?: string;
+  bodyClass?: string;
+  deferGlobalStyles?: boolean;
+  activeNavId?: SidebarNavId;
+};
+
+const { settings } = getThemeSettings();
+const siteTitle = settings.site.title;
+const brandTitle = settings.shell.brandTitle ?? siteTitle;
+const metaDescription = description ?? settings.site.description;
+const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
+const htmlLang = settings.site.defaultLocale || 'zh-CN';
+const footerStartYear = settings.site.footer.startYear;
+const footerShowCurrentYear = settings.site.footer.showCurrentYear;
+const footerCopyright = settings.site.footer.copyright;
+const showCodeLineNumbers = settings.ui.codeBlock.showLineNumbers;
+const sidebarDividerVariant = settings.ui.layout.sidebarDivider;
+const canonical = (hasSiteUrl && Astro.site)
+  ? new URL(Astro.url.pathname, Astro.site).toString()
+  : null;
+const ogImage = image
+  ? ((hasSiteUrl && Astro.site) ? new URL(image, Astro.site).toString() : image)
+  : null;
+const currentYear = new Date().getFullYear();
+const yearRange = footerShowCurrentYear && currentYear > footerStartYear
+  ? `${footerStartYear}-${currentYear}`
+  : `${footerStartYear}`;
+const base = import.meta.env.BASE_URL ?? '/';
+const withBase = createWithBase(base);
+---
+
+<!doctype html>
+<html lang={htmlLang}>
+  <head>
+    <script is:inline>
+      (() => {
+        const key = 'theme';
+        let stored = null;
+        try { stored = localStorage.getItem(key); } catch (_) {}
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored === 'dark' || stored === 'light' ? stored : (prefersDark ? 'dark' : 'light');
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" sizes="any" href={withBase('favicon.svg')} />
+    <link rel="icon" type="image/png" sizes="32x32" href={withBase('favicon-32x32.png')} />
+    <link rel="apple-touch-icon" sizes="180x180" href={withBase('apple-touch-icon.png')} />
+    <title>{fullTitle}</title>
+    {metaDescription && <meta name="description" content={metaDescription} />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:site_name" content={siteTitle} />
+    <meta property="og:title" content={fullTitle} />
+    {metaDescription && <meta property="og:description" content={metaDescription} />}
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:type" content={ogType} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={fullTitle} />
+    {metaDescription && <meta name="twitter:description" content={metaDescription} />}
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    {
+      deferGlobalStyles ? (
+        <>
+          <link rel="preload" href={globalStylesHref} as="style" />
+          <link
+            rel="stylesheet"
+            href={globalStylesHref}
+            media="print"
+            onload="this.onload=null;this.media='all'"
+          />
+          <noscript><link rel="stylesheet" href={globalStylesHref} /></noscript>
+        </>
+      ) : (
+        <link rel="stylesheet" href={globalStylesHref} />
+      )
+    }
+    <slot name="head" />
+  </head>
+  <body
+    class={bodyClass}
+    data-code-line-numbers={showCodeLineNumbers ? undefined : 'off'}
+  >
+    <a class="skip-link" href="#content">跳到内容</a>
+    <div class="shell" data-sidebar-divider={sidebarDividerVariant}>
+      <Sidebar siteTitle={brandTitle} activeNavId={activeNavId} />
+      <div class="divider" aria-hidden="true"></div>
+      <main id="content" class="content" tabindex="-1">
+        <div class="content__inner">
+          <slot />
+          <footer class="site-footer">© {yearRange} {footerCopyright}</footer>
+        </div>
+      </main>
+    </div>
+    <template id="scroll-top-template">
+      <button
+        type="button"
+        class="icon-button float-action scroll-top"
+        aria-label="回到顶部"
+        title="回到顶部"
+        aria-hidden="true"
+        tabindex="-1"
+      >
+        <Icon name="chevron-up" class="icon" />
+      </button>
+    </template>
+    <script>
+      import '../scripts/sidebar-theme.ts';
+    </script>
+  </body>
+</html>

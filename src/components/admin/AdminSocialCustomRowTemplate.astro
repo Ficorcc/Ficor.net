@@ -1,0 +1,133 @@
+---
+import type { SiteSocialIconKey } from '../../lib/theme-settings';
+import { ADMIN_SOCIAL_ORDER_MAX } from '../../lib/admin-console/shared';
+import Icon from '../Icon.astro';
+
+interface SocialIconOption {
+  value: SiteSocialIconKey;
+  optionLabel: string;
+  defaultLabel: string;
+}
+
+interface Props {
+  socialIconOptions: readonly SocialIconOption[];
+  customSocialIconOptions: readonly SocialIconOption[];
+  defaultCustomSocialIconKey: SiteSocialIconKey;
+}
+
+const { socialIconOptions, customSocialIconOptions, defaultCustomSocialIconKey } = Astro.props;
+---
+
+<template id="site-social-custom-row-template">
+  <article class="admin-social-row" data-social-custom-row>
+    <label class="admin-field admin-social-field admin-social-field--order">
+      <span class="admin-social-cell-label">位置</span>
+      <span class="admin-social-order-frame">
+        <span class="admin-social-order-frame__mark" aria-hidden="true">[</span>
+        <input
+          data-social-custom-field="order"
+          name="site-social-custom-order[]"
+          type="number"
+          min="1"
+          max={String(ADMIN_SOCIAL_ORDER_MAX)}
+          step="1"
+          inputmode="numeric"
+        />
+        <span class="admin-social-order-frame__mark" aria-hidden="true">]</span>
+      </span>
+    </label>
+
+    <label class="admin-field admin-social-field admin-social-field--platform">
+      <span class="admin-social-cell-label">平台</span>
+      <select data-social-custom-field="iconKey" name="site-social-custom-icon-key[]">
+        {
+          customSocialIconOptions.map((option) => (
+            <option value={option.value} data-social-default-label={option.defaultLabel}>
+              {option.optionLabel}
+            </option>
+          ))
+        }
+      </select>
+    </label>
+
+    <label class="admin-field admin-social-field admin-social-field--id">
+      <span class="admin-social-cell-label">链接代号</span>
+      <input
+        data-social-custom-field="id"
+        name="site-social-custom-id[]"
+        type="text"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </label>
+
+    <div class="admin-social-field admin-social-field--icon">
+      <span class="admin-social-cell-label">图标</span>
+      <div class="admin-social-icon-preview" data-social-custom-icon-preview>
+        {
+          socialIconOptions.map((option) => (
+            <span
+              class="admin-social-icon-only"
+              data-social-custom-icon-option={option.value}
+              hidden={option.value !== defaultCustomSocialIconKey}
+            >
+              <Icon name={option.value} class="admin-social-icon-only__icon" size={16} />
+            </span>
+          ))
+        }
+      </div>
+    </div>
+
+    <label class="admin-field admin-social-field admin-social-field--href">
+      <span class="admin-social-cell-label">链接地址</span>
+      <span class="admin-social-link-inline">
+        <span class="admin-social-link-label" hidden>
+          <input
+            class="admin-social-link-label__input"
+            data-social-custom-field="label"
+            name="site-social-custom-label[]"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="自定义名称"
+          />
+        </span>
+        <input
+          class="admin-social-link-inline__href"
+          data-social-custom-field="href"
+          name="site-social-custom-href[]"
+          type="url"
+          inputmode="url"
+          autocomplete="off"
+          placeholder="https://example.com"
+        />
+      </span>
+    </label>
+
+    <div class="admin-social-field admin-social-field--actions">
+      <span class="admin-social-cell-label">操作</span>
+      <div class="admin-social-row-actions">
+        <input
+          data-social-custom-field="visible"
+          name="site-social-custom-visible[]"
+          type="checkbox"
+          class="sr-only"
+        />
+        <button class="admin-social-action" type="button" data-social-custom-action="toggle-visible" aria-pressed="true">
+          <Icon name="eye" class="admin-social-action__icon" size={15} />
+          <span class="sr-only" data-social-custom-visible-label>隐藏链接</span>
+        </button>
+        <button
+          class="admin-social-action admin-social-action--danger"
+          type="button"
+          data-social-custom-action="remove"
+          aria-label="删除链接"
+          title="删除链接"
+        >
+          <Icon name="trash" class="admin-social-action__icon" size={15} />
+          <span class="sr-only">删除链接</span>
+        </button>
+      </div>
+    </div>
+  </article>
+</template>

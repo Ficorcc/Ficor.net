@@ -1,0 +1,55 @@
+---
+import { formatISODateUtc } from '../utils/format';
+import type { ArticleMetaSettings } from '../lib/theme-settings';
+
+const {
+  href,
+  title,
+  excerpt,
+  date,
+  visibleTags = [],
+  badge = '随笔',
+  slug = '',
+  articleMetaSettings
+} = Astro.props as {
+  href: string;
+  title: string;
+  excerpt?: string | null;
+  date: Date;
+  visibleTags?: string[];
+  badge?: string;
+  slug?: string;
+  articleMetaSettings: ArticleMetaSettings;
+};
+const displayBadge = badge.trim() ? badge : '随笔';
+const shouldShowMetaLine = articleMetaSettings.showDate || (articleMetaSettings.showTags && visibleTags.length > 0);
+---
+
+<a
+  class="list-item list-item--link"
+  href={href}
+  data-entry-item
+  data-slug={slug || undefined}
+>
+  <div class="list-item__row">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span class="badge">{displayBadge}</span>
+      <h2 class="list-item__title" style="margin:0;">{title}</h2>
+    </div>
+  </div>
+  {excerpt ? <p class="list-item__excerpt">{excerpt}</p> : null}
+  {shouldShowMetaLine ? (
+    <div class="meta-line meta-line--items">
+      {articleMetaSettings.showDate ? (
+        <span class="meta-line__item">
+          {articleMetaSettings.dateLabel ? `${articleMetaSettings.dateLabel}` : ''}{formatISODateUtc(date)}
+        </span>
+      ) : null}
+      {articleMetaSettings.showTags && visibleTags.length ? (
+        <span class="meta-line__item meta-line__item--tags">
+          {visibleTags.map((tag) => <span class="tag">#{tag}</span>)}
+        </span>
+      ) : null}
+    </div>
+  ) : null}
+</a>

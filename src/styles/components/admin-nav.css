@@ -1,0 +1,205 @@
+/* Admin Nav
+   负责侧栏导航排序编辑表格与其局部输入框框架。
+*/
+
+.admin-nav-row input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.admin-nav-row input[type='number']::-webkit-outer-spin-button,
+.admin-nav-row input[type='number']::-webkit-inner-spin-button {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.admin-nav-grid {
+  --admin-nav-column-gap: 16px;
+  --admin-nav-name-frame-width: 188px;
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.admin-nav-header,
+.admin-nav-row {
+  display: grid;
+  gap: var(--admin-nav-column-gap);
+  grid-template-columns: 52px 92px minmax(0, 0.95fr) 88px 96px;
+  align-items: center;
+  padding: 10px 14px;
+}
+
+.admin-nav-header {
+  background: linear-gradient(180deg, var(--panel) 0%, var(--code-header-bg) 100%);
+  color: var(--muted);
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-nav-header > span {
+  text-align: center;
+}
+
+.admin-nav-row {
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  transition: background-color 160ms ease;
+}
+
+.admin-nav-row:first-of-type {
+  border-top: 0;
+}
+
+.admin-nav-row:hover {
+  background: var(--code-content-bg);
+}
+
+.admin-nav-row:focus-within {
+  background: var(--code-content-bg);
+}
+
+.admin-nav-id {
+  margin: 0;
+  align-self: stretch;
+  justify-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-nav-id code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  min-height: 30px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--code-content-bg) 0%, var(--panel) 100%);
+  color: var(--muted);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 1px 2px -1px var(--overlay-20);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+}
+
+.admin-nav-field {
+  gap: 4px;
+}
+
+.admin-nav-field--order {
+  justify-items: center;
+}
+
+.admin-nav-field--name {
+  padding-left: 0;
+  justify-items: center;
+}
+
+.admin-nav-field--ornament {
+  justify-items: center;
+}
+
+.admin-nav-name-frame {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, var(--admin-nav-name-frame-width));
+  min-height: 38px;
+  margin-inline: auto;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--code-content-bg) 100%);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-nav-name-frame:hover {
+  border-color: var(--faint);
+}
+
+.admin-nav-name-frame:focus-within {
+  border-color: var(--muted);
+  box-shadow: 0 0 0 3px var(--panel);
+}
+
+.admin-nav-name-frame__mark {
+  color: var(--faint);
+  font-size: 15px;
+  line-height: 1;
+  font-family: "LXGW WenKai Lite", "Kaiti SC", "STKaiti", serif;
+}
+
+.admin-nav-field--name input {
+  width: 100%;
+  margin-inline: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  text-align: center;
+  box-shadow: none;
+}
+
+.admin-nav-field--name input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.admin-nav-field--ornament input {
+  width: min(100%, 76px);
+  min-width: 0;
+  margin-inline: auto;
+  text-align: center;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.admin-nav-field--order input {
+  width: 2.8ch;
+  min-width: 0;
+  margin-inline: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  text-align: center;
+  box-shadow: none;
+}
+
+.admin-nav-order-frame {
+  min-width: 0;
+}
+
+.admin-nav-field--order input:hover {
+  border-color: transparent;
+}
+
+.admin-nav-field--order input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.admin-nav-row .admin-toggle {
+  justify-self: center;
+}
+
+.admin-nav-cell-label {
+  display: none;
+  margin: 0;
+  color: var(--faint);
+  font-size: 11px;
+  line-height: 1.4;
+  font-family: "LXGW WenKai Lite", "Kaiti SC", "STKaiti", serif;
+}
