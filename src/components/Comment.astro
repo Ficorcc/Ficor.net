@@ -30,9 +30,9 @@ const pageTitle = Astro.props.title || '';
     <h3 class="comment-title">评论</h3>
     <div id="waline-container"></div>
     <script>
-      import Waline from 'waline';
+      import { init } from '@waline/client';
       
-      Waline.init({
+      init({
         el: '#waline-container',
         serverURL: walineConfig.serverURL || '',
         path: window.location.pathname,
