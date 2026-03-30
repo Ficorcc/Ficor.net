@@ -11,9 +11,9 @@ if (!hasSiteUrl && process.env.NODE_ENV === 'production') {
 
 export const site = {
   url: hasSiteUrl ? siteUrl : fallbackSiteUrl,
-  title: 'Astro Themes by Whono',
+  title: '荒野菲克',
   brandTitle: 'Whono',
-  author: 'Whono',
+  author: 'Ficor',
   authorAvatar: 'author/avatar.webp',
   description: '一个 Astro 主题的展示站：轻量、可维护、可复用。'
 };
@@ -25,7 +25,7 @@ export const comment = {
   // Artalk 配置
   artalk: {
     server: '', // Artalk 服务端地址
-    site: 'Astro Themes by Whono', // 站点名称
+    site: '荒野菲克', // 站点名称
     // 其他 Artalk 配置选项
   },
   // Waline 配置
