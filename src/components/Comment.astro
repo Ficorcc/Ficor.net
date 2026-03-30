@@ -1,0 +1,117 @@
+---
+import { site } from '../../site.config.mjs';
+
+const { commentSystem, artalkConfig, walineConfig, twikooConfig } = Astro.props;
+const pageUrl = `${site.url}${Astro.url.pathname}`;
+const pageTitle = Astro.props.title || '';
+---
+
+{commentSystem === 'artalk' && (
+  <div class="comment-section">
+    <h3 class="comment-title">评论</h3>
+    <div id="artalk-container"></div>
+    <script>
+      import Artalk from 'artalk';
+      
+      new Artalk({
+        el: '#artalk-container',
+        pageKey: window.location.pathname,
+        pageTitle: document.title,
+        server: artalkConfig.server || '',
+        site: artalkConfig.site || 'Astro Themes by Whono',
+        ...artalkConfig,
+      });
+    </script>
+  </div>
+)}
+
+{commentSystem === 'waline' && (
+  <div class="comment-section">
+    <h3 class="comment-title">评论</h3>
+    <div id="waline-container"></div>
+    <script>
+      import Waline from 'waline';
+      
+      Waline.init({
+        el: '#waline-container',
+        serverURL: walineConfig.serverURL || '',
+        path: window.location.pathname,
+        ...walineConfig,
+      });
+    </script>
+  </div>
+)}
+
+{commentSystem === 'twikoo' && (
+  <div class="comment-section">
+    <h3 class="comment-title">评论</h3>
+    <div id="twikoo-container"></div>
+    <script>
+      import twikoo from 'twikoo';
+      
+      twikoo.init({
+        el: '#twikoo-container',
+        envId: twikooConfig.envId || '',
+        path: window.location.pathname,
+        ...twikooConfig,
+      });
+    </script>
+  </div>
+)}
+
+<style>
+  .comment-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .comment-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #374151;
+  }
+  
+  /* Twikoo 样式适配 */
+  #twikoo-container {
+    max-width: 100%;
+  }
+  
+  #twikoo-container .tk-comments {
+    font-family: inherit;
+  }
+  
+  #twikoo-container .tk-comment {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #f9fafb;
+  }
+  
+  #twikoo-container .tk-comment-content {
+    line-height: 1.6;
+  }
+  
+  #twikoo-container .tk-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    font-family: inherit;
+  }
+  
+  #twikoo-container .tk-submit {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+  }
+  
+  #twikoo-container .tk-submit:hover {
+    background-color: #2563eb;
+  }
+</style>
