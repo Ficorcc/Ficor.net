@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'astro/config';
+import { defineConfig, passthroughImageService } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import remarkDirective from 'remark-directive';
 import rehypeRaw from 'rehype-raw';
@@ -157,5 +157,8 @@ export default defineConfig({
       },
       transformers: [shikiToolbar()]
     }
+  },
+  image: {
+    service: passthroughImageService()
   }
 });
