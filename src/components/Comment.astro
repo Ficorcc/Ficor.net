@@ -1,7 +1,7 @@
 ---
 import { site } from '../../site.config.mjs';
 
-const { commentSystem, artalkConfig, walineConfig, twikooConfig } = Astro.props;
+const { commentSystem, artalkConfig = {}, walineConfig = {}, twikooConfig = {} } = Astro.props;
 const pageUrl = `${site.url}${Astro.url.pathname}`;
 const pageTitle = Astro.props.title || '';
 ---

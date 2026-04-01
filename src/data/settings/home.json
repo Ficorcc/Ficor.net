@@ -1,5 +1,5 @@
 {
-  "introLead": "柒色入墨，落笔成诗\n\n拾柒色光景，落一纸墨香\n\n一纸墨笺，载七色人间\n\n墨染流年，笺载心事，色染余生",
+  "introLead": "柒色入墨，落笔成诗\n拾柒色光景，落一纸墨香\n一纸墨笺，载七色人间\n墨染流年，笺载心事，色染余生",
   "introMore": "生活不只有长篇，还有",
   "introMoreLinks": [
     "bits",
@@ -8,6 +8,6 @@
   "showIntroLead": true,
   "showIntroMore": true,
   "heroPresetId": "default",
-  "heroImageSrc": null,
-  "heroImageAlt": "Whono theme preview"
+  "heroImageSrc": "https://img.ficor.net/uploads/2026/03/69a52747d365c.webp",
+  "heroImageAlt": "启航"
 }

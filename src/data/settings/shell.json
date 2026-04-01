@@ -1,17 +1,17 @@
 {
-  "brandTitle": "荒野菲克",
-  "quote": "永远相信\n美好的事情\n即将发生",
+  "brandTitle": "柒色墨笺",
+  "quote": "柒色入墨，落笔成诗\n永远相信\n美好的事情\n即将发生",
   "nav": [
     {
       "id": "essay",
-      "label": "随笔",
+      "label": "日志",
       "ornament": "·",
       "order": 1,
       "visible": true
     },
     {
       "id": "bits",
-      "label": "絮语",
+      "label": "微语",
       "ornament": "·",
       "order": 2,
       "visible": true
@@ -31,10 +31,17 @@
       "visible": true
     },
     {
+      "id": "links",
+      "label": "友链",
+      "ornament": "·",
+      "order": 5,
+      "visible": true
+    },
+    {
       "id": "about",
       "label": "关于",
       "ornament": "·",
-      "order": 5,
+      "order": 6,
       "visible": true
     }
   ]

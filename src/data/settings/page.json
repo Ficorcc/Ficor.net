@@ -1,7 +1,7 @@
 {
   "essay": {
-    "title": "随笔",
-    "subtitle": "随笔与杂记"
+    "title": "文章",
+    "subtitle": "生活感悟汇聚成文"
   },
   "archive": {
     "title": "归档",
@@ -11,13 +11,13 @@
     "title": "絮语",
     "subtitle": "生活不只是长篇",
     "defaultAuthor": {
-      "name": "Ficor",
+      "name": "菲克",
       "avatar": "author/avatar.webp"
     }
   },
   "memo": {
-    "title": null,
-    "subtitle": null
+    "title": "小记",
+    "subtitle": "不曾虚度的时光"
   },
   "about": {
     "title": "关于",

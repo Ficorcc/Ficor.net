@@ -1,7 +1,7 @@
 const rawSiteUrl = (process.env.SITE_URL ?? '').trim();
 const siteUrl = rawSiteUrl ? rawSiteUrl.replace(/\/+$/, '') : '';
 const hasSiteUrl = siteUrl.length > 0;
-const fallbackSiteUrl = 'https://example.invalid';
+const fallbackSiteUrl = 'https://vii.ink';
 
 if (!hasSiteUrl && process.env.NODE_ENV === 'production') {
   console.warn(
@@ -11,11 +11,11 @@ if (!hasSiteUrl && process.env.NODE_ENV === 'production') {
 
 export const site = {
   url: hasSiteUrl ? siteUrl : fallbackSiteUrl,
-  title: '荒野菲克',
+  title: '柒色墨笺',
   brandTitle: 'Whono',
   author: 'Ficor',
   authorAvatar: 'author/avatar.webp',
-  description: '一个 Astro 主题的展示站：轻量、可维护、可复用。'
+  description: '继Wordpress后又一个心灵驿站'
 };
 
 // 评论系统配置
@@ -25,7 +25,7 @@ export const comment = {
   // Artalk 配置
   artalk: {
     server: '', // Artalk 服务端地址
-    site: '荒野菲克', // 站点名称
+    site: '柒色墨笺', // 站点名称
     // 其他 Artalk 配置选项
   },
   // Waline 配置

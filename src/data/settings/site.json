@@ -1,22 +1,30 @@
 {
-  "title": "荒野菲克",
-  "description": "在路上的思绪与脚印",
+  "title": "柒色墨笺",
+  "description": "柒色入墨，落笔成诗",
   "defaultLocale": "zh-CN",
   "footer": {
     "startYear": 2008,
     "showCurrentYear": true,
-    "copyright": "Ficor · Theme by Whono"
+    "copyright": "Ficor · Power by Astro & Theme by Whono"
   },
   "socialLinks": {
     "github": "https://github.com/Ficorcc",
-    "x": "https://twitter.com/Ficorcc",
+    "x": null,
     "email": "ficor@qq.com",
     "presetOrder": {
       "github": 1,
-      "x": 2,
+      "x": 5,
       "email": 3
     },
     "custom": [
+      {
+        "id": "custom-mastodon",
+        "label": "Mastodon",
+        "href": "https://mastodon.social/@ficor",
+        "iconKey": "mastodon",
+        "visible": true,
+        "order": 2
+      },
       {
         "id": "custom-telegram",
         "label": "Telegram",
@@ -24,14 +32,6 @@
         "iconKey": "telegram",
         "visible": true,
         "order": 4
-      },
-      {
-        "id": "custom-mastodon",
-        "label": "Mastodon",
-        "href": "https://mastodon.social/@ficor",
-        "iconKey": "mastodon",
-        "visible": true,
-        "order": 5
       }
     ]
   }

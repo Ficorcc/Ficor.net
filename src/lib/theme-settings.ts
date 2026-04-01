@@ -40,7 +40,7 @@ import {
 
 export type SettingSource = 'new' | 'legacy' | 'default';
 
-export type SidebarNavId = 'essay' | 'bits' | 'memo' | 'archive' | 'about';
+export type SidebarNavId = 'essay' | 'bits' | 'memo' | 'archive' | 'links' | 'about';
 export type PageId = 'essay' | 'archive' | 'bits' | 'memo' | 'about';
 export type HeroPresetId = 'default' | 'none';
 export type SidebarDividerVariant = 'default' | 'subtle' | 'none';
@@ -370,7 +370,8 @@ const LEGACY_NAV: SidebarNavItem[] = [
   { id: 'bits', label: '絮语', ornament: ADMIN_NAV_ORNAMENT_DEFAULT, visible: true, order: 2 },
   { id: 'memo', label: '小记', ornament: ADMIN_NAV_ORNAMENT_DEFAULT, visible: true, order: 3 },
   { id: 'archive', label: '归档', ornament: ADMIN_NAV_ORNAMENT_DEFAULT, visible: true, order: 4 },
-  { id: 'about', label: '关于', ornament: ADMIN_NAV_ORNAMENT_DEFAULT, visible: true, order: 5 }
+  { id: 'links', label: '友链', ornament: ADMIN_NAV_ORNAMENT_DEFAULT, visible: true, order: 5 },
+  { id: 'about', label: '关于', ornament: ADMIN_NAV_ORNAMENT_DEFAULT, visible: true, order: 6 }
 ];
 const LEGACY_NAV_ORDER = new Map<SidebarNavId, number>(LEGACY_NAV.map((item) => [item.id, item.order]));
 
@@ -483,7 +484,7 @@ const DEFAULT_UI: UiSettings = {
   }
 };
 
-const NAV_IDS: ReadonlySet<SidebarNavId> = new Set(['essay', 'bits', 'memo', 'archive', 'about']);
+const NAV_IDS: ReadonlySet<SidebarNavId> = new Set(['essay', 'bits', 'memo', 'archive', 'links', 'about']);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const GITHUB_HOSTS = ['github.com'];
 const X_HOSTS = ['x.com', 'twitter.com'];
@@ -503,6 +504,7 @@ const SIDEBAR_HREFS: Record<SidebarNavId, string> = {
   bits: '/bits/',
   memo: '/memo/',
   archive: '/archive/',
+  links: '/links/',
   about: '/about/'
 };
 
