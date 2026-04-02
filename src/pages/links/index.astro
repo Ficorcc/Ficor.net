@@ -9,8 +9,7 @@ import { siteInfo, links } from '../../data/links';
       <h1 class="page-title">友情链接</h1>
       
       <!-- 站点信息 -->
-      <div class="site-info">
-        <h2 class="section-title">关于本站</h2>
+        <div class="site-info">
         <div class="info-card">
           <div class="site-header">
             <div class="site-avatar">
@@ -21,7 +20,6 @@ import { siteInfo, links } from '../../data/links';
               <p class="site-url"><a href={siteInfo.url} target="_blank" rel="noopener noreferrer">{siteInfo.url}</a></p>
             </div>
           </div>
-          
           <div class="site-meta">
             <div class="meta-row">
               <span class="meta-label">网站标题：</span>
@@ -104,10 +102,11 @@ import { siteInfo, links } from '../../data/links';
   }
   
   .info-card {
-    background-color: #f9fafb;
+    background-color: white;
     padding: 2rem;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
   }
   
   .site-header {
@@ -282,6 +281,79 @@ import { siteInfo, links } from '../../data/links';
     
     .site-link {
       text-align: center;
+    }
+  }
+  
+  /* 黑暗模式 */
+  @media (prefers-color-scheme: dark) {
+    .page-title {
+      color: white;
+    }
+    
+    .section-title {
+      color: white;
+      border-bottom-color: #374151;
+    }
+    
+    .info-card {
+      background-color: black;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    
+    .site-avatar img {
+      border-color: #374151;
+    }
+    
+    .info-card h3 {
+      color: yellow;
+    }
+    
+    .site-url a {
+      color: white;
+    }
+    
+    .info-card p {
+      color: white;
+    }
+    
+    .site-meta {
+      background-color: #1f2937;
+    }
+    
+    .meta-label {
+      color: white;
+    }
+    
+    .meta-value {
+      color: white;
+    }
+    
+    .copy-btn {
+      background-color: #374151;
+      border-color: #4b5563;
+      color: white;
+    }
+    
+    .copy-btn:hover {
+      background-color: #4b5563;
+      border-color: #6b7280;
+    }
+    
+    .link-item {
+      background-color: black;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    
+    .link-item a {
+      color: white;
+    }
+    
+    .link-item h3 {
+      color: yellow;
+    }
+    
+    .link-item p {
+      color: white;
     }
   }
 </style>
