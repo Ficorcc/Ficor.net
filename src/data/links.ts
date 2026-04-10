@@ -17,8 +17,8 @@ export interface SiteInfo {
 
 export const siteInfo: SiteInfo = {
   title: "柒色墨笺",
-  url: "https://ficor.net",
-  description: "柒色入墨，落笔成诗，永远相信美好的事情即将发生",
+  url: "https://vii.ink",
+  description: "柒色入墨，落笔成诗，墨染流年，笺载心事",
   avatar: "/author/avatar.webp"
 };
 

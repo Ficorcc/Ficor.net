@@ -1,15 +1,15 @@
 {
   "essay": {
-    "title": "文章",
-    "subtitle": "生活感悟汇聚成文"
+    "title": "日志",
+    "subtitle": null
   },
   "archive": {
     "title": "归档",
     "subtitle": null
   },
   "bits": {
-    "title": "絮语",
-    "subtitle": "生活不只是长篇",
+    "title": "微语",
+    "subtitle": null,
     "defaultAuthor": {
       "name": "菲克",
       "avatar": "author/avatar.webp"
