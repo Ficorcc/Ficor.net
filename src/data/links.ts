@@ -6,6 +6,10 @@ export interface LinkItem {
   avatar: string;
   feed?: string;
   is_active?: boolean;
+  status?: "unknown" | "online" | "offline";
+  statusCode?: number;
+  lastChecked?: string;
+  lastError?: string;
 }
 
 export interface SiteInfo {
@@ -16,13 +20,25 @@ export interface SiteInfo {
 }
 
 export const siteInfo: SiteInfo = {
-  title: "柒色墨笺",
-  url: "https://vii.ink",
-  description: "柒色入墨，落笔成诗，墨染流年，笺载心事",
-  avatar: "/author/avatar.webp"
+  "title": "柒色墨笺",
+  "url": "https://vii.ink",
+  "description": "柒色入墨，落笔成诗，墨染流年，笺载心事",
+  "avatar": "/author/avatar.webp"
 };
 
 export const links: LinkItem[] = [
+  {
+    id: "f72d9842-adf4-4378-8a39-39c709a1a1c2",
+    name: "Lawpan",
+    url: "https://lawpan.cc/",
+    description: "一个简洁优雅的博客",
+    avatar: "https://lawpan.cc/favicon.png",
+    feed: "https://lawpan.cc/feed",
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.051Z"
+  },
   {
     id: "ficor",
     name: "荒野菲克",
@@ -30,7 +46,10 @@ export const links: LinkItem[] = [
     description: "在路上的思绪与脚印",
     avatar: "https://ficor.net/favicon.ico",
     feed: "https://ficor.net/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.092Z"
   },
   {
     id: "acevs",
@@ -39,7 +58,10 @@ export const links: LinkItem[] = [
     description: "你坚持过什么事情？",
     avatar: "https://cravatar.cn/avatar/ffc1ac2ecde17b2eb1caff3e94c119fdaea4dc1a947a08a3092b388bf9b454d0?s=32&d=identicon&r=g",
     feed: "https://acevs.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.367Z"
   },
   {
     id: "xu19",
@@ -48,7 +70,10 @@ export const links: LinkItem[] = [
     description: "记录单片机编程教学、生活与成长点滴",
     avatar: "https://cravatar.cn/avatar/6e688e8773b5bd7dd15d86d97bbb3561",
     feed: "https://me.xu19.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.024Z"
   },
   {
     id: "airy",
@@ -57,7 +82,10 @@ export const links: LinkItem[] = [
     description: "大家都是倔强的人",
     avatar: "https://cravatar.cn/avatar/060afceaea08afc40f8bcef99fe8542a",
     feed: "https://airy.ink/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.675Z"
   },
   {
     id: "knay",
@@ -66,7 +94,10 @@ export const links: LinkItem[] = [
     description: "一亩三分地，记录生活，分享见闻",
     avatar: "https://knay.net/avatar/yang.webp",
     feed: "https://knay.net/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.274Z"
   },
   {
     id: "wang618",
@@ -75,7 +106,10 @@ export const links: LinkItem[] = [
     description: "爱生活、爱摸鱼",
     avatar: "https://wang618.cn/logo.gif",
     feed: "https://wang618.cn/rss.php",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.883Z"
   },
   {
     id: "zhujay",
@@ -84,7 +118,10 @@ export const links: LinkItem[] = [
     description: "记录生活分享美好",
     avatar: "https://zhujay.com/images/webhead/wh2.png",
     feed: "https://zhujay.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.099Z"
   },
   {
     id: "xifeng",
@@ -93,7 +130,10 @@ export const links: LinkItem[] = [
     description: "源于热爱而去创造",
     avatar: "https://xifeng.net/images/avatar.svg",
     feed: "https://xifeng.net/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.081Z"
   },
   {
     id: "yufan",
@@ -102,7 +142,10 @@ export const links: LinkItem[] = [
     description: "诗与梦想的远方",
     avatar: "https://yufan.me/logo.svg",
     feed: "https://yufan.me/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.022Z"
   },
   {
     id: "synyan",
@@ -111,7 +154,10 @@ export const links: LinkItem[] = [
     description: "博物馆爱好者",
     avatar: "https://synyan.cn/wp-content/themes/hera-develop/build/images/logo-s.png",
     feed: "https://synyan.cn/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.906Z"
   },
   {
     id: "synyan-t",
@@ -120,7 +166,10 @@ export const links: LinkItem[] = [
     description: "旅游点打卡员",
     avatar: "https://synyan.cn/wp-content/themes/hera-develop/build/images/logo-s.png",
     feed: "https://synyan.cn/t/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:24.737Z"
   },
   {
     id: "1900",
@@ -129,7 +178,10 @@ export const links: LinkItem[] = [
     description: "孤独的互联网冲浪大师",
     avatar: "https://1900.live/logo.svg",
     feed: "https://1900.live/rss",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:22.963Z"
   },
   {
     id: "laozhang",
@@ -138,7 +190,10 @@ export const links: LinkItem[] = [
     description: "生活琐记，技术折腾，乐在记录点滴与分享",
     avatar: "http://pic.laozhang.org/i/2023/04/07/642f72584c9a1.png",
     feed: "https://laozhang.org/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.048Z"
   },
   {
     id: "iliu",
@@ -147,7 +202,10 @@ export const links: LinkItem[] = [
     description: "热爱传统文化，验光师",
     avatar: "https://iliu.org/img/favicon.ico",
     feed: "https://iliu.org/index.xml",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:27.405Z"
   },
   {
     id: "my1981",
@@ -156,7 +214,10 @@ export const links: LinkItem[] = [
     description: "如花美眷，怎敌得过似水流年",
     avatar: "https://weavatar.com/avatar/65cd1f408c1cc0949b34d3cd2acad0cb5a2b8c362ebf31ca9ee0dc9edcc63e81?s=100&r=g",
     feed: "https://my1981.cn/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.730Z"
   },
   {
     id: "chenrui",
@@ -165,7 +226,10 @@ export const links: LinkItem[] = [
     description: "记录活着",
     avatar: "https://www.chenrui.com/zb_users/upload/2026/01/20260103005431176737287110422.png",
     feed: "https://www.chenrui.com/feed.php",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.131Z"
   },
   {
     id: "hjyl",
@@ -174,7 +238,10 @@ export const links: LinkItem[] = [
     description: "欢迎来到皇家元林",
     avatar: "https://img.hjyl.org/uploads/2019/10/about-me.png",
     feed: "https://hjyl.org/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.072Z"
   },
   {
     id: "xyzbz",
@@ -183,7 +250,10 @@ export const links: LinkItem[] = [
     description: "互联网爱好者",
     avatar: "https://cn.cravatar.com/avatar/120340d1df519f4e28613fe5d404b286?s=96&d=mp&r=g",
     feed: "https://xyzbz.cn/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.850Z"
   },
   {
     id: "hux",
@@ -192,7 +262,10 @@ export const links: LinkItem[] = [
     description: "欲买桂花同载酒，终不似，少年游",
     avatar: "https://weavatar.com/avatar/d44fe4344f5b822fe55c92d04b874cbad2e22babd866c8a462d71afb0e86e9b5?d=letter&letter=%E8%90%BD",
     feed: "https://hux.ink/index.xml",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.735Z"
   },
   {
     id: "lawtee",
@@ -201,7 +274,10 @@ export const links: LinkItem[] = [
     description: "聚焦法律、科技和生活",
     avatar: "https://lawtee.com/images/favicon.png",
     feed: "https://lawtee.com/index.xml",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.341Z"
   },
   {
     id: "jiangcl",
@@ -210,7 +286,10 @@ export const links: LinkItem[] = [
     description: "律师",
     avatar: "https://img.ficor.net/uploads/2025/11/6914480601006.webp",
     feed: "https://jiangcl.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.063Z"
   },
   {
     id: "pewae",
@@ -219,7 +298,10 @@ export const links: LinkItem[] = [
     description: "一个脱离不了低级趣味的人",
     avatar: "https://pewae.com/wp-content/uploads/cropped-logo-20251231-1-270x270.png",
     feed: "https://pewae.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:24.667Z"
   },
   {
     id: "vrast",
@@ -228,7 +310,10 @@ export const links: LinkItem[] = [
     description: "记录一些偶尔冒出来转眼就会忘的灵感",
     avatar: "https://vrast.cn/favicon.ico",
     feed: "https://vrast.cn/atom.xml",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.785Z"
   },
   {
     id: "d-d",
@@ -237,7 +322,10 @@ export const links: LinkItem[] = [
     description: "做自己，不隨波逐流，不妥協",
     avatar: "https://img.ficor.net/uploads/2025/11/6914480601006.webp",
     feed: "https://d-d.design/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.097Z"
   },
   {
     id: "laomuzhu",
@@ -246,7 +334,10 @@ export const links: LinkItem[] = [
     description: "在字里行间慢慢生长",
     avatar: "https://www.laomuzhu.cn/img/touxiang.jpg",
     feed: "https://www.laomuzhu.cn/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.855Z"
   },
   {
     id: "ihaihe",
@@ -255,7 +346,10 @@ export const links: LinkItem[] = [
     description: "扩大自己的自由边界",
     avatar: "https://ihaihe.cn/wp-content/uploads/2025/03/touxiang.png",
     feed: "https://ihaihe.cn/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:22.993Z"
   },
   {
     id: "redcha",
@@ -264,7 +358,10 @@ export const links: LinkItem[] = [
     description: "生活原本沉闷，但跑起来就有风",
     avatar: "https://note.redcha.cn/upload/favicon-256x256.png",
     feed: "https://note.redcha.cn/rss.xml",
-    is_active: true
+    is_active: false,
+    status: "offline",
+    lastChecked: "2026-05-21T22:58:23.033Z",
+    lastError: "fetch failed"
   },
   {
     id: "zhongxiaojie",
@@ -273,7 +370,10 @@ export const links: LinkItem[] = [
     description: "黑客程序媛",
     avatar: "https://gg.lang.bi/avatar/d6ebc088df916bcc9e8b94a09f9b0f604e57be54b04bd520c6db2492740fc563?s=90&d=identicon&r=r",
     feed: "https://zhongxiaojie.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:27.739Z"
   },
   {
     id: "pipishe",
@@ -282,7 +382,10 @@ export const links: LinkItem[] = [
     description: "皮一下~很开心",
     avatar: "https://www.pipishe.com/tx.webp",
     feed: "https://www.pipishe.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.008Z"
   },
   {
     id: "veryjack",
@@ -291,7 +394,10 @@ export const links: LinkItem[] = [
     description: "Everything happens for the best",
     avatar: "https://veryjack.com/wp-content/uploads/2025/05/avatar_transparent.webp",
     feed: "https://veryjack.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.504Z"
   },
   {
     id: "yayu",
@@ -300,7 +406,10 @@ export const links: LinkItem[] = [
     description: "茶余饭后，闲情雅致",
     avatar: "https://yayu.net/wp-content/themes/yayu/assets/images/icon.png",
     feed: "https://yayu.net/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.085Z"
   },
   {
     id: "bestcherish",
@@ -309,7 +418,10 @@ export const links: LinkItem[] = [
     description: "记录生活 珍藏回忆",
     avatar: "https://bestcherish.com/image/favicon.svg",
     feed: "https://bestcherish.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.674Z"
   },
   {
     id: "hxy",
@@ -318,7 +430,10 @@ export const links: LinkItem[] = [
     description: "任何记录都是为了让以后有迹可循",
     avatar: "https://www.hxy.cc/ico.png",
     feed: "https://www.hxy.cc/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:24.534Z"
   },
   {
     id: "ilogs",
@@ -327,7 +442,10 @@ export const links: LinkItem[] = [
     description: "记录生活中的平凡事",
     avatar: "https://img.ficor.net/uploads/2025/11/6914480601006.webp",
     feed: "https://ilogs.cn/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.864Z"
   },
   {
     id: "heitaosan",
@@ -336,7 +454,10 @@ export const links: LinkItem[] = [
     description: "有梦想的人，永远年轻",
     avatar: "https://cn.cravatar.com/avatar/afcb21221b3785f83e89cb3c63ed4020",
     feed: "https://heitaosan.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.076Z"
   },
   {
     id: "amrx",
@@ -345,7 +466,10 @@ export const links: LinkItem[] = [
     description: "网页中的诗意与宁静",
     avatar: "https://thirdqq.qlogo.cn/g?b=qq&nk=160860446&s=100",
     feed: "https://amrx.me/feed",
-    is_active: true
+    is_active: false,
+    status: "offline",
+    lastChecked: "2026-05-21T22:58:22.886Z",
+    lastError: "fetch failed"
   },
   {
     id: "note-star",
@@ -354,7 +478,10 @@ export const links: LinkItem[] = [
     description: "网页中的诗意与宁静",
     avatar: "https://note-star.cn/shortcut/logo.ico",
     feed: "https://note-star.cn/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.112Z"
   },
   {
     id: "hisherry",
@@ -363,7 +490,10 @@ export const links: LinkItem[] = [
     description: "别为活命而败坏生存之根",
     avatar: "https://cravatar.cn/avatar/c822f896a44080703a0845eb6a1ead02d72859e9e0273df32806698db9516512?s=42&r=g",
     feed: "https://hisherry.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.688Z"
   },
   {
     id: "hollowman",
@@ -372,7 +502,10 @@ export const links: LinkItem[] = [
     description: "看清生活的真相后依然热爱生活",
     avatar: "https://www.hollowman.cn/favicon.png",
     feed: "https://www.hollowman.cn/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.338Z"
   },
   {
     id: "onojyun",
@@ -381,7 +514,10 @@ export const links: LinkItem[] = [
     description: "写作，是一场自我悖驳的旅程",
     avatar: "https://onojyun.com/wp-content/uploads/2024/03/a2d42-cropped-mobius_icon_black-edited.png",
     feed: "https://onojyun.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:26.019Z"
   },
   {
     id: "mhcf",
@@ -390,7 +526,10 @@ export const links: LinkItem[] = [
     description: "壹个永恒的部落格",
     avatar: "https://www.mhcf.net/mhcf.ico",
     feed: "https://www.mhcf.net/rss.php",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.251Z"
   },
   {
     id: "pwsz",
@@ -399,16 +538,21 @@ export const links: LinkItem[] = [
     description: "生活在人间天堂",
     avatar: "https://pwsz.com/myimg/pwsz_logo.png",
     feed: "https://pwsz.com/feed",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.684Z"
   },
   {
     id: "xulog",
     name: "徐建伟",
     url: "http://www.xulog.cn",
     description: "记录生活 珍藏回忆",
-    avatar: "",
     feed: "http://www.xulog.cn/index.php?act=rss",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.052Z"
   },
   {
     id: "cuixiping",
@@ -417,7 +561,10 @@ export const links: LinkItem[] = [
     description: "向着理想的方向，爬一会儿，躺一会儿",
     avatar: "https://cuixiping.com/logo-cat.svg",
     feed: "https://cuixiping.com/blog/feed/atom/",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:23.626Z"
   },
   {
     id: "zhoutian",
@@ -426,103 +573,9 @@ export const links: LinkItem[] = [
     description: "记录生活里的小美好",
     avatar: "https://bu.dusays.com/2023/01/29/63d5bf7fa0d2c.png",
     feed: "https://zhoutian.com/rss.xml",
-    is_active: true
+    is_active: true,
+    status: "online",
+    statusCode: 200,
+    lastChecked: "2026-05-21T22:58:22.981Z"
   }
 ];
-
-// 博客聚合平台
-export const blogAggregations: LinkItem[] = [
-  {
-    id: "blogfinder",
-    name: "BlogFinder",
-    url: "https://bf.zzxworld.com/",
-    description: "聚合优秀的个人博客，发掘优质的个人博客文章和内容。",
-    avatar: ""
-  },
-  {
-    id: "blogsclub",
-    name: "BlogsClub",
-    url: "https://www.blogsclub.org/apply.html?inviteCode=8f2cd654",
-    description: "致力于为每一位博主提供一个展示自我、互动交流的绝佳平台。",
-    avatar: ""
-  },
-  {
-    id: "rmbk",
-    name: "若梦博客",
-    url: "https://www.rmbk.cc/",
-    description: "每一个博客，都是精神的驿站。我们不同行，但彼此照亮。在此驻足，便积蓄前行的力量。",
-    avatar: ""
-  },
-  {
-    id: "foreverblog",
-    name: "十年之约",
-    url: "https://www.foreverblog.cn/",
-    description: "一个人的寂寞，一群人的狂欢",
-    avatar: ""
-  },
-  {
-    id: "blogscn",
-    name: "笔墨迹",
-    url: "https://blogscn.fun/",
-    description: "致敬还在写博客的我们",
-    avatar: ""
-  },
-  {
-    id: "pengyou",
-    name: "朋友们的博客",
-    url: "https://peng.you/",
-    description: "每一个博客，都是精神的驿站。",
-    avatar: ""
-  },
-  {
-    id: "blogplanet",
-    name: "博客星球",
-    url: "https://www.blogplanet.cn/",
-    description: "每一个博客都是一个独立星球！",
-    avatar: ""
-  },
-  {
-    id: "findblog",
-    name: "FindBlog",
-    url: "https://www.findblog.net/",
-    description: "发现有趣的独立博客",
-    avatar: ""
-  },
-  {
-    id: "storeweb",
-    name: "个站商店",
-    url: "https://storeweb.cn/",
-    description: "一个精致的，带社交元素的个人网站发布平台，博客收录网站",
-    avatar: ""
-  }
-];
-
-// 社交链接
-export const snsLinks: Array<{
-  name: string;
-  url: string;
-  iconComponent: string;
-}> = [
-  {
-    name: "GitHub",
-    url: "https://github.com/panjinye/",
-    iconComponent: "GithubIcon"
-  },
-  {
-    name: "Email",
-    url: "mailto:ficor@ficor.cc",
-    iconComponent: "EmailIcon"
-  },
-  {
-    name: "Mastodon",
-    url: "https://mastodon.social/@ficor",
-    iconComponent: "MastodonIcon"
-  },
-  {
-    name: "RSS",
-    url: "/feed.xml",
-    iconComponent: "RssIcon"
-  }
-];
-
-export default { links, blogAggregations, snsLinks };
