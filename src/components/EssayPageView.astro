@@ -76,7 +76,7 @@ const fallbackListId = 'essay-tag-list';
         date={entry.data.date}
         visibleTags={getVisibleArticleMetaTags(entry.data.tags, 'list')}
         articleMetaSettings={articleMeta}
-        badge={entry.data.badge}
+        badge={entry.data.badge ?? entry.data.category}
       />
     ))}
   </div>
