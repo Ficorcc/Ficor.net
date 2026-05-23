@@ -1,5 +1,35 @@
 [
   {
+    "id": "eFUCVdboyvBzS2AqwVfxVo",
+    "memosName": "memos/eFUCVdboyvBzS2AqwVfxVo",
+    "content": "不用通过git bash 来更新静态博客，出了订阅不能直接调用默认浏览器，其他的功能完全够用。现在只需要封装成软件包就可以了。",
+    "visibility": "PROTECTED",
+    "createdAt": "2026-05-22T23:00:44Z",
+    "updatedAt": "2026-05-22T23:00:44Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "X6QkpeXtnryNVmG98jUzK2",
+    "memosName": "memos/X6QkpeXtnryNVmG98jUzK2",
+    "content": "买个火机，我还得照着样子买，也是醉了",
+    "visibility": "PROTECTED",
+    "createdAt": "2026-05-22T22:57:44Z",
+    "updatedAt": "2026-05-22T22:57:44Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "3VrG7ssbpvuNVTYjqX8X56",
+    "memosName": "memos/3VrG7ssbpvuNVTYjqX8X56",
+    "content": "Ficor's Astro CMS 开发完成，简单使用，CodeX 确实要好用很多",
+    "visibility": "PUBLIC",
+    "createdAt": "2026-05-21T23:26:04Z",
+    "updatedAt": "2026-05-21T23:26:04Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
     "id": "aiKVd5BUhsRzo2duZoJ3TQ",
     "memosName": "memos/aiKVd5BUhsRzo2duZoJ3TQ",
     "content": "今天去外地开庭，路上车胎扎了。",
@@ -966,36 +996,6 @@
     "visibility": "PUBLIC",
     "createdAt": "2025-10-04T02:13:24Z",
     "updatedAt": "2025-10-30T01:13:27Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "A4qmLdrYT4iRg7Bc48EDkZ",
-    "memosName": "memos/A4qmLdrYT4iRg7Bc48EDkZ",
-    "content": "#网站 网站页面链接改完了，测试了一下可以用了\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-02T10:43:06Z",
-    "updatedAt": "2025-10-30T01:13:14Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "bcyTui2XqsYQveJbRUYunt",
-    "memosName": "memos/bcyTui2XqsYQveJbRUYunt",
-    "content": "#生活 最近一直在下雨，仿佛老天爷心里愧疚，要把夏天没下的雨都给补齐了，今天刷RSS订阅，忽然想起来过去很久的秋分现在还有一个名字叫中国农民丰收节，现在的科技这么发达，大部分农村的农民还是要看天吃饭\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-02T10:12:06Z",
-    "updatedAt": "2025-10-30T01:13:43Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "9HyAvL47tsstP6RFb6FjDd",
-    "memosName": "memos/9HyAvL47tsstP6RFb6FjDd",
-    "content": "#感悟 #笔记 人生不需要有意义，需要的是有意思。",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-01T05:57:36Z",
-    "updatedAt": "2025-10-30T01:14:18Z",
     "pinned": false,
     "resources": []
   }

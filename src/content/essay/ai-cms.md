@@ -1,0 +1,10 @@
+---
+title: "蠢蠢欲动的AI"
+slug: "ai-cms"
+date: "2026-05-21"
+tags: ["Astro，后台，AI，CodeX"]
+category: "技术"
+draft: false
+---
+
+看到好多人再整博客后台，静态博客动态化，CMS，博客程序等等，我这又开始动心思了。
