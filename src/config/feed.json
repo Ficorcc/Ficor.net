@@ -10,17 +10,19 @@
       "feedUrl": "https://lawpan.cc/feed",
       "avatar": "https://lawpan.cc/favicon.png",
       "description": "一个简洁优雅的博客",
-      "updated": "2026-05-22T12:40:25.506Z",
+      "updated": "2026-05-23T07:59:25.344Z",
       "latestItems": [
         {
           "title": "悲催的一天，温暖的人",
           "url": "https://lawpan.cc/posts/tf890n",
-          "date": "Mon, 18 May 2026 09:43:00 +0000"
+          "date": "Mon, 18 May 2026 09:43:00 +0000",
+          "summary": "今天去外地开庭，高速走到半路上躲避一个小障碍的时候，轮胎扎了。胎压极速降为 0。赶紧找地方靠边停车，拿出三脚架放在车后，然后开始用充气泵给轮胎充气。只能充到 1.0Bar。没办法，赶紧找出口下高速。高德搜汽修店，找到一个离出口 1 公里的补胎店，松了一口气，赶紧往那边走。这是一个"
         },
         {
           "title": "法律之路",
           "url": "https://lawpan.cc/posts/tf7brr",
-          "date": "Sun, 11 Jan 2026 21:59:00 +0000"
+          "date": "Sun, 11 Jan 2026 21:59:00 +0000",
+          "summary": "最近几年，生意不好做，原本经营的小项目，逐渐支撑不下去了，中间夹杂着很多事情，需要用到法律相关的知识，随着自己的日常接触和自学，逐渐的喜欢上了这门透着刺激、好奇和实用的学问。 从2024年1月19日开始听第一节法律课，刑法学习的第一节课。到现在2年了，中间有很多麻烦事，一直不能安"
         }
       ]
     },
@@ -30,32 +32,37 @@
       "feedUrl": "https://ficor.net/feed",
       "avatar": "https://ficor.net/favicon.ico",
       "description": "在路上的思绪与脚印",
-      "updated": "2026-05-22T12:40:25.581Z",
+      "updated": "2026-05-23T07:59:25.397Z",
       "latestItems": [
+        {
+          "title": "夏日的甜蜜",
+          "url": "https://ficor.net/archives/43",
+          "date": "Wed, 20 May 2026 12:08:00 +0800",
+          "summary": "最近是杏子成熟的季节了，正好今天没什么事情，有个姐姐家的几亩杏树林挂满了果子，让我们去拿杏子吃，其实是想让我们去帮忙摘杏子。 经过公路、大路、小路、土路、泥泞的田间小道，布满光滑石头的上山小径，一路泥泞和荆棘，来到了杏林旁边。先到的人们已经开始摘了，有踩着梯子的，也有爬上树的，还"
+        },
         {
           "title": "展望与回望",
           "url": "https://ficor.net/archives/42",
-          "date": "Fri, 15 May 2026 20:00:00 +0800"
+          "date": "Fri, 15 May 2026 20:00:00 +0800",
+          "summary": "文章通过两个片段展现时间的回望与展望：一方面记录八年级学生备战地生中考的紧张日常，强调中考成绩对升学路径的关键影响，以及家长与孩子面对压力的不同心态；另一方面回顾汶川地震18周年，提及“可乐男孩”、108罗汉娃等当年受关注的人物如今的成长与生活现状，呈现灾后重建与生命韧性的积极图"
         },
         {
           "title": "母亲节",
           "url": "https://ficor.net/archives/41",
-          "date": "Tue, 12 May 2026 04:07:00 +0800"
+          "date": "Tue, 12 May 2026 04:07:00 +0800",
+          "summary": "现代母亲节起源于美国，由安娜·贾维斯于1908年发起，1914年成为美国法定节日，以康乃馨象征母爱。有观点认为中国应过本土母亲节，如农历三月三、六月六或四月初二，分别关联黄帝、嫘祖和孟母。但文章强调节日形式并非关键，重要的是借节日之名让母亲从家务中解脱，享受家人团聚与天伦之乐，这"
         },
         {
           "title": "4月末换“心”",
           "url": "https://ficor.net/archives/40",
-          "date": "Sat, 02 May 2026 07:08:00 +0800"
+          "date": "Sat, 02 May 2026 07:08:00 +0800",
+          "summary": "最近身边一圈站长博主，都在悄悄换程序、换新内核。玩独立博客这么多年，我一直观望没敢动。不是念旧舍不得换，是真的怕折腾、怕翻车、怕辛苦攒的数据弄丢。虽然操作失误，丢过几次了，很痛心。 WordPress 陪我扛了好几年，生态全、教程多、随手就能搭起来，省心是真的。但越用到后面越心累"
         },
         {
           "title": "情绪",
           "url": "https://ficor.net/archives/39",
-          "date": "Sun, 26 Apr 2026 18:34:00 +0800"
-        },
-        {
-          "title": "AI工具近况成果",
-          "url": "https://ficor.net/archives/38",
-          "date": "Wed, 22 Apr 2026 21:04:06 +0800"
+          "date": "Sun, 26 Apr 2026 18:34:00 +0800",
+          "summary": "今天又刷到了这个视频，之前看过很多遍，每一遍必泪目。可能也是年龄大了，眼窝子浅了。看到那些发生在一代又一代人日常生活中的小细节，这些细节我们的童年经历过，我们的孩子可能也正在经历。可能不知不觉间我们就把这些细节传递到了他们的身上，在他们的身上重演、复刻。时间和经历在身体上留下的痕"
         }
       ]
     },
@@ -65,32 +72,37 @@
       "feedUrl": "https://acevs.com/feed",
       "avatar": "https://cravatar.cn/avatar/ffc1ac2ecde17b2eb1caff3e94c119fdaea4dc1a947a08a3092b388bf9b454d0?s=32&d=identicon&r=g",
       "description": "你坚持过什么事情？",
-      "updated": "2026-05-22T12:40:29.275Z",
+      "updated": "2026-05-23T07:59:28.297Z",
       "latestItems": [
+        {
+          "title": "AI对gdp增加的滞后性",
+          "url": "https://acevs.com/4990/",
+          "date": "Sat, 23 May 2026 00:59:24 +0000",
+          "summary": "ai在技术层面指数级替代，但是人类裁&#46;&#46;&#46;"
+        },
         {
           "title": "生命诞生和理财",
           "url": "https://acevs.com/4987/",
-          "date": "Fri, 22 May 2026 03:23:59 +0000"
+          "date": "Fri, 22 May 2026 03:23:59 +0000",
+          "summary": "地球诞生生命的基本是，大环境好，太阳&#46;&#46;&#46;"
         },
         {
           "title": "注册&#038;注销第二个战网账号",
           "url": "https://acevs.com/4985/",
-          "date": "Thu, 21 May 2026 02:45:22 +0000"
+          "date": "Thu, 21 May 2026 02:45:22 +0000",
+          "summary": "起因，我看到免费的暗黑4 领取日期还&#46;&#46;&#46;"
         },
         {
           "title": "天天跳绳",
           "url": "https://acevs.com/4983/",
-          "date": "Wed, 20 May 2026 06:55:15 +0000"
+          "date": "Wed, 20 May 2026 06:55:15 +0000",
+          "summary": "二宝群里老师布置了任务，安装一个天天&#46;&#46;&#46;"
         },
         {
           "title": "坠落的大天使",
           "url": "https://acevs.com/4981/",
-          "date": "Tue, 19 May 2026 05:28:23 +0000"
-        },
-        {
-          "title": "便携马扎报废",
-          "url": "https://acevs.com/4979/",
-          "date": "Mon, 18 May 2026 06:13:20 +0000"
+          "date": "Tue, 19 May 2026 05:28:23 +0000",
+          "summary": "魔兽世界里最 “光明圣洁” 的存在，&#46;&#46;&#46;"
         }
       ]
     },
@@ -100,32 +112,37 @@
       "feedUrl": "https://me.xu19.com/feed",
       "avatar": "https://cravatar.cn/avatar/6e688e8773b5bd7dd15d86d97bbb3561",
       "description": "记录单片机编程教学、生活与成长点滴",
-      "updated": "2026-05-22T12:40:28.152Z",
+      "updated": "2026-05-23T07:59:25.704Z",
       "latestItems": [
         {
           "title": "大家一定要经常检查",
           "url": "https://me.xu19.com/keep-checking-blog-external-links/",
-          "date": "Wed, 20 May 2026 11:58:22 +0000"
+          "date": "Wed, 20 May 2026 11:58:22 +0000",
+          "summary": "跳颜色事件 几天前，宗宗酱的网页被韩哥提醒跳颜色网了，原因就是宗宗酱的博客采用了51LA的统计，听说51LA在PC端一般情况下 ..."
         },
         {
           "title": "蜘蛛一天爬我一万次",
           "url": "https://me.xu19.com/spider-crawls-10000-times-a-day/",
-          "date": "Sat, 16 May 2026 12:49:50 +0000"
+          "date": "Sat, 16 May 2026 12:49:50 +0000",
+          "summary": "蜘蛛 自从上次被全站镜像后，心里还是有些担心的。我安装了插件，用来记录，防止再发生什么意外。 突然有一天我发现大量的蜘 ..."
         },
         {
           "title": "洗车我算懒的吧",
           "url": "https://me.xu19.com/lazy-car-washing/",
-          "date": "Wed, 13 May 2026 13:23:41 +0000"
+          "date": "Wed, 13 May 2026 13:23:41 +0000",
+          "summary": "洗完车心情会变好 今天去加油，顺便在加油站的自动洗车机上，把车洗了。看着亮晶晶的漆面，感觉心情也挺不错的。 自从加油站 ..."
         },
         {
           "title": "来自BlogsClub的礼物",
           "url": "https://me.xu19.com/blogsclub-coin/",
-          "date": "Sun, 10 May 2026 05:36:17 +0000"
+          "date": "Sun, 10 May 2026 05:36:17 +0000",
+          "summary": "礼物是抢到的 说到抢，是需要动作极快的，但是我感觉自己的手法不快，比如以前淘宝的前几百人抢购活动，试过一两次没有成功 ..."
         },
         {
           "title": "难得正版Windows又打骨折！白菜价",
           "url": "https://me.xu19.com/windows11-big-discount/",
-          "date": "Fri, 01 May 2026 18:27:38 +0000"
+          "date": "Fri, 01 May 2026 18:27:38 +0000",
+          "summary": "一直以来对正版系统都是有渴望的，但是安装的最多还是盗版，当然这里面有很多的原因。 第一台电脑是Windows 95，那时候还不 ..."
         }
       ]
     },
@@ -135,32 +152,37 @@
       "feedUrl": "https://airy.ink/feed",
       "avatar": "https://cravatar.cn/avatar/060afceaea08afc40f8bcef99fe8542a",
       "description": "大家都是倔强的人",
-      "updated": "2026-05-22T12:40:26.448Z",
+      "updated": "2026-05-23T07:59:26.084Z",
       "latestItems": [
         {
           "title": "牛马落下了自己的家当",
           "url": "https://airy.ink/daily/450",
-          "date": "Mon, 18 May 2026 03:31:00 GMT"
+          "date": "Mon, 18 May 2026 03:31:00 GMT",
+          "summary": "最近天气有些善变了，短信疯狂推送天气变化，昨天晚上开始下雨了，早上起来一点不带停的，和往常一样，起床洗漱出门，提着饭盒按了电梯，正准备进去，发现伞没拿，又回去拿伞。 不出意外的，走到地铁站，裤脚已经打湿完了，想着明天再下，套俩塑料袋，应该会好点。 下雨天稍微堵了会儿车，八点五十几"
         },
         {
           "title": "这几年的 “这些天”——时光里的奔赴与安放",
           "url": "https://airy.ink/times/449",
-          "date": "Tue, 12 May 2026 06:07:00 GMT"
+          "date": "Tue, 12 May 2026 06:07:00 GMT",
+          "summary": "前两天打开相册的时候，突然推送了两张那年今日的照片，点进去看了下，是去年赵哥刚生娃，去月子中心看她的时候拍的，时间真的是如流水，不知不觉间，已经过去一年了。 昨天晚上整理相册，往前翻了很多，每一张，都依稀记得当时的“故事”。 心血来潮，不如简单盘盘最近几年的“今日”吧，给回忆加加"
         },
         {
           "title": "暴饮暴食后的骑行",
           "url": "https://airy.ink/daily/448",
-          "date": "Sat, 09 May 2026 03:07:00 GMT"
+          "date": "Sat, 09 May 2026 03:07:00 GMT",
+          "summary": "前两天老妹去做体检，有两项关于肝的指标有点偏高，挺纳闷，又不喝酒为啥肝不好，又预约昨天复查，医生回复说影响不大，于是悬了两天的心终于落下来了。 说来其实也很正常，现在这个社会，谁还身体没点毛病，我现在都不咋敢去体检。 为了弥补这两天的清淡饮食，决定放纵一下，久违的火锅安排上，今天"
         },
         {
           "title": "五一闲游第二弹——赤壁",
           "url": "https://airy.ink/travel/447",
-          "date": "Wed, 06 May 2026 07:45:00 GMT"
+          "date": "Wed, 06 May 2026 07:45:00 GMT",
+          "summary": "话接上上文，1号晚上在咸宁美美的睡了一觉，第二天十一点多才起，一通收拾后下楼退房，外面果真如天气预报那样下起了雨，小问题。 退完房打车直奔车站，当然不会真么简单，先是打车到提前看好的一家本地菜饭店，一问，等位俩小时，告辞，只得进行B计划，转到车站旁边的一家面馆，吃了一碗红烧牛肉蛋"
         },
         {
           "title": "假期综合症",
           "url": "https://airy.ink/daily/446",
-          "date": "Wed, 06 May 2026 03:24:00 GMT"
+          "date": "Wed, 06 May 2026 03:24:00 GMT",
+          "summary": "五天假期，说没就没，虽然本周只上4天班，但是有一天是周六啊，想想就有点难受。 更难受的是刚适应悠闲的状态，又要开始牛马，简直无法接受，昨晚十一点多就强制自己睡下，不知是心里有事还是什么原因，早上6点就醒来，然后就再也睡不着了，翻来覆去半个小时，最终只得起来扣手机到闹钟响起。 大概"
         }
       ]
     },
@@ -170,32 +192,37 @@
       "feedUrl": "https://knay.net/feed",
       "avatar": "https://knay.net/avatar/yang.webp",
       "description": "一亩三分地，记录生活，分享见闻",
-      "updated": "2026-05-22T12:40:27.356Z",
+      "updated": "2026-05-23T07:59:25.562Z",
       "latestItems": [
         {
           "title": "人情世故",
           "url": "https://knay.net/note/%20reflections-on-social-graces-and-gifts",
-          "date": "Fri, 22 May 2026 09:31:42 Z"
+          "date": "Fri, 22 May 2026 09:31:42 Z",
+          "summary": "今天市场没啥需要关注的，闲来无事走上环瑞幸来一杯美式。 &#xD; 好几天没有写点什么了，没办法，最近突然又有点表达欲梗阻了。下面这几段实际上是两周之前写在手机备忘录里的，正好改改错别字充充数。 &#xD; 这么多年，喝咖啡，基本只喝美式，当年还在tx的时候，飞亚达旁边康佳大厦一"
         },
         {
           "title": "敲钟前夜，AI Coding之后下一波“屠杀”将在哪？",
           "url": "https://knay.net/note/ai-industry-ipo-coding-market-peak-future-trends",
-          "date": "Fri, 08 May 2026 06:21:23 Z"
+          "date": "Fri, 08 May 2026 06:21:23 Z",
+          "summary": "不是预言家也不是作家，以下文字只是乱七八糟的一些思索而已，随笔记录几句。 &#xD; 随着Anthropic和OpenAI你来我往打得越来越火热，也预示它们在纳斯达克敲钟的时刻越来越近了。 &#xD; 所有的戏码都是围绕着吸用户量、炒估值和博媒体眼球展开。 &#xD; 你说AI目"
         },
         {
           "title": "TOKEN拾荒的日子 - 2",
           "url": "https://knay.net/note/untitled-20260503",
-          "date": "Sun, 03 May 2026 12:23:02 Z"
+          "date": "Sun, 03 May 2026 12:23:02 Z",
+          "summary": "前天，Google给香港用户在上个月GeminiChat的基础上增加放开了Google AI订阅，我还想Google怎么突然心善了，结果对比新加坡版本，确认香港这是特供阉割版。最核心的差异点：模型只给到Gemini 3.0而非3.1 , 禁止NotebookLM、Gemini C"
         },
         {
           "title": "关于股票，瞎唠几句",
           "url": "https://knay.net/note/starbucks-exit-mean-reversion-investment-cognition-strategy",
-          "date": "Fri, 01 May 2026 13:50:23 Z"
+          "date": "Fri, 01 May 2026 13:50:23 Z",
+          "summary": "这会儿正在外面遛弯散步，很难得，五一的广东还能有24-25度的凉风吹，很舒服。 &#xD; 美股刚开盘，看了一眼星巴克（SBUX），嗯，107刀了，挺好，直接全部卖出。 &#xD; 这一笔头寸还是 去年10-11月的时候 建的了，当时正是公布博裕入股星巴克的时候，成本前前后后摊下"
         },
         {
           "title": "Powell: Good afternoon, Hello everyone",
           "url": "https://knay.net/note/powell-good-afternoon-hello-everyone-and-good-bye",
-          "date": "Thu, 30 Apr 2026 01:36:55 Z"
+          "date": "Thu, 30 Apr 2026 01:36:55 Z",
+          "summary": "鲍威尔表示5月15日主席任期结束将留任美联储理事，在针对其调查彻底结束之前，不会离开理事会。同时承诺不会阻碍新主席施政，绝不做“影子主席”，担任理事期间将保持低姿态，支持新主席。其认为当前利率接近中性或轻微偏高，在通胀不明确之前不急于改变利率和指引。 昨晚早早的就睡了，没有再如过"
         }
       ]
     },
@@ -205,32 +232,37 @@
       "feedUrl": "https://wang618.cn/rss.php",
       "avatar": "https://wang618.cn/logo.gif",
       "description": "爱生活、爱摸鱼",
-      "updated": "2026-05-22T12:40:27.020Z",
+      "updated": "2026-05-23T07:59:26.253Z",
       "latestItems": [
         {
           "title": "GEAK OS NAS系统",
           "url": "https://wang618.cn/geakos-nas-xi-tong.html",
-          "date": "Tue, 12 May 2026 21:11:43 +0800"
+          "date": "Tue, 12 May 2026 21:11:43 +0800",
+          "summary": "继飞牛 OS 之后，又一款 NAS 专属系统 GEAK OS，系统基于 Debian 深度定制，适配x86_64 架构，兼容 Debian 12/13、Ubuntu 24.04 LTS，暂不支持 ARM 架构。GEAK OS 集成全平台文件管理、AI 智能相册、音乐影视海报墙、极"
         },
         {
           "title": "AI翻唱音乐",
           "url": "https://wang618.cn/ai-fan-chang-music.html",
-          "date": "Tue, 12 May 2026 01:04:52 +0800"
+          "date": "Tue, 12 May 2026 01:04:52 +0800",
+          "summary": "近期陷入严重音乐荒，闲得刷 B 站，无意间刷到好多 AI 翻唱作品，循环听了好几首意外很对味！真的要谢谢 AI，终于让我完整听清周杰伦的歌词了！😂 推荐UP： 北极星电台 八十万刁民总教头"
         },
         {
           "title": "蹭游",
           "url": "https://wang618.cn/ceng-you.html",
-          "date": "Sun, 10 May 2026 18:44:54 +0800"
+          "date": "Sun, 10 May 2026 18:44:54 +0800",
+          "summary": "邻居给狗子搭建了泳池，赶紧带我家狗子去蹭游狗刨一下，装备齐全还有专属泳衣！"
         },
         {
           "title": "好物",
           "url": "https://wang618.cn/hao-wu.html",
-          "date": "Sat, 09 May 2026 18:37:04 +0800"
+          "date": "Sat, 09 May 2026 18:37:04 +0800",
+          "summary": "老王严选 好物推荐 想喝开水懒得烧，无需生火自沸腾。 速溶矿泉真奇妙，纯水一冲山泉调。 呼伦贝尔原野气，足不出户沁青芳。"
         },
         {
           "title": "大军扩编",
           "url": "https://wang618.cn/da-jun-kuo-bian.html",
-          "date": "Sat, 09 May 2026 00:21:48 +0800"
+          "date": "Sat, 09 May 2026 00:21:48 +0800",
+          "summary": "宠物大军再度扩编！邻居又送来一只泰迪（图三），现正式集结6只喵、3只汪！猫咪基本散养，院墙也困不住它们，每到饭点都准时回来干饭！周围鼠雀都已瑟瑟告急～"
         }
       ]
     },
@@ -240,32 +272,37 @@
       "feedUrl": "https://zhujay.com/feed",
       "avatar": "https://zhujay.com/images/webhead/wh2.png",
       "description": "记录生活分享美好",
-      "updated": "2026-05-22T12:40:28.355Z",
+      "updated": "2026-05-23T07:59:29.225Z",
       "latestItems": [
         {
           "title": "出院小结：血压从213降到正常，今后需长期服药",
           "url": "https://zhujay.com/talk/talk_detail.html?id=1228",
-          "date": "Wed, 13 May 2026 09:00:16 +0800"
+          "date": "Wed, 13 May 2026 09:00:16 +0800",
+          "summary": "作者因血压高达213/132住院治疗两天，经药物控制已降至正常。经检查确认为原发性高血压，与父母遗传有关。此前手脚浮肿的原因也查明是高血压所致。作者现已出院，但需长期服药控制血压，并在此统一感谢大家的关心。"
         },
         {
           "title": "那些被忽略的日常，差点要我命",
           "url": "https://zhujay.com/talk/talk_detail.html?id=1227",
-          "date": "Mon, 11 May 2026 14:47:26 +0800"
+          "date": "Mon, 11 May 2026 14:47:26 +0800",
+          "summary": "作者因频繁头晕测得血压213/132，就医后住院接受药物干预，血压逐步降至正常。后续需进一步检查确定高血压类型，并提醒大家关注身体指标、清淡饮食、避免熬夜。"
         },
         {
           "title": "朱小呆改版全新上线",
           "url": "https://zhujay.com/talk/talk_detail.html?id=1225",
-          "date": "Wed, 06 May 2026 20:25:30 +0800"
+          "date": "Wed, 06 May 2026 20:25:30 +0800",
+          "summary": "作者介绍了个人博客“朱小呆”的全新改版。新版采用复古漫画与日式手账风格，以奶油米白为底色，搭配粗黑描边及荧光黄、珊瑚红撞色点缀，内容以圆角漫画对话框卡片呈现，整体温暖治愈。作者坦言技术有限，网站基于纯静态页面与API接口构建，虽简单但够用，并承诺未来会持续优化。"
         },
         {
           "title": "五一假期愉快",
           "url": "https://zhujay.com/talk/talk_detail.html?id=1224",
-          "date": "Sat, 02 May 2026 09:12:26 +0800"
+          "date": "Sat, 02 May 2026 09:12:26 +0800",
+          "summary": "作者最近忙于改版，导致互动更新减少，也久未拍摄延时摄影。借此机会向大家说明近况，并在五一小长假来临之际，送上节日祝福，祝愿大家假期愉快、放松心情。"
         },
         {
           "title": "早餐开启新的一天",
           "url": "https://zhujay.com/talk/talk_detail.html?id=1223",
-          "date": "Wed, 22 Apr 2026 08:54:58 +0800"
+          "date": "Wed, 22 Apr 2026 08:54:58 +0800",
+          "summary": "早安！美好的一天从一顿简单的早餐开始。祝大家都有个好心情。"
         }
       ]
     },
@@ -275,32 +312,37 @@
       "feedUrl": "https://xifeng.net/feed",
       "avatar": "https://xifeng.net/images/avatar.svg",
       "description": "源于热爱而去创造",
-      "updated": "2026-05-22T12:40:26.011Z",
+      "updated": "2026-05-23T07:59:25.414Z",
       "latestItems": [
         {
           "title": "价值 10000 美元的开源 PHP图床程序",
           "url": "https://xifeng.net/archives/33",
-          "date": "Sat, 16 May 2026 11:59:00 +0000"
+          "date": "Sat, 16 May 2026 11:59:00 +0000",
+          "summary": "该文章介绍了作者自用的开源图床程序 LitePic，项目已持续开发近一年，代码量约两万行。作者分享了自己作为独立开发者，在多个项目中反复打磨、随性更新的工作习惯，并指出该图床功能简洁，主要用于个人及少数用户的上传、格式转换和分享需求。"
         },
         {
           "title": "当 AI 编程开始“常驻菜单栏”：5 个 macOS 开发者效率工具推荐",
           "url": "https://xifeng.net/archives/32",
-          "date": "Wed, 06 May 2026 18:09:00 +0000"
+          "date": "Wed, 06 May 2026 18:09:00 +0000",
+          "summary": "AI 编程已从网页聊天深入开发工作流，但多 Agent 并行带来的 Token 管理、窗口恢复、Session 监控等新痛点随之浮现。macOS 上新兴的“AI 编程状态层”工具，将 AI 运行状态从终端隐藏变为系统层可感知，帮助开发者高效管理多模型、高频并发的开发环境。"
         },
         {
           "title": "GitShow：把 GitHub 账号变成一个自托管个人主页",
           "url": "https://xifeng.net/archives/31",
-          "date": "Sun, 03 May 2026 05:05:00 +0000"
+          "date": "Sun, 03 May 2026 05:05:00 +0000",
+          "summary": "GitShow 是一个自托管的 GitHub 个人主页程序，能将账号数据整理成干净的网页，展示个人信息、项目、贡献热力图和动态。它不依赖数据库，适合部署在服务器上。项目页可精选仓库，避免实验性项目干扰，让主页更像一个真正的作品集。"
         },
         {
           "title": "GPT Image 2 日签提示词",
           "url": "https://xifeng.net/archives/30",
-          "date": "Wed, 29 Apr 2026 11:29:00 +0000"
+          "date": "Wed, 29 Apr 2026 11:29:00 +0000",
+          "summary": "分享提示词用于生成具有高级审美和阅读价值的“日签海报”，核心要求是画面、文案与信息三者统一。画面需有杂志感与氛围感，文案成熟有记忆点，并融入“历史上的今天”真实内容，避免廉价鸡汤或模板化设计。"
         },
         {
           "title": "ChatGPT-Image2 体验",
           "url": "https://xifeng.net/archives/29",
-          "date": "Mon, 27 Apr 2026 03:19:00 +0000"
+          "date": "Mon, 27 Apr 2026 03:19:00 +0000",
+          "summary": "OpenAI新发布的GPT Image 2模型在图片准确度和中文处理上大幅提升。通过手绘水彩风格的城市地图测试，模型能较好呈现地标、美食等元素，中文标注基本无误，虽有个别细节偏差，但整体表现远超初代，一次成型效果令人惊喜。"
         }
       ]
     },
@@ -310,32 +352,37 @@
       "feedUrl": "https://yufan.me/feed",
       "avatar": "https://yufan.me/logo.svg",
       "description": "诗与梦想的远方",
-      "updated": "2026-05-22T12:40:26.267Z",
+      "updated": "2026-05-23T07:59:25.606Z",
       "latestItems": [
         {
           "title": "富文本编辑器简史",
           "url": "https://yufan.me/posts/text-editor-evolution",
-          "date": "Mon, 11 May 2026 19:01:32 GMT"
+          "date": "Mon, 11 May 2026 19:01:32 GMT",
+          "summary": "Web 富文本编辑器的发展史，本质上是一场关于控制权的争夺。浏览器厂商、框架作者、产品经理、终端用户，乃至今天的 AI 模型，都在争夺同一个问题的答案：谁来决定一段文本的最终形态？"
         },
         {
           "title": "夏至未至",
           "url": "https://yufan.me/posts/rush-to-the-dead-summer",
-          "date": "Wed, 06 May 2026 15:44:00 GMT"
+          "date": "Wed, 06 May 2026 15:44:00 GMT",
+          "summary": "风把夏天的消息叠进花瓣里，花影落在腕间，像一句未说完的话，轻轻系在脉搏上。有些旋律未曾被吟唱，却在午后，被阳光弹成看得见的音符。等一人来听，又怕有心人听懂。"
         },
         {
           "title": "过度联想",
           "url": "https://yufan.me/posts/less-is-more",
-          "date": "Fri, 17 Apr 2026 12:31:16 GMT"
+          "date": "Fri, 17 Apr 2026 12:31:16 GMT",
+          "summary": "菩提本无树，明镜亦非台。本来无一物，何处惹尘埃。"
         },
         {
           "title": "难以割舍的纸质词典",
           "url": "https://yufan.me/posts/paper-dictionary-love",
-          "date": "Thu, 16 Apr 2026 15:08:23 GMT"
+          "date": "Thu, 16 Apr 2026 15:08:23 GMT",
+          "summary": "作为一名 90 后，我始终难以割舍对纸质词典的情结。"
         },
         {
           "title": "年少心事",
           "url": "https://yufan.me/posts/adolescent-souls",
-          "date": "Wed, 15 Apr 2026 13:10:33 GMT"
+          "date": "Wed, 15 Apr 2026 13:10:33 GMT",
+          "summary": "那些尘封在阁楼上的手表，即是年轻的那份自卑，也是另一种放下。"
         }
       ]
     },
@@ -345,32 +392,37 @@
       "feedUrl": "https://synyan.cn/feed",
       "avatar": "https://synyan.cn/wp-content/themes/hera-develop/build/images/logo-s.png",
       "description": "博物馆爱好者",
-      "updated": "2026-05-22T12:40:26.922Z",
+      "updated": "2026-05-23T07:59:26.343Z",
       "latestItems": [
         {
           "title": "三星堆博物馆中",
           "url": "https://synyan.cn/113245/",
-          "date": "Sun, 17 May 2026 08:50:57 +0000"
+          "date": "Sun, 17 May 2026 08:50:57 +0000",
+          "summary": "步入下一个展厅，大量镇馆青铜器与金器让人眼花缭乱。 青铜罍残件，商代后期（前1300－前1100年），1986 [&#8230;]"
         },
         {
           "title": "三星堆博物馆上",
           "url": "https://synyan.cn/113128/",
-          "date": "Thu, 14 May 2026 15:07:25 +0000"
+          "date": "Thu, 14 May 2026 15:07:25 +0000",
+          "summary": "终于写到本次四川之行最主要的目标——广汉市三星堆博物馆。 因为照片太多，为避免瞬时流量冲击，分为上、中、下三篇 [&#8230;]"
         },
         {
           "title": "锦里风光应占尽",
           "url": "https://synyan.cn/112820/",
-          "date": "Sun, 10 May 2026 04:42:55 +0000"
+          "date": "Sun, 10 May 2026 04:42:55 +0000",
+          "summary": "武侯祠出东门，是赫赫有名的锦里古街，一派繁华景象。虽然古街全国都差不多，但锦里自带一种蜀汉风情。 让我意外的是 [&#8230;]"
         },
         {
           "title": "丞相祠堂何处寻",
           "url": "https://synyan.cn/112546/",
-          "date": "Mon, 04 May 2026 10:43:42 +0000"
+          "date": "Mon, 04 May 2026 10:43:42 +0000",
+          "summary": "蜀相[唐] 杜甫丞相祠堂何处寻，锦官城外柏森森。映阶碧草自春色，隔叶黄鹂空好音。三顾频烦天下计，两朝开济老臣心 [&#8230;]"
         },
         {
           "title": "成都大熊猫基地",
           "url": "https://synyan.cn/112413/",
-          "date": "Wed, 29 Apr 2026 15:03:48 +0000"
+          "date": "Wed, 29 Apr 2026 15:03:48 +0000",
+          "summary": "如果友友们搜索大熊猫基地，首显的一定是成都大熊猫繁育研究基地——这座位于成都北边成华区熊猫大道1375号的基地 [&#8230;]"
         }
       ]
     },
@@ -380,32 +432,37 @@
       "feedUrl": "https://synyan.cn/t/feed",
       "avatar": "https://synyan.cn/wp-content/themes/hera-develop/build/images/logo-s.png",
       "description": "旅游点打卡员",
-      "updated": "2026-05-22T12:40:26.539Z",
+      "updated": "2026-05-23T07:59:25.963Z",
       "latestItems": [
         {
           "title": "水泻了",
           "url": "https://synyan.cn/t/62194",
-          "date": "Thu, 21 May 2026 07:11:49 +0000"
+          "date": "Thu, 21 May 2026 07:11:49 +0000",
+          "summary": "毫不意外，今日上证冲高后下杀85个点，完美复刻了1月29日黄金天坑的波形，半导体行情估计是阶段性走完了。幸好提 [&#8230;]"
         },
         {
           "title": "Model Y二血",
           "url": "https://synyan.cn/t/61939",
-          "date": "Fri, 08 May 2026 16:12:21 +0000"
+          "date": "Fri, 08 May 2026 16:12:21 +0000",
+          "summary": "最近本人跟车杠上了，ld的Model Y开回来已经喜提二血。 第一次是半个月前，4月15日，ld下班时隧道前匝 [&#8230;]"
         },
         {
           "title": "票又卖飞了",
           "url": "https://synyan.cn/t/61899",
-          "date": "Thu, 30 Apr 2026 02:49:12 +0000"
+          "date": "Thu, 30 Apr 2026 02:49:12 +0000",
+          "summary": "埋伏了一两周的两支票，在黎明前的昨日小赚走了，今天看到暴力拉升15cm大柱子，禁不住捶胸跺足。想不通明明没有主 [&#8230;]"
         },
         {
           "title": "Shokz OpenRun Pro2 Mini",
           "url": "https://synyan.cn/t/61800",
-          "date": "Thu, 23 Apr 2026 13:12:17 +0000"
+          "date": "Thu, 23 Apr 2026 13:12:17 +0000",
+          "summary": "有一个月没写随想了。最近感到身体大不如前，一是颈椎病低头头晕，二是气压低时心慌气喘，于是每晚都拉ld出门绕圈散 [&#8230;]"
         },
         {
           "title": "中国东航披露购买101架A320NEO系列飞机",
           "url": "https://synyan.cn/t/61633",
-          "date": "Thu, 26 Mar 2026 02:19:07 +0000"
+          "date": "Thu, 26 Mar 2026 02:19:07 +0000",
+          "summary": "中国东航（600115）披露购买101架A320NEO系列飞机公告，3月25日股价上涨4.78%近日，中国东方 [&#8230;]"
         }
       ]
     },
@@ -415,32 +472,37 @@
       "feedUrl": "https://1900.live/rss",
       "avatar": "https://1900.live/logo.svg",
       "description": "孤独的互联网冲浪大师",
-      "updated": "2026-05-22T12:40:26.014Z",
+      "updated": "2026-05-23T07:59:25.376Z",
       "latestItems": [
         {
           "title": "283、立夏",
           "url": "https://1900.live/283-li-xia/",
-          "date": "Tue, 05 May 2026 08:28:00 GMT"
+          "date": "Tue, 05 May 2026 08:28:00 GMT",
+          "summary": "null 立夏 槐荫初密，蝉翼未鸣，天地悄然换了一袭青衫。 今日5月5日，太阳行至黄经45°，岁次乙巳，夏序第一叩。 麦浪暗涌于郊野，而春衣渐收进箱底；蔷薇攀满东墙，而青梅正煮着新酸。 天地以“立”为誓，见“夏”如晤，人间自此有了蓬勃的伏笔。 此刻，不妨： 把倦意留给暮春的尾梢，"
         },
         {
           "title": "和H小姐的约会",
           "url": "https://1900.live/he-hxiao-jie-de-yue-hui/",
-          "date": "Sun, 26 Apr 2026 03:57:58 GMT"
+          "date": "Sun, 26 Apr 2026 03:57:58 GMT",
+          "summary": "Photo by Jose P. Ortiz / Unsplash 首先承认这次的标题是900%具有标题党嫌疑的，但是这样写我觉得会更有意思，而且除开不能牵手等显示层面的动作，至少符合私密、聊心事、聊八卦等等。 H小姐指的是我最近搭建的 Hermes Agent ，这是一款类似O"
         },
         {
           "title": "282、谷雨",
           "url": "https://1900.live/282-gu-yu/",
-          "date": "Mon, 20 Apr 2026 10:44:00 GMT"
+          "date": "Mon, 20 Apr 2026 10:44:00 GMT",
+          "summary": "null 润泽 雨生百谷，萍与水各映半边。 今日4月20日，太阳行至黄经30°，岁次乙巳，春信第六声。 萍绿池畔，而杨花落尽春去；鸠鸣桑巅，而青茶新焙暖人。 天地以“谷”为名，落“雨”成诗，人间自此有了生养的底色。 此刻，不妨： 把希冀撒进春雨，润一亩心田的芽； 把暮春与浅夏对折"
         },
         {
           "title": "爷爷",
           "url": "https://1900.live/ye-ye/",
-          "date": "Mon, 13 Apr 2026 02:16:06 GMT"
+          "date": "Mon, 13 Apr 2026 02:16:06 GMT",
+          "summary": "Photo by moke yong hui / Unsplash 清明我妈回老家祭祖了，他回来的这段时间就由我来照顾爷爷了。 爷爷前几年临近过年时意外中风，好在发现送医及时，影响不大，出院后行动、说话什么都没问题，基本上可以自理。 但是记忆力远不如从前了，刚出院的那会经常会记忆"
         },
         {
           "title": "血压忽高事件",
           "url": "https://1900.live/xie-ya-hu-gao-shi-jian/",
-          "date": "Tue, 07 Apr 2026 03:36:24 GMT"
+          "date": "Tue, 07 Apr 2026 03:36:24 GMT",
+          "summary": "Photo by Online Marketing / Unsplash 前些日子出去办了个事，凑巧量了一下血压。 不量不要紧，一量才发现自己高压158,低压98，我说那天怎么脑袋涨涨的，回公司后不放心，又用公司的电子血压计重新量了一下，特么还是这个数值，想着是不是当天状态不好，"
         }
       ]
     },
@@ -450,32 +512,37 @@
       "feedUrl": "https://laozhang.org/feed",
       "avatar": "http://pic.laozhang.org/i/2023/04/07/642f72584c9a1.png",
       "description": "生活琐记，技术折腾，乐在记录点滴与分享",
-      "updated": "2026-05-22T12:40:26.739Z",
+      "updated": "2026-05-23T07:59:25.760Z",
       "latestItems": [
         {
           "title": "[推广]酷鸭数据 · 520情人节特别活动机来啦！",
           "url": "https://laozhang.org/archives/4060.html",
-          "date": "Tue, 19 May 2026 15:18:36 +0000"
+          "date": "Tue, 19 May 2026 15:18:36 +0000",
+          "summary": "🦆 酷鸭数据 · 520情人节特别活动机来啦！ 🎯 活动截止：6月1日 · 错过不再有！ 💝 这次活动有点猛！ 趁 5·20 中国情人节，酷鸭直接上了一波 香港 CN2 活动机，配置给到位，价格也砍到底 项目详情 🇭🇰 节点香港 CN2（三网优化） 💻 CPU2核 \ud83e"
         },
         {
           "title": "我只会瞎折腾！暨兰空图床上传图片失败解决方法！",
           "url": "https://laozhang.org/archives/4056.html",
-          "date": "Tue, 28 Apr 2026 14:11:39 +0000"
+          "date": "Tue, 28 Apr 2026 14:11:39 +0000",
+          "summary": "我给自己定义“瞎折腾”应该很多次了！每次折腾完一件事之后，才会把整个折腾的过程撸一撸思路，这才会发现绕了太多太多的弯路而浪费了太多太多的时间。讲一讲这次我又是怎么样瞎折腾兰空图床上传失败的吧！ 应该是大前天，我写老张随笔里需要上传一张图片到图床，传了N次都不行，要知道之前上传都是"
         },
         {
           "title": "再也不会去的“窑湾古镇”",
           "url": "https://laozhang.org/archives/4055.html",
-          "date": "Tue, 21 Apr 2026 13:26:03 +0000"
+          "date": "Tue, 21 Apr 2026 13:26:03 +0000",
+          "summary": "书接上回，清明节的时候一家去临沂玩了两天，头天去玩了《体验不佳的琅琊古城！》，晚上住在临沂市区的中维荣华大酒店，价格不贵环境也不错。半天时间把琅琊古城给逛完了，回到宾馆九点多，来临沂，那临沂炒鸡怎么能不吃呢，但是又怕被宰，所有从美团上找的“临师傅炒鸡”，离宾馆不远，步行十几分钟。"
         },
         {
           "title": "困扰许久的网络问题终于解决了！",
           "url": "https://laozhang.org/archives/4050.html",
-          "date": "Thu, 16 Apr 2026 02:41:23 +0000"
+          "date": "Thu, 16 Apr 2026 02:41:23 +0000",
+          "summary": "我的办公电脑安装是三网口的网卡，一网口连接外网，而另外两个网口给虚拟机使用，用来连接内网。这样的好处是遇到紧急的情况可以不需要再跑到办全室来办公，可以在家里直接远程办公室电脑而达到连接内网的效果。 系统安装好到目前为止已经使用快五年时间了，也不知道从何时起，经常遇到QQ、微信可以"
         },
         {
           "title": "体验不佳的琅琊古城！",
           "url": "https://laozhang.org/archives/4049.html",
-          "date": "Wed, 08 Apr 2026 13:59:18 +0000"
+          "date": "Wed, 08 Apr 2026 13:59:18 +0000",
+          "summary": "提到琅琊古城，不少人可能认为是安徽滁州的琅琊山，其实琅琊古城坐落在山东的临沂，“纯人工”打造的旅游景点。 今年我们江苏第一次放春假，和清明连在一起也就是6天的假期。儿子高中不放春假，所以我们家的出游计划便安排在的清明期间了。 4月4号早上睡到六点半，也算是自然醒了，洗漱后到一家四"
         }
       ]
     },
@@ -485,8 +552,39 @@
       "feedUrl": "https://iliu.org/index.xml",
       "avatar": "https://iliu.org/img/favicon.ico",
       "description": "热爱传统文化，验光师",
-      "updated": "2026-05-22T12:40:35.404Z",
-      "latestItems": []
+      "updated": "2026-05-23T07:59:31.409Z",
+      "latestItems": [
+        {
+          "title": "临期面包和失信时代",
+          "url": "https://www.iliu.org/expired-bread-and-era-of-broken-trust.html",
+          "date": "Wed, 20 May 2026 09:08:11 +0800",
+          "summary": "昨天去仟吉买面包，碰巧赶上下雨，我急急忙忙抓了一包，结完账就往外走。到家才想起来之前在那儿买面包，有过第二天就过期的经历。赶紧翻出日期一看，果然，又是第二天到期，这种事在仟吉已经不是第一次了。"
+        },
+        {
+          "title": "且行且珍惜",
+          "url": "https://www.iliu.org/posts/qie-hang-qie-zhen-xi/",
+          "date": "Sun, 17 May 2026 20:20:27 +0800",
+          "summary": "劳动节过后，女儿就迎来了高二下学期的期中考试。 成绩出来了。班级名词和上学期期末持平，依然是第10名。校次倒是提升了4个名次——从另一个维度看，是在进步的。"
+        },
+        {
+          "title": "飞驰人生3：赛道之外的博弈",
+          "url": "https://www.iliu.org/feichi3.html",
+          "date": "Wed, 06 May 2026 09:08:00 +0800",
+          "summary": "有些比赛，不是在办公室里决定的 张弛赢了。 巴音布鲁克的最后一届拉力赛，他终于站上了冠军领奖台。五年禁赛、地下飙车、倾家荡产……所有的至暗时刻都熬过来了。"
+        },
+        {
+          "title": "五一假期第三天：树木园记",
+          "url": "https://www.iliu.org/may-3-holiday-tree-garden.html",
+          "date": "Mon, 04 May 2026 16:00:00 +0800",
+          "summary": "昨天是五一假期的第三天，家里的领导一直叨叨着出去转转。作为一个受到花粉暴击的人，这个季节真是不愿意出门，但耐不住领导反复念叨，最后还是妥协了。 女儿和同学约了去做手工，媳妇又念叨着去逛。几个大人一商量，最后和她同事约了去树木园。"
+        },
+        {
+          "title": "流量至上时代的媒体失范：当暴利成为流量密码",
+          "url": "https://www.iliu.org/media-illusion.html",
+          "date": "Sat, 02 May 2026 16:30:00 +0800",
+          "summary": "引言 现在的媒体，越来越像一台精密的\"流量收割机\"，而非真相的守护者。为了追逐点击率和关注度，它们罔顾事实的复杂性，甚至刻意选择性地呈现信息，让公众在情绪的裹挟中逐渐失去独立判断的能力。 以下三个真实发生的事件，恰好勾勒出这种媒体生态的三个典型病症。"
+        }
+      ]
     },
     {
       "name": "似水流年",
@@ -494,34 +592,8 @@
       "feedUrl": "https://my1981.cn/feed",
       "avatar": "https://weavatar.com/avatar/65cd1f408c1cc0949b34d3cd2acad0cb5a2b8c362ebf31ca9ee0dc9edcc63e81?s=100&r=g",
       "description": "如花美眷，怎敌得过似水流年",
-      "updated": "2026-05-22T12:40:27.683Z",
-      "latestItems": [
-        {
-          "title": "友谊",
-          "url": "https://my1981.cn/life/167.html",
-          "date": "Tue, 12 May 26 05:19:00 +0000"
-        },
-        {
-          "title": "BootOptimizer - Linux系统启动优化利器",
-          "url": "https://my1981.cn/interest/166.html",
-          "date": "Tue, 12 May 26 00:59:32 +0000"
-        },
-        {
-          "title": "Typecho之UP主推荐插件V1.0.3",
-          "url": "https://my1981.cn/technology/153.html",
-          "date": "Wed, 29 Apr 26 06:07:00 +0000"
-        },
-        {
-          "title": "Trae CN无所不能 手搓“智简系统助手”",
-          "url": "https://my1981.cn/technology/141.html",
-          "date": "Wed, 22 Apr 26 22:11:00 +0000"
-        },
-        {
-          "title": "旬月记事",
-          "url": "https://my1981.cn/life/131.html",
-          "date": "Tue, 14 Apr 26 12:49:00 +0000"
-        }
-      ]
+      "updated": "2026-05-23T07:59:35.213Z",
+      "latestItems": []
     },
     {
       "name": "陈锐—响石潭",
@@ -529,32 +601,37 @@
       "feedUrl": "https://www.chenrui.com/feed.php",
       "avatar": "https://www.chenrui.com/zb_users/upload/2026/01/20260103005431176737287110422.png",
       "description": "记录活着",
-      "updated": "2026-05-22T12:40:27.267Z",
+      "updated": "2026-05-23T07:59:26.565Z",
       "latestItems": [
         {
           "title": "杂记，再看看书",
           "url": "https://www.chenrui.com/post/3492.html",
-          "date": "Wed, 20 May 2026 22:33:34 +0800"
+          "date": "Wed, 20 May 2026 22:33:34 +0800",
+          "summary": "时间或许就像天气，热辣滚烫。洁白的云朵，可以挡住炙热的阳光。 当云朵压过来，便是凉意悠悠，当云朵飘过去，又是烈日当空。上周完成了一期国家培训班，呃，或许这是最后一次办类似的培训班吧，以后即便是有，或许心境也不一样了。有些不舍，恍惚间回到2012年，转眼已经有14个年头。一路走来，"
         },
         {
           "title": "猫与乡野",
           "url": "https://www.chenrui.com/post/3491.html",
-          "date": "Mon, 11 May 2026 06:16:49 +0800"
+          "date": "Mon, 11 May 2026 06:16:49 +0800",
+          "summary": "成都的夏天实锤，昨天热到了31℃，都要吹空调了。几天前，在楼下看到一只小猫咪，软软糯糯，毛绒绒的非常可爱。小猫一边蹦蹦跳跳，一边喵喵喵叫着。看着像一个小孩，对周遭充满好奇与喜悦，探索欲满满。 这时候，在泥瓦工的塑像下面有一只大喵钻了出来，朝向小猫咪的方向，喵喵喵叫着。 这是妈妈呼"
         },
         {
           "title": "生命",
           "url": "https://www.chenrui.com/post/3490.html",
-          "date": "Sun, 26 Apr 2026 07:19:54 +0800"
+          "date": "Sun, 26 Apr 2026 07:19:54 +0800",
+          "summary": "周二去金牛的一家中心学习，返回途中，步行，树旁有人在空地栽种了玉米和青菜。 走进，还有马上就要收获的油菜。土地被分割为一小块一小块的，这是附近居民的阵地。 远处，有火车道。怪不得这里能够有农田，原来在火车道旁边，不过丝毫不影响庄稼的长势。 轰隆隆，绿皮火车驶过来，旁边油菜地间还夹"
         },
         {
           "title": "月是故乡明",
           "url": "https://www.chenrui.com/post/3489.html",
-          "date": "Mon, 06 Apr 2026 19:12:07 +0800"
+          "date": "Mon, 06 Apr 2026 19:12:07 +0800",
+          "summary": "今天遛完车，步行走到犀浦地铁站。途中，经过绕城旁，闻到久违的桐树花香，自然而亲切，一下子给拉回到童年的感觉。你看，这个桐树上开满了花，形似酒壶，所以老家管这个花叫酒壶壶。酒壶壶的尾部有一股甜味儿，嘿嘿，小时候还特别品尝过。等花开过来，便会结出果实，那便是桐呱呱，或许因为这个会呱呱"
         },
         {
           "title": "阴山岩画，千年为证",
           "url": "https://www.chenrui.com/post/3488.html",
-          "date": "Sun, 05 Apr 2026 10:04:39 +0800"
+          "date": "Sun, 05 Apr 2026 10:04:39 +0800",
+          "summary": "巴彦淖尔阴山岩画艺术展在四川美术馆开展，涵盖油画、国画、拓片、岩画原件及仿制品等多个门类。 虽然美术馆看到是艺术家画作上呈现的岩画，但透过纸面，依稀可以窥见阴山下褐色石头旁，正在放牧的古人。 瞧，有羊有牛似乎还有老虎，人，动物，太阳，月亮，世界…… 走在山脚下，石头便会开口说话，"
         }
       ]
     },
@@ -564,32 +641,37 @@
       "feedUrl": "https://hjyl.org/feed",
       "avatar": "https://img.hjyl.org/uploads/2019/10/about-me.png",
       "description": "欢迎来到皇家元林",
-      "updated": "2026-05-22T12:40:28.155Z",
+      "updated": "2026-05-23T07:59:25.750Z",
       "latestItems": [
         {
           "title": "提车",
           "url": "https://hjyl.org/hello-geely/",
-          "date": "Mon, 18 May 2026 13:20:56 +0000"
+          "date": "Mon, 18 May 2026 13:20:56 +0000",
+          "summary": "刚好还有四个小时加班时间，用来调休。今天下午去提车了。我们老板真的很讨厌，钉钉经常已读不回，审批什么的不及时处 [&#8230;]"
         },
         {
           "title": "看车",
           "url": "https://hjyl.org/go-to-ssss/",
-          "date": "Sun, 17 May 2026 09:40:50 +0000"
+          "date": "Sun, 17 May 2026 09:40:50 +0000",
+          "summary": "周一从老家回来，发现我的车空调又不行了。 2018 年之前，当时我还在租房子，在那附近一个修理厂修过一次空调， [&#8230;]"
         },
         {
           "title": "上月工资扣 140",
           "url": "https://hjyl.org/last-month-deduct-140/",
-          "date": "Tue, 12 May 2026 15:41:10 +0000"
+          "date": "Tue, 12 May 2026 15:41:10 +0000",
+          "summary": "版权声明: 本文采用 BY-NC-SA 协议进行授权，如无注明均为原创，转载请注明转自 皇家元林本文链接: 上 [&#8230;]"
         },
         {
           "title": "一个鸡肋的WP插件-发语音",
           "url": "https://hjyl.org/wp-voice-messages/",
-          "date": "Fri, 01 May 2026 13:35:17 +0000"
+          "date": "Fri, 01 May 2026 13:35:17 +0000",
+          "summary": "#WP Voice Messages 这是用 qclaw 造出来的 WordPress 插件，它编程，我测试， [&#8230;]"
         },
         {
           "title": "迁移",
           "url": "https://hjyl.org/migrate-migrate/",
-          "date": "Mon, 20 Apr 2026 04:29:30 +0000"
+          "date": "Mon, 20 Apr 2026 04:29:30 +0000",
+          "summary": "双休无聊，就把耗子面板升级一下，其实上周四晚就试了一下，折腾到第二天早上 2 点都没搞好，早上还得上班就撤回了 [&#8230;]"
         }
       ]
     },
@@ -599,32 +681,37 @@
       "feedUrl": "https://xyzbz.cn/feed",
       "avatar": "https://cn.cravatar.com/avatar/120340d1df519f4e28613fe5d404b286?s=96&d=mp&r=g",
       "description": "互联网爱好者",
-      "updated": "2026-05-22T12:40:29.288Z",
+      "updated": "2026-05-23T07:59:27.238Z",
       "latestItems": [
         {
           "title": "松声｜廿六年·五月中·柳絮飞",
           "url": "https://xyzbz.cn/archives/1534/",
-          "date": "Sun, 17 May 2026 14:54:35 +0800"
+          "date": "Sun, 17 May 2026 14:54:35 +0800",
+          "summary": "婚礼今年难得五一放假，小舅子结婚，ld也专门调休到这几天，大早上的开始满县城拉人，新娘是外地的，父母前一晚来我们县城，小舅子新房和工作都在漯河，酒席是在我们县城办的，大概流程就是，新娘和家人在我..."
         },
         {
           "title": "松声｜廿六年·五一行·信阳游",
           "url": "https://xyzbz.cn/archives/1532/",
-          "date": "Thu, 07 May 2026 14:12:00 +0800"
+          "date": "Thu, 07 May 2026 14:12:00 +0800",
+          "summary": "河边风景今年五一休息，主要原因是小舅子结婚，这个小家庭所有人的假期调度尽可能往这边跟随，工作了这么多年，所处的这个行业，假期休息很多时候是随机的，但是今年不行，这不去得宇宙爆炸。回老家处理一些事..."
         },
         {
           "title": "松声｜廿六年·四月末·春日末",
           "url": "https://xyzbz.cn/archives/1530/",
-          "date": "Thu, 30 Apr 2026 14:48:00 +0800"
+          "date": "Thu, 30 Apr 2026 14:48:00 +0800",
+          "summary": "户外烧烤赶上四月末，趁着一个好天气的周六，约上朋友一起去烧烤，原本三组家庭一起的，最后有一组家里有事实在来不了，大家都是调休才能全家聚到一起的，烧烤还是需要进行的，上午准备东西，中午带着露营行头..."
         },
         {
           "title": "松声｜廿六年·四月中·桐花开",
           "url": "https://xyzbz.cn/archives/1526/",
-          "date": "Thu, 16 Apr 2026 03:28:00 +0800"
+          "date": "Thu, 16 Apr 2026 03:28:00 +0800",
+          "summary": "春天的风景春天多出去转转，感受春天带来一丝万物生长的气息，调节自己疲惫的身心。[photos][/photos][photos][/photos][photos][/photos]定期四季定期景..."
         },
         {
           "title": "Docker部署Cups-Web网页打印机",
           "url": "https://xyzbz.cn/archives/1525/",
-          "date": "Sun, 12 Apr 2026 07:13:00 +0800"
+          "date": "Sun, 12 Apr 2026 07:13:00 +0800",
+          "summary": "始很难遇到的一个不错的打印机项目，毕竟cups单用的话太丑了，配合web端完美正解。有需要可以自部署。项目地址：hanxi/cups-web功能特点：核心功能远程打印：随时随地通过网页上传文件进..."
         }
       ]
     },
@@ -634,32 +721,37 @@
       "feedUrl": "https://hux.ink/index.xml",
       "avatar": "https://weavatar.com/avatar/d44fe4344f5b822fe55c92d04b874cbad2e22babd866c8a462d71afb0e86e9b5?d=letter&letter=%E8%90%BD",
       "description": "欲买桂花同载酒，终不似，少年游",
-      "updated": "2026-05-22T12:40:29.746Z",
+      "updated": "2026-05-23T07:59:29.258Z",
       "latestItems": [
+        {
+          "title": "我的车",
+          "url": "https://hux.ink/posts/%E6%88%91%E7%9A%84%E8%BD%A6/",
+          "date": "Sat, 23 May 2026 14:59:00 +0800",
+          "summary": "五月还没过完，在 A 股这个修罗场，不变的是焦虑和持续的追涨杀跌。 突发奇想，把五月份每日的持仓盈亏换算对应成汽车热销榜上的那些车型，看看分别是提回来或者送出去什么车。把这些折磨心神的数字，变成一张“五月车市对账单”。 交易日期 当日盈亏 (元) 盈亏属性 对应 2026 销量榜"
+        },
         {
           "title": "利息与个税",
           "url": "https://hux.ink/posts/interest-and-tax/",
-          "date": "Wed, 06 May 2026 08:00:00 +0800"
+          "date": "Wed, 06 May 2026 08:00:00 +0800",
+          "summary": "前不久刚做完 2025 年度的个税汇算清缴，退税 4800 元。这笔“意外之财”主要来自两个项目。 第一项是住房贷款利息专项扣除。可能是上一年集中办理降息操作，导致贷款合同号变更，每个月 1000 元的抵扣项目当时没能申报成功，这次一次性退税 2400 元。 第二项是个人养老金缴"
         },
         {
           "title": "早晚拿下大行 P10",
           "url": "https://hux.ink/posts/go-to-buy-dahang-p10/",
-          "date": "Sat, 02 May 2026 22:00:00 +0800"
+          "date": "Sat, 02 May 2026 22:00:00 +0800",
+          "summary": "下午去离家最近的大行线下门店看了一下，离家三公里，其实可以走路或者扫共享单车过去，然后骑新车回来。但是选择了骑小电驴过去，能避免当场“Shut up and take my money”的情况出现。 主要是看 P8 和 P10，我对折叠车不了解，大行好像是绕不过去的牌子。 为什么"
         },
         {
           "title": "童真易满 成人难欢",
           "url": "https://hux.ink/posts/tong-zhen-yi-man/",
-          "date": "Sat, 02 May 2026 10:56:00 +0800"
+          "date": "Sat, 02 May 2026 10:56:00 +0800",
+          "summary": "昨晚读到“招财大屁股”的夜报，其中提到的两个话题，恰好都与我的生活轨迹重合，感触颇深。 其一，是关于双层巴士与孩子的感官红利。 去年 9 月，我和中秋曾连续两天带安安坐遍深圳的四条双层巴士线。每逢到站，他便拉着我直奔二层最前排的“全景座”。那一刻，窗外流动的街景在孩子眼中不是通勤"
         },
         {
           "title": "假期从折腾Obsidian开始",
           "url": "https://hux.ink/posts/obsidian-sync/",
-          "date": "Fri, 01 May 2026 11:05:00 +0800"
-        },
-        {
-          "title": "酒驾被扣车了",
-          "url": "https://hux.ink/posts/cost-of-ebike-dui/",
-          "date": "Sun, 05 Apr 2026 11:02:00 +0800"
+          "date": "Fri, 01 May 2026 11:05:00 +0800",
+          "summary": "五一假期第一天，折腾升级 Obsidian。 我日常 PC 端用 Windows，移动端用 iOS。使用 Obsidian 时，由于苹果的封闭性，PC 与移动端的同步一直是个难题。很早以前我用过 Remotely Save 插件通过 Onedrive 同步，但它不太稳定，经常出 "
         }
       ]
     },
@@ -669,32 +761,37 @@
       "feedUrl": "https://lawtee.com/index.xml",
       "avatar": "https://lawtee.com/images/favicon.png",
       "description": "聚焦法律、科技和生活",
-      "updated": "2026-05-22T12:40:27.475Z",
+      "updated": "2026-05-23T07:59:25.898Z",
       "latestItems": [
         {
           "title": "湖南也应该拍一部自己的《太平年》",
           "url": "https://lawtee.com/article/peaceful-year/",
-          "date": "Wed, 20 May 2026 23:53:03 +0000"
+          "date": "Wed, 20 May 2026 23:53:03 +0000",
+          "summary": "从黄巢山到马楚国，湖南在五代十国走过了一条比吴越更复杂、更悲情的路，历史不该只有赢家的叙事。湖南，值得拍一部自己的《太平年》。"
         },
         {
           "title": "运行一年后，我将飞牛NAS主机降级为全闪存方案",
           "url": "https://lawtee.com/article/flash-nas/",
-          "date": "Wed, 13 May 2026 22:52:13 +0000"
+          "date": "Wed, 13 May 2026 22:52:13 +0000",
+          "summary": "稳定运行飞牛 NAS 一年后，我决定将这台 8 代英特尔小主机由“机械+固态”混搭降级为“全闪存”方案。本文记录了我在实际需求减弱、安全与效率博弈以及数据深度优化后的思考，分享为何决定降级为单 SSD 方案。"
         },
         {
           "title": "如果医生知道你看病时带了摄像头，会发生什么？",
           "url": "https://lawtee.com/article/record-videos-in-hostital/",
-          "date": "Wed, 06 May 2026 19:14:30 +0000"
+          "date": "Wed, 06 May 2026 19:14:30 +0000",
+          "summary": "这篇文章反驳了“患者录像会让医生变‘呆’”的说法。患者录音多因怕记不住，而非找茬；按指南看病不是“呆子行为”，而是为缺乏社会关系的普通人提供确定性，是公平的底线。"
         },
         {
           "title": "工作10多年，第一次获得“奖励”",
           "url": "https://lawtee.com/article/a-prize/",
-          "date": "Tue, 05 May 2026 23:13:29 +0000"
+          "date": "Tue, 05 May 2026 23:13:29 +0000",
+          "summary": "这是一篇关于职业荣誉与人生回溯的感悟。作者分享了工作十几年首获“省级以下奖励”的经历，从评奖的艰难、体制内的职业观察，延伸到对家庭变故及同窗情谊的深情回望，表达了从生计抉择到坚守本业的淡然心境。"
         },
         {
           "title": "台湾人说话，为什么爱用成语收尾还逐字加重？",
           "url": "https://lawtee.com/article/chengyu/",
-          "date": "Wed, 29 Apr 2026 00:53:04 +0000"
+          "date": "Wed, 29 Apr 2026 00:53:04 +0000",
+          "summary": "为什么台湾精英说话总爱用成语收尾，还非要“逐字加重”？从郑丽文在中山陵前的哽咽讲话，到王世坚火遍全网的质询金句，这种“砸地有声”的四字格表达与软糯的台湾腔形成了巨大反差。本文从法律人的专业视角出发，深度剖析这种“法庭结辩式”节奏背后的声学机制、身份宣誓与汉字文化圈的表达差异。在众"
         }
       ]
     },
@@ -704,32 +801,37 @@
       "feedUrl": "https://jiangcl.com/feed",
       "avatar": "https://img.ficor.net/uploads/2025/11/6914480601006.webp",
       "description": "律师",
-      "updated": "2026-05-22T12:40:27.019Z",
+      "updated": "2026-05-23T07:59:25.721Z",
       "latestItems": [
         {
           "title": "二手房屋交易法律服务产品",
           "url": "https://jiangcl.com/4537",
-          "date": "Fri, 22 May 2026 02:49:52 +0000"
+          "date": "Fri, 22 May 2026 02:49:52 +0000",
+          "summary": "二手房屋交易法律服务产品是一项为委托人房屋买卖、租赁、赠与、继承、抵押和拍卖等交易过程中提供法律服务的产品，为 &#8230; 继续阅读 二手房屋交易法律服务产品"
         },
         {
           "title": "从亚洲域名争议裁决角度看域名",
           "url": "https://jiangcl.com/4526",
-          "date": "Wed, 20 May 2026 02:31:00 +0000"
+          "date": "Wed, 20 May 2026 02:31:00 +0000",
+          "summary": "笔者从历史年度案件数、域名类型、投诉人、被投诉人以及裁决结果四个核心维度，对近年来亚洲（侧重中国相关案件）域名 &#8230; 继续阅读 从亚洲域名争议裁决角度看域名"
         },
         {
           "title": "监狱服刑人员法律服务产品",
           "url": "https://jiangcl.com/4530",
-          "date": "Tue, 19 May 2026 04:40:00 +0000"
+          "date": "Tue, 19 May 2026 04:40:00 +0000",
+          "summary": "监狱服刑人员法律服务产品是一项为监狱服刑人员及家属提供法律服务的产品，主要为监狱服刑人员提供诸如民商事代理、监 &#8230; 继续阅读 监狱服刑人员法律服务产品"
         },
         {
           "title": "从中国域名争议裁决角度看域名",
           "url": "https://jiangcl.com/4524",
-          "date": "Mon, 18 May 2026 08:04:42 +0000"
+          "date": "Mon, 18 May 2026 08:04:42 +0000",
+          "summary": "笔者最近阅读了大量的域名争议裁决文书，也把前后近 20 年的域名争议裁决文书做了分析，简单形成了从 4 个角度 &#8230; 继续阅读 从中国域名争议裁决角度看域名"
         },
         {
           "title": "分享一个律师案件归档神器",
           "url": "https://jiangcl.com/4516",
-          "date": "Wed, 06 May 2026 08:21:57 +0000"
+          "date": "Wed, 06 May 2026 08:21:57 +0000",
+          "summary": "不管哪种类型的案件，律师结案后都需要将案件卷宗进行打包归档。除了纸质归档外，越来越多的律所采用电子归档案件卷宗 &#8230; 继续阅读 分享一个律师案件归档神器"
         }
       ]
     },
@@ -739,34 +841,8 @@
       "feedUrl": "https://pewae.com/feed",
       "avatar": "https://pewae.com/wp-content/uploads/cropped-logo-20251231-1-270x270.png",
       "description": "一个脱离不了低级趣味的人",
-      "updated": "2026-05-22T12:40:33.798Z",
-      "latestItems": [
-        {
-          "title": "张屠户必须死",
-          "url": "https://pewae.com/2026/05/many-choises-not-only-cctv.html",
-          "date": "Wed, 13 May 2026 03:51:46 +0000"
-        },
-        {
-          "title": "梦四十八",
-          "url": "https://pewae.com/2026/05/dream_48.html",
-          "date": "Sat, 09 May 2026 10:27:54 +0000"
-        },
-        {
-          "title": "超级马里奥全明星",
-          "url": "https://pewae.com/2026/04/super-mario-all-stars.html",
-          "date": "Wed, 29 Apr 2026 15:28:55 +0000"
-        },
-        {
-          "title": "每夫吐槽（116）",
-          "url": "https://pewae.com/2026/04/random_kuso_116.html",
-          "date": "Tue, 14 Apr 2026 09:09:00 +0000"
-        },
-        {
-          "title": "无人岛物语",
-          "url": "https://pewae.com/2026/03/mujintou-monogatari.html",
-          "date": "Wed, 25 Mar 2026 15:10:13 +0000"
-        }
-      ]
+      "updated": "2026-05-23T07:59:35.219Z",
+      "latestItems": []
     },
     {
       "name": "Keyle's Blog",
@@ -774,32 +850,37 @@
       "feedUrl": "https://vrast.cn/atom.xml",
       "avatar": "https://vrast.cn/favicon.ico",
       "description": "记录一些偶尔冒出来转眼就会忘的灵感",
-      "updated": "2026-05-22T12:40:27.296Z",
+      "updated": "2026-05-23T07:59:26.229Z",
       "latestItems": [
         {
           "title": "南京游记",
           "url": "https://vrast.cn/posts/25560/",
-          "date": "2026-04-13T03:27:44.255Z"
+          "date": "2026-04-13T03:27:44.255Z",
+          "summary": "原计划是去台州的。 仙居的景色早已在脑海中描摹过——群山叠翠，云雾缭绕，想象中该是一幅流动的山水画卷。然而清明节前后的天气预报不太给面子，台州那一带连日有雨，且雨势不小。我和老婆对着手机屏幕上的气象云图商量了一阵，“去南京吧。”这个提议一出，倒都觉得合适。高铁"
         },
         {
           "title": "从老活到小",
           "url": "https://vrast.cn/posts/57404/",
-          "date": "2026-03-16T07:50:32.875Z"
+          "date": "2026-03-16T07:50:32.875Z",
+          "summary": "前段时间和家人聊天，说真羡慕我们家宝宝，上幼儿园不用上班，也不像小学有作业。要是现在还有开办给大人的幼儿园就好了。我笑说，幼儿园的女老师们哄十几个月的宝宝怎么样我不知道，但是哄着几百个月的宝宝肯定手到擒来。 老婆当时白了我一眼：“几百个月的宝宝？那不就是你吗？"
         },
         {
           "title": "一代人有一代人的龙虾要养",
           "url": "https://vrast.cn/posts/61735/",
-          "date": "2026-03-10T03:12:46.940Z"
+          "date": "2026-03-10T03:12:46.940Z",
+          "summary": "这阵子互联网上刮起了一阵龙虾热。 起因是有人搞了个叫 OpenClaw 的开源项目，说白了就是能让你自己搭一个 AI 助手后端，想怎么调就怎么调。这玩意儿本来也没什么，但不知道谁给它起了个名字叫“龙虾”，瞬间就火了。热度从线上很快烧到了线下。 我"
         },
         {
           "title": "在咖啡凉透前救回了博客数据",
           "url": "https://vrast.cn/posts/4541/",
-          "date": "2026-03-09T11:39:13.642Z"
+          "date": "2026-03-09T11:39:13.642Z",
+          "summary": "因为扩容过10GB硬盘，差点被阿里云99元续费资格拒之门外。 收到阿里云服务器到期的短信提醒时，我还在想着这台三年前入手的99元ECS主机不知不觉已经陪我走过三个年头了。登录控制台，找到那台即将到期的实例，熟练地点下续费按钮，结果弹窗没出现，按钮是灰色的，无法"
         },
         {
           "title": "时间的参照物",
           "url": "https://vrast.cn/posts/5103/",
-          "date": "2026-02-24T02:41:26.302Z"
+          "date": "2026-02-24T02:41:26.302Z",
+          "summary": "小时候，我觉得时间过得好慢。 尤其是夏天。烈日当空的下午，教室里老旧的电风扇吱呀吱呀转着，把热风从这头吹到那头。窗外的蝉扯着嗓子喊，一声接一声，像要把整个夏天喊破。我盯着黑板上的粉笔字，老师的嘴巴一张一合，声音却像是从很远的地方飘来的。我偷偷看一眼手腕上的电子"
         }
       ]
     },
@@ -809,32 +890,37 @@
       "feedUrl": "https://d-d.design/feed",
       "avatar": "https://img.ficor.net/uploads/2025/11/6914480601006.webp",
       "description": "做自己，不隨波逐流，不妥協",
-      "updated": "2026-05-22T12:40:28.581Z",
+      "updated": "2026-05-23T07:59:26.077Z",
       "latestItems": [
         {
           "title": "非预期解",
           "url": "https://d-d.design/single/18702",
-          "date": "Sun, 17 May 2026 10:47:51 +0000"
+          "date": "Sun, 17 May 2026 10:47:51 +0000",
+          "summary": "有时候人会突然陷入一种时代性的焦虑，我身边就有一个朋友，前段时间尤其明显。 这种焦虑表面上是因为 AI，但更深层的原因，其实是每一代人都知道，时代红利从来不是永久存在的，它总是阶段性地爆发，然后迅速收>>>>"
         },
         {
           "title": "我是一个自恋的人",
           "url": "https://d-d.design/single/18691",
-          "date": "Sun, 17 May 2026 06:16:16 +0000"
+          "date": "Sun, 17 May 2026 06:16:16 +0000",
+          "summary": "一个月前，我写了首歌，用AI唱了出来。有朋友说：“你把它接入一下，做个用户友好的易用版，丢到市场上收点零花钱。躺赚了不是，深受广大NPD的喜爱。” 我第一次知道有这样一个东西叫NPD（自恋型人格障碍）>>>>"
         },
         {
           "title": "人是可以升维的",
           "url": "https://d-d.design/single/18621",
-          "date": "Wed, 06 May 2026 18:20:42 +0000"
+          "date": "Wed, 06 May 2026 18:20:42 +0000",
+          "summary": "生活是什么？生活本身，其实意味着时间。如果把人生比作电影，那么此刻只是电影中的一帧。而这一帧里所有的像素点，就是当下全部的“我”。所以“我生活在三维世界”这句话，真正的意思或许是：在某一个时间切面中，与“我”有关的一切物质结构，恰好处于这样的排列状态。"
         },
         {
           "title": "再一次来泰国",
           "url": "https://d-d.design/single/18575",
-          "date": "Thu, 30 Apr 2026 05:49:02 +0000"
+          "date": "Thu, 30 Apr 2026 05:49:02 +0000",
+          "summary": "这是第七次来泰国了，感觉上对泰国这个国家已经相对了解。但因为我一直是自由行，没有跟过团，所以也没有体验过很多典型的旅游项目，比如骑大象、人妖表演、各种秀场之类的东西。 但说实话，这些项目本身我就不太感>>>>"
         },
         {
           "title": "香港2026 web3",
           "url": "https://d-d.design/single/18508",
-          "date": "Tue, 28 Apr 2026 10:28:52 +0000"
+          "date": "Tue, 28 Apr 2026 10:28:52 +0000",
+          "summary": "这次来到香港，主要是参加香港区块链活动，给二哥帮帮忙。一到会场，就看到了被堵得水泄不通的二哥，有太多人找二哥合影了。这天是Binance Chain的活动。 Binance提供了自助晚宴，但我还是出去>>>>"
         }
       ]
     },
@@ -844,32 +930,37 @@
       "feedUrl": "https://www.laomuzhu.cn/feed",
       "avatar": "https://www.laomuzhu.cn/img/touxiang.jpg",
       "description": "在字里行间慢慢生长",
-      "updated": "2026-05-22T12:40:29.381Z",
+      "updated": "2026-05-23T07:59:27.218Z",
       "latestItems": [
         {
           "title": "小预算让花开满餐厅",
           "url": "https://www.laomuzhu.cn/283.html",
-          "date": "Mon, 27 Apr 2026 15:15:00 +0800"
+          "date": "Mon, 27 Apr 2026 15:15:00 +0800",
+          "summary": "网上20块钱下单的花花粉玫瑰10枝百合10朵多头康乃馨10枝多头康10枝橙芭比3枝配草"
         },
         {
           "title": "人为什么要熬夜",
           "url": "https://www.laomuzhu.cn/279.html",
-          "date": "Tue, 03 Feb 2026 14:51:00 +0800"
+          "date": "Tue, 03 Feb 2026 14:51:00 +0800",
+          "summary": "人为什么要熬夜因为我的生活是空虚的我为什么不在白天去填补我的空虚而非要熬夜来填补我的空虚呢因为很简单白天的世界是不属于你的如今资本把人卷在生活的齿轮里996 成了常态我又要睡觉 又要工作我没有时..."
         },
         {
           "title": "主材和设备在计价时有什么区别",
           "url": "https://www.laomuzhu.cn/142.html",
-          "date": "Sat, 24 Jan 2026 10:15:00 +0800"
+          "date": "Sat, 24 Jan 2026 10:15:00 +0800",
+          "summary": "问题描述：主材和设备在计价时有什么区别？解决方案：依据《山东省建设工程费用组成及计算规则（2022版）》中“建设工程费用计算程序”中的说明设备费列在规费之后，税金之前，不取规费只取税金而主材会计..."
         },
         {
           "title": "关于平塘吵架记录",
           "url": "https://www.laomuzhu.cn/278.html",
-          "date": "Wed, 21 Jan 2026 11:15:00 +0800"
+          "date": "Wed, 21 Jan 2026 11:15:00 +0800",
+          "summary": "前两天有一个水利项目进入结算阶段出现一个争议招标文件附件中的地勘报告经发包人盖章确认基础持力层均为砾砂层满足设计要求，无需换填处理但承包人进场施工至基底标高时，现场实测发现区域为淤泥层（含垃圾）..."
         },
         {
           "title": "福莱一点通遇到的问题",
           "url": "https://www.laomuzhu.cn/252.html",
-          "date": "Sun, 21 Dec 2025 14:23:00 +0800"
+          "date": "Sun, 21 Dec 2025 14:23:00 +0800",
+          "summary": "1. 为什么改成全费价模式造价会变首先应明确，一个计价文件在切换是否采用全费价模式时，造价数值有变化是正常的 因为全费价是将规费和税金分摊到每条清单的综合单价，而清单的综合单价是保留两位小数也..."
         }
       ]
     },
@@ -879,32 +970,37 @@
       "feedUrl": "https://ihaihe.cn/feed",
       "avatar": "https://ihaihe.cn/wp-content/uploads/2025/03/touxiang.png",
       "description": "扩大自己的自由边界",
-      "updated": "2026-05-22T12:40:27.417Z",
+      "updated": "2026-05-23T07:59:25.444Z",
       "latestItems": [
         {
           "title": "偏见和事实",
           "url": "https://ihaihe.cn/3641.htm",
-          "date": "Fri, 08 May 2026 14:14:35 +0000"
+          "date": "Fri, 08 May 2026 14:14:35 +0000",
+          "summary": "我们已经搬完家了，这次卖房坦白说不大「痛快」，买家是一位老师，在缴了定金和首付后两次后悔想要退款毁约，第一次中介去撮合，她再三犹豫拖到最后一天把首付缴了，第二次因为缴了首付后的第三天，小区出了一套比我便宜6万的房子，她又后悔了，去中介大闹两次，要求退还首付，我自然是不同意的，要求"
         },
         {
           "title": "心烦",
           "url": "https://ihaihe.cn/3637.htm",
-          "date": "Mon, 27 Apr 2026 13:52:47 +0000"
+          "date": "Mon, 27 Apr 2026 13:52:47 +0000",
+          "summary": "​​心情挺不好的，JN的房子卖了，赔大约十几万吧，还有一套也在挂牌出售中，约么着两套加起来赔30万差不多的样子。 卖完房子暂时在新城市租了套房子，坦白说三十多岁，卖掉自己住着的房子，逃离舒适区是需要蛮大勇气的，下午和他吵了一架，租房回来的路上，他抱怨新小区买菜不方便、附近没有商场"
         },
         {
           "title": "高烧",
           "url": "https://ihaihe.cn/3633.htm",
-          "date": "Thu, 23 Apr 2026 10:59:32 +0000"
+          "date": "Thu, 23 Apr 2026 10:59:32 +0000",
+          "summary": "这几天苗姐又高烧了，没挺住，住院了，大约是因为我和x带她去孩子王没戴口罩的缘故吧，那天海洋球池里有一对男宝，奶奶带着，宝宝说「我妈妈说我感冒了，不能上学」他奶奶立马接话说「你哪里感冒了，别乱说」，我看到孩子流着鼻涕，于是抱着苗姐立马走了，结果回来当天就开始低烧，凌晨开始低烧转为高"
         },
         {
           "title": "特斯拉FSD辅助驾驶初体验",
           "url": "https://ihaihe.cn/3619.htm",
-          "date": "Tue, 07 Apr 2026 00:37:49 +0000"
+          "date": "Tue, 07 Apr 2026 00:37:49 +0000",
+          "summary": "月初第一天，特斯拉的FSD被破解了，我也有幸体验到了自动驾驶带来的便捷，说实话我对特斯拉挺不满的，去年7月购车时，销售告诉我FSD俩月内肯定推送，斩钉截铁丝毫没有犹豫的那种，于是我在提车时就买了FSD，可以说是花了「一笔巨款」，为了能以后带苗姐出去玩轻松点。 后来我和x带着苗姐去"
         },
         {
           "title": "房子卖出去了",
           "url": "https://ihaihe.cn/3602.htm",
-          "date": "Wed, 01 Apr 2026 13:14:50 +0000"
+          "date": "Wed, 01 Apr 2026 13:14:50 +0000",
+          "summary": "没想到卖的这么快，买家是这边残疾人学校的老师，31岁未婚，因为暂时不考虑结婚生子，所以对学区要求不高，这也正好契合我这套房子的缺点，她从三天前第一次来看房，到今天签合同，前后一共三天，三天看了三次，价格在我的底价上让了1万出手，她给我的第一口价和我的底价相差了7万，当场我直接脸黑"
         }
       ]
     },
@@ -914,32 +1010,37 @@
       "feedUrl": "https://note.redcha.cn/rss.xml",
       "avatar": "https://note.redcha.cn/upload/favicon-256x256.png",
       "description": "生活原本沉闷，但跑起来就有风",
-      "updated": "2026-05-22T12:40:28.060Z",
+      "updated": "2026-05-23T07:59:25.824Z",
       "latestItems": [
         {
           "title": "服务器“炸毁”😭😡无地自容",
           "url": "https://note.redcha.cn/archives/fu-wu-qi-zha-hui-wu-di-zi-rong",
-          "date": "Sun, 22 Mar 2026 08:14:01 GMT"
+          "date": "Sun, 22 Mar 2026 08:14:01 GMT",
+          "summary": "起因 我一共有2台服务器，除了彬红茶日记和附属api接口，其余大部分站点部署在另一条服务器 然后在上周，我在上学期间，其中一台服务器的服务商突然公布，请在3天内联系客服人工迁移。因为服务器要硬件升级，IP转移 那我肯定是看不到的嘛，而且3天时间给🐶迁移呢？哪有3天时间这么短的，"
         },
         {
           "title": "南沙行迹：天后宫与明珠湾大桥的诗意邂逅",
           "url": "https://note.redcha.cn/archives/nan-sha-xing-ji-tian-hou-gong-yu-ming-zhu-wan-da-qiao-de-shi-yi-xie-hou",
-          "date": "Sat, 13 Sep 2025 14:16:00 GMT"
+          "date": "Sat, 13 Sep 2025 14:16:00 GMT",
+          "summary": "阳光正好，风也温柔，我踏上了南沙这片满溢魅力的土地，奔赴一场与天后宫、明珠湾大桥的浪漫约会，去聆听历史与现代交织的絮语。 天后宫：古韵悠悠，山海含情"
         },
         {
           "title": "初三再军训 魂已没",
           "url": "https://note.redcha.cn/archives/chu-san-zai-jun-xun-hun-yi-mei",
-          "date": "Sat, 13 Sep 2025 13:59:00 GMT"
+          "date": "Sat, 13 Sep 2025 13:59:00 GMT",
+          "summary": "本文章已重置 前言 非常的好奇问大家有没有过初三军训，反正听说广州市就个别学校初三开学要军训，我们学校非常幸运，就是要军训！ 初三军训一共要持续三天。。。话说刚入初一，军训完七天，现在就来修炼三天🤣 第一天？ 首先就是我们要起的特别早，按照逻辑来说，早读是7:15开始，我们6:"
         },
         {
           "title": "回味我的理想“世界”里",
           "url": "https://note.redcha.cn/archives/hui-wei-wo-de-li-xiang-shi-jie-li",
-          "date": "Sun, 7 Sep 2025 10:43:00 GMT"
+          "date": "Sun, 7 Sep 2025 10:43:00 GMT",
+          "summary": "回忆 这是一张我的世界Java1.18.2的地图，也有小学的同学和我在里面一起玩，建了很多机械动力的工程东西，还搭建了铁路，还搞了模拟殖民地模拟自己是市长的游戏管理(模拟市长，这个东西很好玩的) 由于上了初中，大家各分东西，这张地图已经尘封未动，很久没打开了 今天就来重启一下 启"
         },
         {
           "title": "西关十二时辰：从西关到夜阑的古粤风华",
           "url": "https://note.redcha.cn/archives/xi-guan-shi-er-shi-chen-cong-xi-guan-dao-ye-lan-de-gu-yue-feng-hua",
-          "date": "Fri, 22 Aug 2025 14:06:00 GMT"
+          "date": "Fri, 22 Aug 2025 14:06:00 GMT",
+          "summary": "[卯时·陈家祠·仪门惊鸿] 晨雾尚未散尽，陈家祠的三进三路建筑群已在微光中显露出轮廓。推开厚重的朱漆大门，门簪上“陈氏书院”四个篆书大字带着晨露的湿润，门枕石上的“胡人献宝”石雕正被第一缕阳光照亮——深褐色的花岗岩上，卷发胡商的袍角褶皱里还藏着明代青花瓷的纹样。 （图片丢失） 穿"
         }
       ]
     },
@@ -949,32 +1050,37 @@
       "feedUrl": "https://zhongxiaojie.com/feed",
       "avatar": "https://gg.lang.bi/avatar/d6ebc088df916bcc9e8b94a09f9b0f604e57be54b04bd520c6db2492740fc563?s=90&d=identicon&r=r",
       "description": "黑客程序媛",
-      "updated": "2026-05-22T12:40:35.296Z",
+      "updated": "2026-05-23T07:59:33.494Z",
       "latestItems": [
         {
           "title": "520，521",
           "url": "https://zhongxiaojie.cn/2026/05/1287/",
-          "date": "Thu, 21 May 2026 02:23:59 +0000"
+          "date": "Thu, 21 May 2026 02:23:59 +0000",
+          "summary": "有时候不得不佩服谐音的造物能力，这原本平平无奇的两天在某一天就忽然变成了节日。最近几天在忙着发布闺蜜圈新版本， [&#8230;]"
         },
         {
           "title": "闺蜜圈 [v 5.1.88]",
           "url": "https://zhongxiaojie.cn/2026/05/1275/",
-          "date": "Mon, 18 May 2026 03:09:19 +0000"
+          "date": "Mon, 18 May 2026 03:09:19 +0000",
+          "summary": "更简单更好用的大姨妈记录app：https://guimiquan.cn 更新记录： 5.1.88 数字版本号 [&#8230;]"
         },
         {
           "title": "UniAdmin Invalid uni-id config file",
           "url": "https://zhongxiaojie.cn/2026/05/1268/",
-          "date": "Fri, 15 May 2026 07:56:17 +0000"
+          "date": "Fri, 15 May 2026 07:56:17 +0000",
+          "summary": "上次更新闺蜜圈还是很久之前的事情，最近也确实没顾上自己的这个曾经倾注了无数心血的app。前段时间，申请了华为的 [&#8230;]"
         },
         {
           "title": "人工服务",
           "url": "https://zhongxiaojie.cn/2026/05/1258/",
-          "date": "Thu, 14 May 2026 07:02:25 +0000"
+          "date": "Thu, 14 May 2026 07:02:25 +0000",
+          "summary": "多数时候，我并不喜欢去为了那点小恩小惠去折腾一些事情。主要感觉付出的精力与得到的东西相比，那些东西完全没什么性 [&#8230;]"
         },
         {
           "title": "体检以及其他",
           "url": "https://zhongxiaojie.cn/2026/05/1244/",
-          "date": "Tue, 12 May 2026 07:23:58 +0000"
+          "date": "Tue, 12 May 2026 07:23:58 +0000",
+          "summary": "2026年的体检，比25年来的晚了一些，差不多正好一个月的时间。这种体检，感觉总是有些敷衍，感觉查了很多项目， [&#8230;]"
         }
       ]
     },
@@ -984,32 +1090,37 @@
       "feedUrl": "https://www.pipishe.com/feed",
       "avatar": "https://www.pipishe.com/tx.webp",
       "description": "皮一下~很开心",
-      "updated": "2026-05-22T12:40:28.041Z",
+      "updated": "2026-05-23T07:59:25.449Z",
       "latestItems": [
         {
           "title": "你们手机有这个功能吗？怪好玩的！",
           "url": "https://www.pipishe.com/archives/416/",
-          "date": "Wed, 20 May 2026 23:01:00 +0800"
+          "date": "Wed, 20 May 2026 23:01:00 +0800",
+          "summary": "首先获取到一张美女图然后编辑，选取扩图。再然后就能看到胳膊和腿了。再再然后我试了下手机自带AI与豆包的对比，给这位小姐姐换了一辆坐骑！上图是手机自带AI生成的。这张图是豆包生成的！经过两图的对比..."
         },
         {
           "title": "国产浏览器真恶心🤢人！",
           "url": "https://www.pipishe.com/archives/409/",
-          "date": "Tue, 19 May 2026 17:52:00 +0800"
+          "date": "Tue, 19 May 2026 17:52:00 +0800",
+          "summary": "说真的，现在不管是手机还是PC，国内的浏览器实在太不好用了，到处都是广告弹窗，还乱推新闻短视频，乱七八糟功能特别多，越用越卡。打开网页还容易乱排版，有时候页面显示还不正常，对于追求细节的我来说，..."
         },
         {
           "title": "拍了只鸟！",
           "url": "https://www.pipishe.com/archives/406/",
-          "date": "Mon, 18 May 2026 21:45:00 +0800"
+          "date": "Mon, 18 May 2026 21:45:00 +0800",
+          "summary": "看样子右边的那只是母的！好像是男朋友没找到食物给它，生气了。"
         },
         {
           "title": "几年不见你还是那样明艳动人~",
           "url": "https://www.pipishe.com/archives/403/",
-          "date": "Mon, 18 May 2026 15:01:00 +0800"
+          "date": "Mon, 18 May 2026 15:01:00 +0800",
+          "summary": "李莫愁武功绝顶性情刚烈，杨过这般又搂又抱竟毫发无伤，他也是全剧唯一一个敢这般亲近赤练仙子的人，旁人谁敢如此胆大妄为！ ..."
         },
         {
           "title": "没错，我当官了！😑",
           "url": "https://www.pipishe.com/archives/390/",
-          "date": "Fri, 15 May 2026 18:31:00 +0800"
+          "date": "Fri, 15 May 2026 18:31:00 +0800",
+          "summary": "这火气有点大啊，要是冬天的话可以烤烤火，顺便烤个地瓜。产品出现问题，密封性没做到位。浇筑时跑出来了，负责这个产品的同事估计明天要挨骂了！混了一年半载，升级了！混入组长群了。嘿嘿(^▽^)，工资也..."
         }
       ]
     },
@@ -1019,32 +1130,37 @@
       "feedUrl": "https://veryjack.com/feed",
       "avatar": "https://veryjack.com/wp-content/uploads/2025/05/avatar_transparent.webp",
       "description": "Everything happens for the best",
-      "updated": "2026-05-22T12:40:29.123Z",
+      "updated": "2026-05-23T07:59:27.013Z",
       "latestItems": [
         {
           "title": "是时候，走出象牙塔了",
           "url": "https://veryjack.com/life/step_out_of_comfort_zone/",
-          "date": "Sat, 28 Mar 2026 11:01:42 +0000"
+          "date": "Sat, 28 Mar 2026 11:01:42 +0000",
+          "summary": "博客已经有很长一段时间没有更新了。这段时间，我正处于人生的十字路口，内心充满了迷茫与焦虑。我不清楚是该拿着手里的一把烂牌继续为所谓的理想死磕，还是该妥协让步，换一条赛道。在纠结了一个多月后，我终于做出决定：迈入人生的下一阶段，走出这个我待了十多年的“象牙塔”。 是时候，走出象牙塔"
         },
         {
           "title": "一款自用三年的“小众”记账 App —— Cookie 记账",
           "url": "https://veryjack.com/technique/cookie/",
-          "date": "Thu, 19 Feb 2026 14:54:27 +0000"
+          "date": "Thu, 19 Feb 2026 14:54:27 +0000",
+          "summary": "1099 天，3324 笔记账，这是我使用 「Cookie 记账」这款 App 以来的数据。在此之前，我用过的记账软件没有一个能撑过一个月——要么操作太复杂，要么界面太花哨，或是隐私安全不够有保障。 趁着过年期间这款 App 推出了打折活动，跟大家分享一下我推荐它的理由。 一款自"
         },
         {
           "title": "7 刀 VPS 照样玩转 Clawdbot (Moltbot)",
           "url": "https://veryjack.com/technique/clawdbot_moltbot/",
-          "date": "Wed, 28 Jan 2026 15:16:52 +0000"
+          "date": "Wed, 28 Jan 2026 15:16:52 +0000",
+          "summary": "虽然 clawdbot 听上去很高大上，但配置其实非常简单。我使用一台年费不到 7 刀、配置相当“辣鸡”的 VPS（仅 1 vCPU, 2G RAM）也能部署成功。这篇文章就来分享一下这个极简的部署教程。 7 刀 VPS 照样玩转 Clawdbot (Moltbot) 最先出现在"
         },
         {
           "title": "COC 跑团初体验",
           "url": "https://veryjack.com/life/coc_trpg/",
-          "date": "Sun, 25 Jan 2026 12:42:31 +0000"
+          "date": "Sun, 25 Jan 2026 12:42:31 +0000",
+          "summary": "上周末，我和几位好友相约桌游店，终于体验了那场“传说中”的 COC 跑团。 在主持人的引导下，我们凭借“对话”与“想象力”，共同完成了一段既惊心动魄又带点“莫名其妙”的角色扮演冒险。今天，想和大家分享一下我的跑团初体验。 COC 跑团初体验 最先出现在 Jack&#039;s S"
         },
         {
           "title": "AI翻译这么强，我为什么还在学英语？",
           "url": "https://veryjack.com/study/how_to_learn_english_with_ai/",
-          "date": "Tue, 13 Jan 2026 11:00:00 +0000"
+          "date": "Tue, 13 Jan 2026 11:00:00 +0000",
+          "summary": "AI 发展日新月异，一夜之间，同声传译的工作似乎快被 AI 所取代。与此同时，我也开始思考，随着 AI 翻译越来越好用，英文学习是否已经成为过去式？我们多年的心血是否打了水漂？ AI翻译这么强，我为什么还在学英语？ 最先出现在 Jack&#039;s Space 。"
         }
       ]
     },
@@ -1054,32 +1170,37 @@
       "feedUrl": "https://yayu.net/feed",
       "avatar": "https://yayu.net/wp-content/themes/yayu/assets/images/icon.png",
       "description": "茶余饭后，闲情雅致",
-      "updated": "2026-05-22T12:40:28.373Z",
+      "updated": "2026-05-23T07:59:25.846Z",
       "latestItems": [
         {
           "title": "动物朋友",
           "url": "https://yayu.net/6218.html",
-          "date": "Thu, 30 Apr 2026 14:13:22 +0000"
+          "date": "Thu, 30 Apr 2026 14:13:22 +0000",
+          "summary": "萌宠乐园～ 和动物朋友亲密接触。 By 徕卡 D-LUX8"
         },
         {
           "title": "黑白练习",
           "url": "https://yayu.net/6213.html",
-          "date": "Sun, 29 Mar 2026 12:34:37 +0000"
+          "date": "Sun, 29 Mar 2026 12:34:37 +0000",
+          "summary": "好一段时间没拍，生怕生疏了，午休的间隙做个练习。断更的50余天里，很忙。春节返工后就一直忙碌，忙工作，忙生活，所幸忙碌并快乐着。愿诸位一切安好！"
         },
         {
           "title": "访澳门国父纪念馆",
           "url": "https://yayu.net/6192.html",
-          "date": "Tue, 03 Feb 2026 13:00:41 +0000"
+          "date": "Tue, 03 Feb 2026 13:00:41 +0000",
+          "summary": "澳门国父纪念馆，顾名思义是纪念中国近代民族民主主义革命的开拓者，中国民主革命伟大先行者，中华民国和中国国民党缔 [&#8230;]"
         },
         {
           "title": "澳门东望洋炮台与大炮台",
           "url": "https://yayu.net/6171.html",
-          "date": "Wed, 28 Jan 2026 14:10:57 +0000"
+          "date": "Wed, 28 Jan 2026 14:10:57 +0000",
+          "summary": "在澳门街头游走，走街串巷，还经过了两个重要的历史遗迹和重要景点，东望洋炮台和大炮台。 东望洋炮台（葡萄牙语：F [&#8230;]"
         },
         {
           "title": "日常漫步 Vol.23 之澳门街头",
           "url": "https://yayu.net/6158.html",
-          "date": "Sat, 24 Jan 2026 12:38:57 +0000"
+          "date": "Sat, 24 Jan 2026 12:38:57 +0000",
+          "summary": "澳门走街串巷续集。 By 理光 GR3，怀旧风格滤镜"
         }
       ]
     },
@@ -1089,34 +1210,8 @@
       "feedUrl": "https://bestcherish.com/feed",
       "avatar": "https://bestcherish.com/image/favicon.svg",
       "description": "记录生活 珍藏回忆",
-      "updated": "2026-05-22T12:40:28.339Z",
-      "latestItems": [
-        {
-          "title": "依然浮躁",
-          "url": "https://bestcherish.com/9646.html",
-          "date": "Fri, 08 May 2026 16:05:04 +0000"
-        },
-        {
-          "title": "更新Linux",
-          "url": "https://bestcherish.com/9645.html",
-          "date": "Sun, 05 Apr 2026 03:29:15 +0000"
-        },
-        {
-          "title": "正月初六",
-          "url": "https://bestcherish.com/9643.html",
-          "date": "Sat, 21 Feb 2026 15:50:48 +0000"
-        },
-        {
-          "title": "年底了最后一次折腾",
-          "url": "https://bestcherish.com/9642.html",
-          "date": "Sat, 14 Feb 2026 23:00:38 +0000"
-        },
-        {
-          "title": "闹心的vps",
-          "url": "https://bestcherish.com/9641.html",
-          "date": "Fri, 30 Jan 2026 15:52:52 +0000"
-        }
-      ]
+      "updated": "2026-05-23T07:59:26.742Z",
+      "latestItems": []
     },
     {
       "name": "韩情脉脉",
@@ -1124,32 +1219,37 @@
       "feedUrl": "https://www.hxy.cc/feed",
       "avatar": "https://www.hxy.cc/ico.png",
       "description": "任何记录都是为了让以后有迹可循",
-      "updated": "2026-05-22T12:40:34.642Z",
+      "updated": "2026-05-23T07:59:32.179Z",
       "latestItems": [
         {
           "title": "我的宝宝三岁啦",
           "url": "https://hxy.cc/xixi3sui.html",
-          "date": "Mon, 11 May 2026 21:18:00 +0800"
+          "date": "Mon, 11 May 2026 21:18:00 +0800",
+          "summary": "To浠浠： 时光悄悄溜走，今天是农历三月二十五，我的小丫头一晃就三岁了，可可爱爱，跌跌撞撞不知不觉就长大了，从蹒跚学步到现在自由自在的奔跑玩耍，从懵懂无知到懂得思考，懂得依赖，三年的时间，说长不..."
         },
         {
           "title": "再也不相信所谓的长期服务了",
           "url": "https://hxy.cc/yunpcguoqi.html",
-          "date": "Sun, 10 May 2026 21:28:27 +0800"
+          "date": "Sun, 10 May 2026 21:28:27 +0800",
+          "summary": "前几天鸡圈无疑发生了一次大地震，大名鼎鼎糊弟云润到跑路了，卖的服务器主打一个低价长期，各种永久机，才要几百块钱就能入手一台永久机，在大厂花一个月的钱能在他们那买一年甚至三年，巧了，大部分人就吃..."
         },
         {
           "title": "五一假期返乡路",
           "url": "https://hxy.cc/2651.html",
-          "date": "Fri, 01 May 2026 13:15:00 +0800"
+          "date": "Fri, 01 May 2026 13:15:00 +0800",
+          "summary": "期待已久的五一假期终于到了，上午把手头着急的工作赶紧处理掉，下午没去公司，中午吃完饭就赶紧出去去买东西了，媳妇昨天就安排好回去要给她带好吃的，直接列了个清单过来，有需求就好说，让我猜着买那才真..."
         },
         {
           "title": "难熬的工作日常，风雨之后有彩虹吗",
           "url": "https://hxy.cc/nanao.html",
-          "date": "Sat, 25 Apr 2026 21:55:43 +0800"
+          "date": "Sat, 25 Apr 2026 21:55:43 +0800",
+          "summary": "最近两周实在是过得煎熬，月初假期之后连续几天阴雨连绵，9号上午，我的同事S突然给我发个消息说，我接下来可能要更忙了，然后就发过来几张在医院的检查单，说是由于下雨，在楼梯上摔倒了，导致脚踝两侧两..."
         },
         {
           "title": "清明假期收尾碎碎念",
           "url": "https://hxy.cc/26qingming.html",
-          "date": "Mon, 06 Apr 2026 16:10:50 +0800"
+          "date": "Mon, 06 Apr 2026 16:10:50 +0800",
+          "summary": "三天清明假期一晃就结束啦！算算日子，上班还不到一个月，再过没几天又盼来五一假期，节奏还挺舒服。这三天懒得来回折腾回老家，就在合肥安安静静待着放松。周五晚上窝着刷李世鑫的短剧，一看就停不下来，直接..."
         }
       ]
     },
@@ -1159,32 +1259,37 @@
       "feedUrl": "https://ilogs.cn/feed",
       "avatar": "https://img.ficor.net/uploads/2025/11/6914480601006.webp",
       "description": "记录生活中的平凡事",
-      "updated": "2026-05-22T12:40:28.815Z",
+      "updated": "2026-05-23T07:59:26.238Z",
       "latestItems": [
         {
           "title": "地震+吃酒席",
           "url": "https://ilogs.cn/2026/05/02/380.html",
-          "date": "Fri, 01 May 2026 23:26:00 GMT"
+          "date": "Fri, 01 May 2026 23:26:00 GMT",
+          "summary": "昨天早上八点醒来，手机收到一条地震预警消息。点开一看，提示长江对岸的监利市发生4级地震。我立刻在各大平台搜索监利地震的相关信息，看到都说只是轻微震动，没有造成任何影响。 &nbsp;我离震中大概三十公里，全程完全没有感觉到晃动。我向来睡眠质量很好，这种轻微的震动根本吵不醒我。 &"
         },
         {
           "title": "杂记之修剪树枝+新沙滩地点打卡",
           "url": "https://ilogs.cn/2026/04/29/379.html",
-          "date": "Wed, 29 Apr 2026 03:33:00 GMT"
+          "date": "Wed, 29 Apr 2026 03:33:00 GMT",
+          "summary": "又..."
         },
         {
           "title": "开发奶茶店收银系统",
           "url": "https://ilogs.cn/2026/04/26/378.html",
-          "date": "Sun, 26 Apr 2026 00:11:00 GMT"
+          "date": "Sun, 26 Apr 2026 00:11:00 GMT",
+          "summary": "最近一直在研究收银系统。今年老婆的奶茶店生意一路下滑，加盟总部也拿不出有效的经营方案，不仅供货物料价格比市面零售价更高，品牌本身还没什么知名度，竞争力特别弱。尤其是公司那个收银系统一年就是1000块..."
         },
         {
           "title": "三月三",
           "url": "https://ilogs.cn/2026/04/19/377.html",
-          "date": "Sun, 19 Apr 2026 02:43:00 GMT"
+          "date": "Sun, 19 Apr 2026 02:43:00 GMT",
+          "summary": "<p..."
         },
         {
           "title": "十里桃花山",
           "url": "https://ilogs.cn/2026/04/15/376.html",
-          "date": "Wed, 15 Apr 2026 00:19:00 GMT"
+          "date": "Wed, 15 Apr 2026 00:19:00 GMT",
+          "summary": "去了一趟客户家，上一次去还是去年夏天。没事路上拍了一些照片，不过不会拍，胡乱的一顿咔咔拍。 &nbsp; 刚出发又开始下雨<img src=\"https://ilogs.cn/usr/uploads..."
         }
       ]
     },
@@ -1194,32 +1299,37 @@
       "feedUrl": "https://heitaosan.com/feed",
       "avatar": "https://cn.cravatar.com/avatar/afcb21221b3785f83e89cb3c63ed4020",
       "description": "有梦想的人，永远年轻",
-      "updated": "2026-05-22T12:40:28.229Z",
+      "updated": "2026-05-23T07:59:25.791Z",
       "latestItems": [
         {
           "title": "从来不发朋友圈的人是什么心理？",
           "url": "https://heitaosan.com/article/232",
-          "date": "Sun, 28 Dec 2025 19:30:00 +0800"
+          "date": "Sun, 28 Dec 2025 19:30:00 +0800",
+          "summary": "你肯定认识这种人，微信好友加了好几年，点进去就是一条横线，空空如也。你甚至怀疑他是不是把你屏蔽了，换个小号去看，还是什么都没有。这种人，在你的通讯录里可能占了一大半。他们不是没有生活，不是社恐，..."
         },
         {
           "title": "“噼里啪啦”那是干燥的聚酯纤维摩擦的声音",
           "url": "https://heitaosan.com/article/230",
-          "date": "Sun, 21 Dec 2025 10:34:00 +0800"
+          "date": "Sun, 21 Dec 2025 10:34:00 +0800",
+          "summary": "网上一直有种流行的说法：冬天是贫富差距最明显的季节。因为富人穿羊绒皮草，穷人只能穿聚酯纤维。"
         },
         {
           "title": "白嫖两个腾讯云EdgeOne长期免费套餐",
           "url": "https://heitaosan.com/article/229",
-          "date": "Tue, 16 Dec 2025 10:45:00 +0800"
+          "date": "Tue, 16 Dec 2025 10:45:00 +0800",
+          "summary": "实测有效！轻松搞定两个永久免费套餐。"
         },
         {
           "title": "Typecho频繁更换主题后，如何清理无用的自定义字段？",
           "url": "https://heitaosan.com/article/228",
-          "date": "Mon, 15 Dec 2025 09:49:00 +0800"
+          "date": "Mon, 15 Dec 2025 09:49:00 +0800",
+          "summary": "Typecho的自定义字段功能强大，但频繁切换主题会导致数据库中堆积大量废弃字段。强迫症每次看到文章编辑窗口下面这些字段属实难受。"
         },
         {
           "title": "把博客收拾了一下 重装系统升级运行环境",
           "url": "https://heitaosan.com/article/226",
-          "date": "Sat, 13 Dec 2025 10:46:00 +0800"
+          "date": "Sat, 13 Dec 2025 10:46:00 +0800",
+          "summary": "终于有耐心把博客倒腾一下了，看了下记录 从2022年1月7日把博客从ucloud迁到腾讯云后就没动过，三天前的晚上突然决定要把主机系统和运行环境升级一下。"
         }
       ]
     },
@@ -1229,7 +1339,7 @@
       "feedUrl": "https://amrx.me/feed",
       "avatar": "https://thirdqq.qlogo.cn/g?b=qq&nk=160860446&s=100",
       "description": "网页中的诗意与宁静",
-      "updated": "2026-05-22T12:40:27.507Z",
+      "updated": "2026-05-23T07:59:25.234Z",
       "latestItems": []
     },
     {
@@ -1238,32 +1348,37 @@
       "feedUrl": "https://note-star.cn/feed",
       "avatar": "https://note-star.cn/shortcut/logo.ico",
       "description": "网页中的诗意与宁静",
-      "updated": "2026-05-22T12:40:27.961Z",
+      "updated": "2026-05-23T07:59:25.621Z",
       "latestItems": [
+        {
+          "title": "周六星巴克",
+          "url": "https://note-star.cn/2026-05/2328.html",
+          "date": "Sat, 23 May 2026 06:41:37 GMT",
+          "summary": "终于到周末了。好久没来星巴克了，之前基本隔 2，3 天就来一次，这个星期因为经常下雨，加上工作忙得有点累，回到家就想躺着。周五晚上我就很期待第二天早上来星巴克。这个周末比较轻松，因为公司的项目做了一个阶段了，目前还比较顺利，这个周末自然就更轻松了。搭起金属架子。新买的平板电脑支架"
+        },
         {
           "title": "说说",
           "url": "https://note-star.cn/2026-05/2327.html",
-          "date": "Thu, 21 May 2026 04:14:41 GMT"
+          "date": "Thu, 21 May 2026 04:14:41 GMT",
+          "summary": "儿子很喜欢找人下棋。昨晚又陪他下了几盘，跳棋这孩子太会玩了，每盘都是大幅度战胜我，我一直抓不到这个棋的规律，他倒是认识很深。到了下五子棋，他就输得多了，他老是看不出我的斜线的连子。好有趣，每个人都有自己的擅长和不擅长，可能差别较大，尽管两个人是父子。昨晚还陪他下了蛇棋。因为下雨，"
         },
         {
           "title": "小钱不断花",
           "url": "https://note-star.cn/2026-05/2326.html",
-          "date": "Tue, 19 May 2026 13:36:34 GMT"
+          "date": "Tue, 19 May 2026 13:36:34 GMT",
+          "summary": "下班在班车上，坐车时间有点长，无聊刷刷抖音。过了一阵子连抖音都刷腻了之后，就开始折腾手机上的 app。我比较喜欢打开淘宝 app 买零食，这种十来二十块钱块钱的零食，一次买 2，3 件，心情可以稍微放松放松。每天上班这么辛苦，下班不花点小钱犒劳下自己，会觉得生活没过好。淘宝买了一"
         },
         {
           "title": "3 楼练球",
           "url": "https://note-star.cn/2026-05/2325.html",
-          "date": "Tue, 19 May 2026 04:33:41 GMT"
+          "date": "Tue, 19 May 2026 04:33:41 GMT",
+          "summary": "股市一直跌，心里没了生活上的寄托，就转移到篮球上吧，正好最近篮球技术有进步。天气不好，外面打风下雨，无法去室外篮球场打了，就想到了去我们楼层的 3 楼平台那打。这是我们这栋楼的一个公共平层，室内空间还蛮大的，可以打篮球。因为没有篮球架，所以只能原地练运球。还好，我正要练习的就是运"
         },
         {
           "title": "海边练球",
           "url": "https://note-star.cn/2026-05/2324.html",
-          "date": "Sun, 17 May 2026 09:00:51 GMT"
-        },
-        {
-          "title": "简笔记开发了投票功能",
-          "url": "https://note-star.cn/2026-05/2323.html",
-          "date": "Sun, 17 May 2026 05:18:00 GMT"
+          "date": "Sun, 17 May 2026 09:00:51 GMT",
+          "summary": "周六海边练球。昨天下午好早就离开了星巴克，回家换球服打球去。下午天气阴天加下雨，晚些时还好地面差不多都干了。篮球场只有一点点积水，不是太影响。海边球场的风很大，是打风的天气，游客也不多，估计是怕中途下雨所以少出门了。球场没其他人打球，整片球场都是我独占了。开始练球。我主要想练背后"
         }
       ]
     },
@@ -1273,32 +1388,37 @@
       "feedUrl": "https://hisherry.com/feed",
       "avatar": "https://cravatar.cn/avatar/c822f896a44080703a0845eb6a1ead02d72859e9e0273df32806698db9516512?s=42&r=g",
       "description": "别为活命而败坏生存之根",
-      "updated": "2026-05-22T12:40:30.282Z",
+      "updated": "2026-05-23T07:59:28.577Z",
       "latestItems": [
         {
           "title": "碎碎念2026D141",
           "url": "https://hisherry.com/%e5%8a%a0%e5%9b%bd%e7%94%9f%e6%b4%bb/4981/",
-          "date": "Thu, 21 May 2026 14:33:41 +0000"
+          "date": "Thu, 21 May 2026 14:33:41 +0000",
+          "summary": "首先，在遇到困难的时候，家人我是说爸妈，是最可依赖的人。其他的不是跟你谈钱，就是跟你谈钱，而我最不想谈的就是钱。 其次，有些关系会卡在最顶峰的时候，主动的断崖式失联，会让这段关系看起来被打上一层玫瑰金色的光，显得格外美，但可能将它拉到现实里 &#8230;"
         },
         {
           "title": "包法利夫人的悲剧",
           "url": "https://hisherry.com/iread/4974/",
-          "date": "Thu, 23 Apr 2026 01:11:38 +0000"
+          "date": "Thu, 23 Apr 2026 01:11:38 +0000",
+          "summary": "虽然在备考，也是抽空读完了«包法利夫人»。 包法利夫人，闺名爱玛，是个从小失去母亲，在修道院长大，后来离开修道院回到农村和父亲一起生活。后来她结识了夏尔，就是包法利先生。 她的两段婚外恋情，充斥禁忌之恋特有的张力，让她欲罢不能。她渴望一种真 &#8230;"
         },
         {
           "title": "碎碎念2026D96",
           "url": "https://hisherry.com/%e5%8a%a0%e5%9b%bd%e7%94%9f%e6%b4%bb/4967/",
-          "date": "Tue, 07 Apr 2026 19:28:29 +0000"
+          "date": "Tue, 07 Apr 2026 19:28:29 +0000",
+          "summary": "我想说什么来着…… 不重要了，就酱。"
         },
         {
           "title": "欧文再婚了",
           "url": "https://hisherry.com/iramblings/4962/",
-          "date": "Wed, 01 Apr 2026 15:29:41 +0000"
+          "date": "Wed, 01 Apr 2026 15:29:41 +0000",
+          "summary": "好吧，在他媳妇走了5年以后，他找到的新的人，我想她也是乐见其成的，垂垂老矣的人也需要彼此照顾。 但是——这个消息我需要慢慢消化一下。 欧文·亚龙，对就是他了。"
         },
         {
           "title": "密码保护：桃林镇（2）",
           "url": "https://hisherry.com/storytime/4959/",
-          "date": "Sat, 28 Mar 2026 23:16:30 +0000"
+          "date": "Sat, 28 Mar 2026 23:16:30 +0000",
+          "summary": "无法提供摘要。这是一篇受保护的文章。"
         }
       ]
     },
@@ -1308,32 +1428,37 @@
       "feedUrl": "https://www.hollowman.cn/feed",
       "avatar": "https://www.hollowman.cn/favicon.png",
       "description": "看清生活的真相后依然热爱生活",
-      "updated": "2026-05-22T12:40:28.339Z",
+      "updated": "2026-05-23T07:59:25.869Z",
       "latestItems": [
         {
           "title": "五一武汉行",
           "url": "https://www.hollowman.cn/archives/51towuhan.html",
-          "date": "Thu, 07 May 2026 14:43:00 +0800"
+          "date": "Thu, 07 May 2026 14:43:00 +0800",
+          "summary": "五一带上小女去武汉走了一遭。因为有小舅子等几个亲戚就住在武汉，所以此次并不算纯游，可以说是相聚家常及随缘游览吧。一、东湖5月1日，早上乘高铁约 8 点到达武汉，因东湖就在武汉站附近，我们选择先在..."
         },
         {
           "title": "ubuntu2604 尝鲜",
           "url": "https://www.hollowman.cn/archives/ubuntu2604.html",
-          "date": "Sun, 26 Apr 2026 22:29:00 +0800"
+          "date": "Sun, 26 Apr 2026 22:29:00 +0800",
+          "summary": "ubuntu 26.04 LTS 版本出来了，至于新特性我就不班门弄斧的列举了，纯碎想体验一把新内核、新 Gnome50 桌面，于是我第一时间到各大镜像站找 ISO 资源，清华大学、中科大等镜像..."
         },
         {
           "title": "涟水河畔有故事",
           "url": "https://www.hollowman.cn/archives/lianshuihe.html",
-          "date": "Tue, 07 Apr 2026 17:05:00 +0800"
+          "date": "Tue, 07 Apr 2026 17:05:00 +0800",
+          "summary": "涟水，长江流域洞庭湖支流湘江的支流，发源于湖南省新邵县观音山南麓，自西向东流经涟源市、娄星区、双峰县及湘乡市，最终在湘潭市河口镇汇入湘江，境内全长185.85公里，沿途纳孙水、湄江、测水等1-4..."
         },
         {
           "title": "给我的QQ机器人取名-openclaw初探即终结",
           "url": "https://www.hollowman.cn/archives/qqbot.html",
-          "date": "Mon, 30 Mar 2026 16:44:00 +0800"
+          "date": "Mon, 30 Mar 2026 16:44:00 +0800",
+          "summary": "openclaw 的诱惑openclaw 已经火了一段时间了，受到不少博客主的宣传，我也因此有了尝试的欲望。openclaw 之初探借助于飞牛 OS 更新后的版本内置了 openclaw 的东风..."
         },
         {
           "title": "这次飞牛动作有点大",
           "url": "https://www.hollowman.cn/archives/fn1120.html",
-          "date": "Fri, 13 Feb 2026 10:21:00 +0800"
+          "date": "Fri, 13 Feb 2026 10:21:00 +0800",
+          "summary": "晚上刷到飞牛群主的一条系统更新提示（v1.1.20），并推送了一条公众号文章：致飞牛用户：近期安全事件的完整说明与深刻反思我的飞牛无法登陆了没有多看，我习惯性的去手机 APP 中更新系统，结果提..."
         }
       ]
     },
@@ -1343,32 +1468,37 @@
       "feedUrl": "https://onojyun.com/feed",
       "avatar": "https://onojyun.com/wp-content/uploads/2024/03/a2d42-cropped-mobius_icon_black-edited.png",
       "description": "写作，是一场自我悖驳的旅程",
-      "updated": "2026-05-22T12:40:34.076Z",
+      "updated": "2026-05-23T07:59:30.222Z",
       "latestItems": [
+        {
+          "title": "小丑",
+          "url": "https://mobius.blog/24283.html",
+          "date": "Sat, 23 May 2026 01:59:45 +0000",
+          "summary": "人们总是喜欢嘲笑跳梁小丑， 可他跳过了梁， 却有一群观众为他鼓掌。 他在嘲笑跳梁小丑时， 但他跳不过梁， 却渴 [&#8230;] —— 感谢订阅 莫比乌斯 ，如你有任何疑问、观点交流，请前往 创作者频道 ，或 私信 联系。"
+        },
         {
           "title": "成全杀意",
           "url": "https://mobius.blog/24191.html",
-          "date": "Fri, 22 May 2026 00:55:00 +0000"
+          "date": "Fri, 22 May 2026 00:55:00 +0000",
+          "summary": "这两天在整理“归档”，打算分门别类地把以前写过的文章按专题进行整理，结果没想到还是搞出了一大堆内容。到最后就完 [&#8230;] —— 感谢订阅 莫比乌斯 ，如你有任何疑问、观点交流，请前往 创作者频道 ，或 私信 联系。"
         },
         {
           "title": "对不牵绳的狗最好的处理方式",
           "url": "https://mobius.blog/24211.html",
-          "date": "Thu, 21 May 2026 09:00:00 +0000"
+          "date": "Thu, 21 May 2026 09:00:00 +0000",
+          "summary": "下午在咖啡厅码字，跟朋友闲白了几句。 朋友也养狗了，问我在小区遛狗遇到那些不牵绳的狗怎么办。我以前倒是在博客教 [&#8230;] —— 感谢订阅 莫比乌斯 ，如你有任何疑问、观点交流，请前往 创作者频道 ，或 私信 联系。"
         },
         {
           "title": "能不能好好说话？",
           "url": "https://mobius.blog/24125.html",
-          "date": "Thu, 21 May 2026 03:00:02 +0000"
+          "date": "Thu, 21 May 2026 03:00:02 +0000",
+          "summary": "昨天去楼下的理发店理发，是一个只有老板一个人开的社区小店。因为第一次来，所以也很担心跟他的沟通问题，但想着我就 [&#8230;] —— 感谢订阅 莫比乌斯 ，如你有任何疑问、观点交流，请前往 创作者频道 ，或 私信 联系。"
         },
         {
           "title": "少即是多",
           "url": "https://mobius.blog/23860.html",
-          "date": "Wed, 20 May 2026 01:32:10 +0000"
-        },
-        {
-          "title": "我就是想证明一下自己 II",
-          "url": "https://mobius.blog/23660.html",
-          "date": "Tue, 19 May 2026 00:55:00 +0000"
+          "date": "Wed, 20 May 2026 01:32:10 +0000",
+          "summary": "要不是因为这次准备小说大纲，我才意识到我已经过了“差生文具多”的状态了。 当然必须先叠甲，差生文具多并不是一个 [&#8230;] —— 感谢订阅 莫比乌斯 ，如你有任何疑问、观点交流，请前往 创作者频道 ，或 私信 联系。"
         }
       ]
     },
@@ -1378,32 +1508,37 @@
       "feedUrl": "https://www.mhcf.net/rss.php",
       "avatar": "https://www.mhcf.net/mhcf.ico",
       "description": "壹个永恒的部落格",
-      "updated": "2026-05-22T12:40:28.084Z",
+      "updated": "2026-05-23T07:59:26.853Z",
       "latestItems": [
         {
           "title": "12年·相信相信的力量",
           "url": "https://www.mhcf.net/post-1207.html",
-          "date": "Wed, 25 Feb 2026 00:00:00 +0800"
+          "date": "Wed, 25 Feb 2026 00:00:00 +0800",
+          "summary": "2月10日，北方小年。 那天，正值加班。恰逢没有联网的电脑，也就没有为所有关注这里的朋友、为梦幻辰风、为自己去撰写一点文字聊以纪念。 在十五天后，正值寻梦启航十二年，我想，该为一路走来从未放弃的我们，写点什么。 一直说，为梦想而前行。可随着工作越久，这句话便提得越少。我一直在寻找"
         },
         {
           "title": "贰零贰伍：用文字与时间赋予未来与成长",
           "url": "https://www.mhcf.net/post-1206.html",
-          "date": "Mon, 12 Jan 2026 17:17:09 +0800"
+          "date": "Mon, 12 Jan 2026 17:17:09 +0800",
+          "summary": "在床上慢慢醒来，打开手机，发觉2025已经是过往了。 一年，眨眼间便已经是过去了。 姜辰说，希望我分享一下一年来的故事。可我沉思许久，却不知道如何提起。我如同老太太生柴火一般慢慢堆砌的文字，却不知道何时会着起火焰，吹散这一切浓烟。 2024年开始正式通过文字工作养家糊口。对于以往"
         },
         {
           "title": "让Emlog5.3.1支持到PHP8.4",
           "url": "https://www.mhcf.net/post-1205.html",
-          "date": "Sat, 06 Dec 2025 21:34:01 +0800"
+          "date": "Sat, 06 Dec 2025 21:34:01 +0800",
+          "summary": "前些日子在 破袜子 中 @大致 提到 让WordPress4.9在php8.2下正常运行。 在不知不觉间，PHP已经支持到8.X了。 好快，当初刚接触PHP时还是5.6。 恰好周六，恰好服务器搬家。 索性，在AI的帮助下，尝试让梦幻辰风这个运行在 Emlog5.3.1 版本的部落"
         },
         {
           "title": "应当为自己培养一个值得终生的爱好",
           "url": "https://www.mhcf.net/post-1203.html",
-          "date": "Tue, 02 Dec 2025 08:23:00 +0800"
+          "date": "Tue, 02 Dec 2025 08:23:00 +0800",
+          "summary": "去年9月，王教授说我应该培养一个终身性的爱好。 只不过，他一直推荐我买个相机，走在拍摄风景与美女的路上的同时可以在摄影的世界里可以换一个角度观察世界。不过比较遗憾的是对我来说，优秀的相机价格十分昂贵，更何况王教授只赞助一个5元代金券，实在是买不起了。 在一个月后，王教授分享了一个"
         },
         {
           "title": "没有落雪的冬日",
           "url": "https://www.mhcf.net/post-1204.html",
-          "date": "Mon, 01 Dec 2025 11:48:05 +0800"
+          "date": "Mon, 01 Dec 2025 11:48:05 +0800",
+          "summary": "从节气来算，已经入冬二十多天了。 对于在西北边陲的我而言，却仿佛是第一次看到这个世界一般。在12月的第一天，竟然还没有在大地上看到沉积堆攒的雪。 在入冬的前两日，天色阴沉，最后的秋风卷走了秋日里最后的余温。我正裹紧衣服在感慨雪地胎换得及时，却不知道在那一夜雨夹雪后，再没有了冬日的"
         }
       ]
     },
@@ -1413,34 +1548,8 @@
       "feedUrl": "https://pwsz.com/feed",
       "avatar": "https://pwsz.com/myimg/pwsz_logo.png",
       "description": "生活在人间天堂",
-      "updated": "2026-05-22T12:40:28.338Z",
-      "latestItems": [
-        {
-          "title": "春日",
-          "url": "https://pwsz.com/life/4962.html",
-          "date": "Mon, 30 Mar 2026 03:05:14 +0000"
-        },
-        {
-          "title": "马年之始",
-          "url": "https://pwsz.com/life/4945.html",
-          "date": "Fri, 27 Feb 2026 02:51:54 +0000"
-        },
-        {
-          "title": "与弓弦对峙的勇气",
-          "url": "https://pwsz.com/hobby/4898.html",
-          "date": "Tue, 20 Jan 2026 14:04:21 +0000"
-        },
-        {
-          "title": "新年半月记",
-          "url": "https://pwsz.com/life/4887.html",
-          "date": "Fri, 16 Jan 2026 03:29:33 +0000"
-        },
-        {
-          "title": "写给2026的你和我",
-          "url": "https://pwsz.com/life/4869.html",
-          "date": "Thu, 01 Jan 2026 06:44:41 +0000"
-        }
-      ]
+      "updated": "2026-05-23T07:59:26.078Z",
+      "latestItems": []
     },
     {
       "name": "徐建伟",
@@ -1448,32 +1557,37 @@
       "feedUrl": "http://www.xulog.cn/index.php?act=rss",
       "avatar": "",
       "description": "记录生活 珍藏回忆",
-      "updated": "2026-05-22T12:40:30.658Z",
+      "updated": "2026-05-23T07:59:25.474Z",
       "latestItems": [
+        {
+          "title": "随笔心情",
+          "url": "http://www.xulog.cn/index.php?act=pl&id=1146",
+          "date": "Sat, 23 May 2026 14:35:12 +0800",
+          "summary": "最近看公众号上写了一些关于微信好友都不再联系，好久没说过话了，甚至还有些已经删除，说是超过一年以上没联系的在上面也毫无意义，干脆就默默的离开。还有些朋友圈不再晒自己的生活了，吃的喝的，快乐的难过的，甚至设置成三天可见，点赞的评论的也少之又少，是不是我只看到了同龄人是这样的，或许9"
+        },
         {
           "title": "被遗忘的flash",
           "url": "http://www.xulog.cn/index.php?act=pl&id=1145",
-          "date": "Fri, 22 May 2026 13:30:40 +0800"
+          "date": "Fri, 22 May 2026 13:30:40 +0800",
+          "summary": "记得上高中的时候，在网吧打开电脑上的动画flash，闪动精美的画面深深的吸引了我，那时候感觉flash真好看。渐渐的flash就走进了大家的视野里，各种flash动画和音乐都会在电脑上分享，那些制作flash的人在当时的内心里认为就是高手的存在。后来出现了一个软件艺匠，把自己的照"
         },
         {
           "title": "玩纸牌游戏",
           "url": "http://www.xulog.cn/index.php?act=pl&id=1143",
-          "date": "Thu, 21 May 2026 08:41:25 +0800"
+          "date": "Thu, 21 May 2026 08:41:25 +0800",
+          "summary": "小时候下午放学不是先回家，也不是先写作业，而是一群同学在一起玩小牌，问家长要点零花钱然后去小商店买几张，回来用剪刀给他剪出来然后去玩，玩法也很多种，不管几个人都可以放一张或两张，也可以放在墙角，然后对着牌开始拍，要么全拍反了谁全部拿走，要么是拍反几张拿几张，玩法都是提前定的..."
         },
         {
           "title": "那块小菜园",
           "url": "http://www.xulog.cn/index.php?act=pl&id=1142",
-          "date": "Tue, 19 May 2026 10:42:55 +0800"
+          "date": "Tue, 19 May 2026 10:42:55 +0800",
+          "summary": "很早之前母亲在楼下操场上整了一片菜地，还围上了篱笆，种一些平常吃的蔬菜，蒜，葱，红萝卜，豆角等，因为那是一块公共空地，闲置着也是浪费，还不如种点东西出来，随后有更多人围着我们的菜地又开辟了新的菜园，渐渐那唯有的土地都被小区里的人占满了，种什么样的都有。母亲没事就喜欢去那块地里忙碌"
         },
         {
           "title": "随笔日记",
           "url": "http://www.xulog.cn/index.php?act=pl&id=1140",
-          "date": "Thu, 14 May 2026 08:00:09 +0800"
-        },
-        {
-          "title": "纪念汶川地震",
-          "url": "http://www.xulog.cn/index.php?act=pl&id=1139",
-          "date": "Tue, 12 May 2026 10:46:19 +0800"
+          "date": "Thu, 14 May 2026 08:00:09 +0800",
+          "summary": "有时候我感觉什么事都有前兆，人这一生好像都被上帝安排好了，谁走什么样的路线似乎已成定局，比如你是跑外卖的，他说开大车的，这个人瞬间中大奖发大财了，那个人在事业飞黄腾达的时候突然生意失败变的穷困潦倒了，还有人意外去世了，我总感觉这发生的一切都是命中注定，就如“圣人”说的你这辈子该有"
         }
       ]
     },
@@ -1483,32 +1597,37 @@
       "feedUrl": "https://cuixiping.com/blog/feed/atom/",
       "avatar": "https://cuixiping.com/logo-cat.svg",
       "description": "向着理想的方向，爬一会儿，躺一会儿",
-      "updated": "2026-05-22T12:40:29.518Z",
+      "updated": "2026-05-23T07:59:25.897Z",
       "latestItems": [
         {
           "title": "一万的退税到账了，这是我头一回",
           "url": "https://cuixiping.com/blog/think/wslugs",
-          "date": "2026-05-14"
+          "date": "2026-05-14",
+          "summary": "&#x3000;&#x3000;昨天收到退税成功的通知了，一万的退税到账了，这是我第一次得到退税，之前都是补税的。这次从提交到办结也就2天时间，效率还是很赞的。 &#x3000;&#x3000;前阵子被个税系统提示做年度结算，登录到个税app查看，发现有点奇怪的是，专项附加抵扣里"
         },
         {
           "title": "食堂吃个饭也有占座的",
           "url": "https://cuixiping.com/blog/think/ytnjfl",
-          "date": "2026-05-08"
+          "date": "2026-05-08",
+          "summary": "食堂遇到占座 &#x3000;&#x3000;我经常在食堂吃饭。食堂的桌子挺大的，是四人桌，每边两个位子。非高峰期的情况下，人们喜欢单独坐一桌，要与人共桌的时候，则喜欢坐对角，这是食堂的社交距离。食堂是园区的几栋楼共用的，饭点高峰期的时候，往往要端着餐盘找座位，见缝插针。 &#x"
         },
         {
           "title": "敏感词屏蔽，是一把防护盾，也是一把阉割刀",
           "url": "https://cuixiping.com/blog/think/zpwduj",
-          "date": "2026-05-06"
+          "date": "2026-05-06",
+          "summary": "一次被“禁止词汇”拦下的评论 &#x3000;&#x3000;某一日，在 满心的博客 上评论时，提交不了，警报说有“禁止词汇”。 &#x3000;&#x3000;刚开始没注意到提示语，再次提交时才看清了。我定睛看了看，不觉有异，尝试小改之后再提交，还是不行。疑惑之下，发邮件向博主"
         },
         {
           "title": "旧物堆里的杭州公交卡，揭开十几年前的冤大头记忆",
           "url": "https://cuixiping.com/blog/memory/bwalaj",
-          "date": "2026-04-28"
+          "date": "2026-04-28",
+          "summary": "&#x3000;&#x3000;整理旧物，发现几张早年在杭州的公交卡。 &#x3000;&#x3000;离开杭州十多年，早已对杭州公交没什么印象了，反而是对杭州的公共自行车印象深刻。 &#x3000;&#x3000;那些年，这公交卡，除了坐公交，还能骑公共自行车，那是古早版的共享"
         },
         {
           "title": "成绩是 B，口气 A+",
           "url": "https://cuixiping.com/blog/life/anokcj",
-          "date": "2026-04-27"
+          "date": "2026-04-27",
+          "summary": "&#x3000;&#x3000;此文记录我和女儿周末生活的一天。 &#x3000;&#x3000;女儿中考临近，还有半个月就要考英语听力口语了，周天上午我跟她一块去新东方线下教室听了一节英语课。 &#x3000;&#x3000;教室里为每位同学安排了2个桌位，家长可以坐进来听，但"
         }
       ]
     },
@@ -1518,32 +1637,37 @@
       "feedUrl": "https://zhoutian.com/rss.xml",
       "avatar": "https://bu.dusays.com/2023/01/29/63d5bf7fa0d2c.png",
       "description": "记录生活里的小美好",
-      "updated": "2026-05-22T12:40:28.032Z",
+      "updated": "2026-05-23T07:59:25.352Z",
       "latestItems": [
         {
           "title": "关于Riven主题开售的一些想法",
           "url": "https://zhoutian.com/373.html",
-          "date": "Thu, 21 May 2026 10:50:00 +0800"
+          "date": "Thu, 21 May 2026 10:50:00 +0800",
+          "summary": "![](https://img.lovelu.top/2026/riven_logo.jpg) 经过我这一周左右对主题、插件进行了不小的优化，所以网站的速度有了质的提升，抛开服务器和网络层面的问题，几乎是秒开的情况，对于这样的效率我是比较满意的。 从Riv..."
         },
         {
           "title": "一款精美雅致的邮箱通知插件CommentNotifier",
           "url": "https://zhoutian.com/372.html",
-          "date": "Thu, 21 May 2026 10:24:00 +0800"
+          "date": "Thu, 21 May 2026 10:24:00 +0800",
+          "summary": "![](https://img.lovelu.top/2026/email1.webp) 开发这款插件之前，我一直用着泽泽改造的一款插件，其实也挺好用的，只不过最近越看越不顺眼，干脆自己搞一套，当然里面有些内容还是借鉴了他的插件，UI做了重构，UI方面本来..."
         },
         {
           "title": "私有部署Sub2API + OpenWebUI实现chatgpt调用自由",
           "url": "https://zhoutian.com/370.html",
-          "date": "Fri, 15 May 2026 11:01:00 +0800"
+          "date": "Fri, 15 May 2026 11:01:00 +0800",
+          "summary": "由于国外AI模型禁止国内访问，所以很多比较好用的，比如codex、claude code（简称cc）编码能力很强的模型都无法使用，除了这些当然还有gpt5.5模型等等，都非常好用，我也一直在使用。 关于国外AI想法 当然我之前用的一直都是买的第三方，比如最..."
         },
         {
           "title": "周天记正式更换主题Riven",
           "url": "https://zhoutian.com/369.html",
-          "date": "Sat, 09 May 2026 14:03:00 +0800"
+          "date": "Sat, 09 May 2026 14:03:00 +0800",
+          "summary": "主题以及插件的开发，还是要感谢AI的通力协作，不然我不可能这么快完成上线使用。 终于在昨天，已经敲定了可以使用的版本，当然可能还存在不少隐藏的问题，我自己没测出来，但是整体功能上应该是没太大问题，后续就是缝缝补补了，当然还有持续优化问题。 为了不再依赖第三..."
         },
         {
           "title": "一款typecho-riven主题问世了",
           "url": "https://zhoutian.com/368.html",
-          "date": "Wed, 06 May 2026 16:27:00 +0800"
+          "date": "Wed, 06 May 2026 16:27:00 +0800",
+          "summary": "![](https://img.lovelu.top/2026/riven_logo.jpg) Riven 是一款偏新中式水墨风格的 Typecho 主题。 它的设计仍然保留simple主题简约风格，而是把重点放在“内容阅读”和“页面气质”上。整体以米白、..."
         }
       ]
     }
