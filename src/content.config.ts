@@ -65,7 +65,6 @@ const essay = defineCollection({
     ...baseFields,
     cover: z.string().optional(),
     badge: z.string().optional(),
-    category: z.string().optional(),
     category: z.string().optional()
   })
 });
