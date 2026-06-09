@@ -72,9 +72,31 @@ const contactItems: ContactItem[] = [
     }
   </div>
   <p class="about-intro-line">
-    Whono是一个基于 Astro 的极简双栏写作主题：干净、快速、为阅读而设计。<br />
-    内容以 Markdown 写作，支持暗色模式、代码高亮、RSS 与沉浸式阅读，适合作为个人写作与轻量内容发布的起点。<br />
-    主题已开源维护，如果你有改进建议或想一起完善，欢迎创建 <a href="https://github.com/cxro/astro-whono/issues">Issue</a> 交流。
+我是菲克，一位对技术充满热情的探索者，同时也是一名热衷于探索前沿技术的实践者<br>
+
+我应该也能算是最早一批用Wordpress的博主，没有学过编程代码，只是对主题插件小修小补<br>
+
+<br>
+
+2016.05.16 | 接触Typecho，1.0正式版，简单好用，主题简洁，Wordpress直接导入。<br>
+
+2025.08.16 | 开始研究Halo，Halo Pro ，新手友好，加载速度快，界面简洁，功能强大.<br>
+
+2025.12.06 | 借助AI，开始试错静态博客，试了Hexo、Hugo和Astro<br>
+
+2025.12.10 | 选定Hexo，开始搭建静态博客<br>
+
+2025.12.20 | 基本搞定Hexo满天飞的Next主题，正式上线<br>
+
+2026.01.02 | 测试文章全部删除，开始记录……<br>
+
+2026.01.06 | 最终确定Astro做以后的主要阵地<br>
+
+2026.01.10 | 确定主题ThoughtLite<br>
+
+2026.01.22 | 借助AI所有需要配置基本搞定，正式上线<br>
+
+2026.03.01 | 确定主题Whono<br>
   </p>
   <h2 class="section-title about-section-title">栏目指引</h2>
   <div class="site-guide">
@@ -147,31 +169,18 @@ const contactItems: ContactItem[] = [
     
   </div>
 
-  <h2 class="section-title about-section-title">常见问题</h2>
-  <section class="qa-list" aria-label="常见问题">
-    <details class="qa-item">
-      <summary class="qa-question"><span class="qa-icon" aria-hidden="true">Q</span>为什么我部署后会看到 SITE_URL is not set 警告？</summary>
-      <p class="qa-answer">因为没配置生产域名。未设置时会用占位域名，<code>canonical</code>/<code>og:url</code>/<code>sitemap</code>/<code>robots</code> 会不完整。部署平台里环境变量中添加 <code>SITE_URL=https://你的域名</code>，重新构建即可。</p>
-    </details>
-    <details class="qa-item">
-      <summary class="qa-question"><span class="qa-icon" aria-hidden="true">Q</span>为什么有的文章没出现在归档里？</summary>
-      <p class="qa-answer">归档会过滤掉 <code>archive: false</code> 的文章。它们仍然是“已发布可访问”的，但不会出现在归档列表与归档 RSS 中（用于少数不想被目录收录的内容）。</p>
-    </details>
-    <details class="qa-item">
-      <summary class="qa-question"><span class="qa-icon" aria-hidden="true">Q</span>为什么我在 /essay/ 点开文章会跳到 /archive/.../？</summary>
-      <p class="qa-answer">项目把文章详情统一在 <code>/archive/{'{'}slug{'}'}/</code>，<code>/essay/</code> 主要作为文章流列表入口，这样可以避免重复详情路由，便于长期维护。</p>
-    </details>
-    <details class="qa-item">
-      <summary class="qa-question"><span class="qa-icon" aria-hidden="true">Q</span>如何反馈问题或参与改进？</summary>
-      <p class="qa-answer">直接在仓库创建 <a href="https://github.com/cxro/astro-whono/issues">Issue</a>，或提交 <a href="https://github.com/cxro/astro-whono/pulls">Pull Request</a>。</p>
-    </details>
-  </section>
-
   {
     contactItems.length ? (
       <>
         <h2 class="section-title about-section-title">联系与订阅</h2>
         <section class="contact-block" aria-label="联系方式">
+          <p> <h3 class="site-guide-title">站点信息</h3><br>
+              名称： 柒色墨笺<br>
+              地址： https://vii.ink<br>
+              订阅： https://vii.ink/rss.xml<br>
+              图标： https://vii.ink/author/avatar.webp<br>
+              描述： 柒色入墨，落笔成诗 </p><br>
+              <br>
           <p class="contact-note">如果你有问题、建议，或想订阅更新，可以通过以下方式联系。</p>
           <ul class="contact-list">
             {contactItems.map((item) => (
