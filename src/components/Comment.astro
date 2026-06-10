@@ -1,117 +1,192 @@
 ---
 import { site } from '../../site.config.mjs';
+import '@waline/client/style';
+import 'artalk/dist/Artalk.css';
 
-const { commentSystem, artalkConfig = {}, walineConfig = {}, twikooConfig = {} } = Astro.props;
-const pageUrl = `${site.url}${Astro.url.pathname}`;
-const pageTitle = Astro.props.title || '';
+type CommentSystem = 'artalk' | 'waline' | 'twikoo';
+type CommentConfig = Record<string, unknown>;
+
+const {
+  commentSystem,
+  artalkConfig = {},
+  walineConfig = {},
+  twikooConfig = {},
+  title = ''
+} = Astro.props as {
+  commentSystem: CommentSystem | 'none';
+  artalkConfig?: CommentConfig;
+  walineConfig?: CommentConfig;
+  twikooConfig?: CommentConfig;
+  title?: string;
+};
+
+const activeConfigBySystem: Record<CommentSystem, CommentConfig> = {
+  artalk: artalkConfig,
+  waline: walineConfig,
+  twikoo: twikooConfig
+};
+const supportedSystems = new Set<CommentSystem>(['artalk', 'waline', 'twikoo']);
+const isSupportedSystem = supportedSystems.has(commentSystem as CommentSystem);
+const activeSystem = commentSystem as CommentSystem;
+const containerId = `comment-${activeSystem}-container`;
+const configId = `comment-${activeSystem}-config`;
+const pagePath = Astro.url.pathname;
+const commentPayload = {
+  system: activeSystem,
+  containerId,
+  config: isSupportedSystem ? activeConfigBySystem[activeSystem] : {},
+  page: {
+    path: pagePath,
+    title,
+    url: `${site.url}${pagePath}`,
+    siteTitle: site.title
+  }
+};
+const payloadJson = JSON.stringify(commentPayload).replace(/</g, '\\u003c');
 ---
 
-{commentSystem === 'artalk' && (
-  <div class="comment-section">
+{isSupportedSystem && (
+  <div class="comment-section" data-comment-root data-comment-config={configId}>
     <h3 class="comment-title">评论</h3>
-    <div id="artalk-container"></div>
-    <script>
-      import Artalk from 'artalk';
-      
-      new Artalk({
-        el: '#artalk-container',
-        pageKey: window.location.pathname,
-        pageTitle: document.title,
-        server: artalkConfig.server || '',
-        site: artalkConfig.site || 'Astro Themes by Whono',
-        ...artalkConfig,
-      });
-    </script>
+    <div id={containerId} class="comment-container"></div>
+    <script is:inline id={configId} type="application/json" set:html={payloadJson}></script>
   </div>
 )}
 
-{commentSystem === 'waline' && (
-  <div class="comment-section">
-    <h3 class="comment-title">评论</h3>
-    <div id="waline-container"></div>
-    <script>
-      import { init } from '@waline/client';
-      
-      init({
-        el: '#waline-container',
-        serverURL: walineConfig.serverURL || '',
-        path: window.location.pathname,
-        ...walineConfig,
-      });
-    </script>
-  </div>
-)}
+<script>
+  const mountedComments = new WeakMap<Element, () => void>();
 
-{commentSystem === 'twikoo' && (
-  <div class="comment-section">
-    <h3 class="comment-title">评论</h3>
-    <div id="twikoo-container"></div>
-    <script>
-      import twikoo from 'twikoo';
-      
-      twikoo.init({
-        el: '#twikoo-container',
-        envId: twikooConfig.envId || '',
-        path: window.location.pathname,
-        ...twikooConfig,
+  type CommentPayload = {
+    system: 'artalk' | 'waline' | 'twikoo';
+    containerId: string;
+    config: Record<string, unknown>;
+    page: {
+      path: string;
+      title: string;
+      url: string;
+      siteTitle: string;
+    };
+  };
+
+  const readCommentPayload = (root: Element): CommentPayload | null => {
+    const configId = root.getAttribute('data-comment-config');
+    const configEl = configId ? document.getElementById(configId) : null;
+    if (!configEl?.textContent) return null;
+
+    try {
+      return JSON.parse(configEl.textContent) as CommentPayload;
+    } catch (error) {
+      console.error('[comment] Failed to parse comment config.', error);
+      return null;
+    }
+  };
+
+  const mountComment = async (root: Element) => {
+    const existingCleanup = mountedComments.get(root);
+    if (existingCleanup) {
+      existingCleanup();
+      mountedComments.delete(root);
+    }
+
+    const payload = readCommentPayload(root);
+    if (!payload) return;
+
+    const container = document.getElementById(payload.containerId);
+    if (!container) return;
+
+    container.replaceChildren();
+
+    if (payload.system === 'waline') {
+      const { init } = await import('@waline/client/full');
+      const instance = init({
+        el: container,
+        serverURL: String(payload.config.serverURL ?? ''),
+        path: payload.page.path,
+        ...payload.config
       });
-    </script>
-  </div>
-)}
+
+      if (instance) {
+        mountedComments.set(root, () => instance.destroy());
+      }
+      return;
+    }
+
+    if (payload.system === 'twikoo') {
+      const twikooModule = await import('twikoo');
+      const twikoo = twikooModule.default ?? twikooModule;
+      await twikoo.init({
+        el: container,
+        envId: String(payload.config.envId ?? ''),
+        path: payload.page.path,
+        ...payload.config
+      });
+      return;
+    }
+
+    if (payload.system === 'artalk') {
+      const { default: Artalk } = await import('artalk');
+      const instance = Artalk.init({
+        el: container,
+        pageKey: payload.page.path,
+        pageTitle: payload.page.title || document.title,
+        server: String(payload.config.server ?? ''),
+        site: String(payload.config.site ?? payload.page.siteTitle),
+        ...payload.config
+      });
+
+      mountedComments.set(root, () => instance.destroy());
+    }
+  };
+
+  const mountComments = () => {
+    document.querySelectorAll('[data-comment-root]').forEach((root) => {
+      void mountComment(root);
+    });
+  };
+
+  mountComments();
+  document.addEventListener('astro:page-load', mountComments);
+</script>
 
 <style>
   .comment-section {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     padding-top: 2rem;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--border);
   }
   
   .comment-title {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: #374151;
+    color: var(--text);
   }
   
-  /* Twikoo 样式适配 */
-  #twikoo-container {
+  .comment-container {
     max-width: 100%;
   }
-  
-  #twikoo-container .tk-comments {
+
+  .comment-container :global(.wl-panel),
+  .comment-container :global(.atk-main-editor),
+  .comment-container :global(.tk-input) {
+    border-color: var(--border);
+  }
+
+  .comment-container :global(.wl-card),
+  .comment-container :global(.atk-comment),
+  .comment-container :global(.tk-comment) {
+    border-radius: 8px;
+  }
+
+  .comment-container :global(.wl-editor),
+  .comment-container :global(.atk-textarea),
+  .comment-container :global(.tk-input) {
     font-family: inherit;
   }
-  
-  #twikoo-container .tk-comment {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    background-color: #f9fafb;
-  }
-  
-  #twikoo-container .tk-comment-content {
+
+  .comment-container :global(.wl-content),
+  .comment-container :global(.atk-content),
+  .comment-container :global(.tk-comment-content) {
     line-height: 1.6;
-  }
-  
-  #twikoo-container .tk-input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.375rem;
-    font-family: inherit;
-  }
-  
-  #twikoo-container .tk-submit {
-    margin-top: 0.5rem;
-    padding: 0.5rem 1rem;
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-  }
-  
-  #twikoo-container .tk-submit:hover {
-    background-color: #2563eb;
   }
 </style>

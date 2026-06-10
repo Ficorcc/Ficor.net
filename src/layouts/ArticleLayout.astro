@@ -51,6 +51,7 @@ const shouldShowMetaLine = articleMetaSettings.showDate
   || (articleMetaSettings.showTags && visibleTags.length > 0)
   || articleMetaSettings.showWordCount
   || articleMetaSettings.showReadingTime;
+const shouldShowComments = comment.system !== 'none' && entry.data.comment !== false;
 
 ---
 
@@ -138,7 +139,7 @@ const shouldShowMetaLine = articleMetaSettings.showDate
     </nav>
   ) : null}
   
-  {comment.system !== 'none' && (
+  {shouldShowComments && (
     <Comment
       commentSystem={comment.system}
       artalkConfig={comment.artalk}
