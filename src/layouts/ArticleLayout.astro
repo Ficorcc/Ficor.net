@@ -20,13 +20,15 @@ const {
   prev,
   next,
   articleMetaSettings,
-  visibleTags = []
+  visibleTags = [],
+  commentPath
 } = Astro.props as {
   entry: EssayEntry;
   prev: ArticleNeighborLink | null;
   next: ArticleNeighborLink | null;
   articleMetaSettings: ArticleMetaSettings;
   visibleTags?: string[];
+  commentPath?: string;
 };
 
 const entryTags: string[] = entry?.data?.tags ?? [];
@@ -146,6 +148,7 @@ const shouldShowComments = comment.system !== 'none' && entry.data.comment !== f
       walineConfig={comment.waline}
       twikooConfig={comment.twikoo}
       title={entry.data.title}
+      path={commentPath}
     />
   )}
 

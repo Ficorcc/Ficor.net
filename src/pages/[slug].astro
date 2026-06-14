@@ -1,0 +1,61 @@
+---
+import { render } from 'astro:content';
+import {
+  getEssayPath,
+  getLegacyEssayCommentPath,
+  getVisibleEssayRouteEntries,
+  type EssayEntry
+} from '../lib/content';
+import ArticleLayout from '../layouts/ArticleLayout.astro';
+import { createWithBase } from '../utils/format';
+import { getThemeSettings, getVisibleArticleMetaTags } from '../lib/theme-settings';
+
+type ArticleNeighborLink = {
+  href: string;
+  title: string;
+};
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const base = import.meta.env.BASE_URL ?? '/';
+  const withBase = createWithBase(base);
+  const routeEntries = await getVisibleEssayRouteEntries();
+  return routeEntries.map(({ slug, entry, prev, next }) => {
+    return {
+      params: { slug },
+      props: {
+        entry,
+        slug,
+        prev: prev
+          ? { href: withBase(getEssayPath(prev)), title: prev.data.title }
+          : null,
+        next: next
+          ? { href: withBase(getEssayPath(next)), title: next.data.title }
+          : null
+      }
+    };
+  });
+}
+
+const { entry, slug, prev, next } = Astro.props as {
+  entry: EssayEntry;
+  slug: string;
+  prev: ArticleNeighborLink | null;
+  next: ArticleNeighborLink | null;
+};
+const { Content } = await render(entry);
+const articleMetaSettings = getThemeSettings().settings.ui.articleMeta;
+const visibleTags = getVisibleArticleMetaTags(entry.data.tags, 'detail');
+---
+
+<ArticleLayout
+  entry={entry}
+  prev={prev}
+  next={next}
+  articleMetaSettings={articleMetaSettings}
+  visibleTags={visibleTags}
+  commentPath={getLegacyEssayCommentPath(slug)}
+>
+  <Content />
+</ArticleLayout>

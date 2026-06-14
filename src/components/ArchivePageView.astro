@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TagFilterHeader from './TagFilterHeader.astro';
 import Pagination from './Pagination.astro';
-import { createWithBase, getEssaySlug, type EssayEntry } from '../lib/content';
+import { createWithBase, getEssayPath, getEssaySlug, type EssayEntry } from '../lib/content';
 import { getTagPath, type TagSummary } from '../lib/tags';
 import { getThemeSettings } from '../lib/theme-settings';
 import { formatISODateUtc, formatMonthDayUtc, groupByUtcYear, joinPageSubtitleText } from '../utils/format';
@@ -96,7 +96,7 @@ const getPaginationPagePath = (pageNumber: number) =>
       <div class="archive-list">
         {group.list.map((entry) => {
           const slug = getEssaySlug(entry);
-          const href = withBase(`/archive/${slug}/`);
+          const href = withBase(getEssayPath(slug));
           const tag = currentTag?.label ?? entry.data.tags?.[0];
           return (
             <div class="archive-row" data-entry-item data-slug={slug}>

@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import TagFilterHeader from './TagFilterHeader.astro';
 import EssayCard from './EssayCard.astro';
 import Pagination from './Pagination.astro';
-import { createWithBase, getEssayDerivedText, getEssaySlug, type EssayEntry } from '../lib/content';
+import { createWithBase, getEssayDerivedText, getEssayPath, getEssaySlug, type EssayEntry } from '../lib/content';
 import { getThemeSettings, getVisibleArticleMetaTags } from '../lib/theme-settings';
 import { joinPageSubtitleText } from '../utils/format';
 
@@ -66,7 +66,7 @@ const fallbackListId = 'essay-tag-list';
   <div class="list">
     {items.map((entry) => (
       <EssayCard
-        href={withBase(`/archive/${getEssaySlug(entry)}/`)}
+        href={withBase(getEssayPath(entry))}
         slug={getEssaySlug(entry)}
         title={entry.data.title}
         excerpt={getEssayDerivedText(entry).excerpt}

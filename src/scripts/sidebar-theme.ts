@@ -11,9 +11,6 @@ const mobileMq = window.matchMedia('(max-width: 900px)');
 const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const isLongPage = () =>
-  /^(?:\/(?:archive|essay|memo)(?:\/|$))/.test(window.location.pathname);
-
 let updateFloating = () => {};
 
 const isDark = () => root.dataset.theme === 'dark';
@@ -43,6 +40,7 @@ const initTheme = () => {
 
 const isReaderOn = () => body?.dataset.reading === 'immersive';
 const isImmersivePage = body?.classList.contains('immersive-page');
+const isLongPage = () => isImmersivePage;
 
 const setReaderDisabled = (disabled: boolean) => {
   if (!readerBtn) return;

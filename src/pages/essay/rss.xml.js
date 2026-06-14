@@ -1,5 +1,5 @@
 import rss from '@astrojs/rss';
-import { getEssaySlug, getVisibleEssays } from '../../lib/content';
+import { getEssayPath, getVisibleEssays } from '../../lib/content';
 import { createWithBase } from '../../utils/format';
 import { getThemeSettings } from '../../lib/theme-settings';
 
@@ -20,7 +20,7 @@ export async function GET(context) {
       title: entry.data.title,
       pubDate: entry.data.date,
       description: entry.data.description,
-      link: withBase(`/archive/${getEssaySlug(entry)}/`)
+      link: withBase(getEssayPath(entry))
     }))
   });
 }

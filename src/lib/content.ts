@@ -19,9 +19,9 @@ export type GetPublishedOptions<K extends CollectionKey> = {
 };
 
 /**
- * Check whether a slug collides with sibling static routes under /archive/
- * or /essay/.  After the route narrowing (catch-all → single-segment), only
- * exact matches need to be checked.
+ * Check whether a slug collides with sibling static routes. After the route
+ * narrowing (catch-all -> single-segment), only exact matches need to be
+ * checked.
  *
  * NOTE: The primary defence is `assertUniqueEssaySlugs` which throws at build
  * time.  This predicate is kept in `getVisibleEssays` / `getArchiveEssays` as
@@ -74,6 +74,18 @@ export type EssayDerivedText = {
 export const getEssaySlug = (entry: EssayEntry) =>
   entry.data.slug ?? flattenEntryIdToSlug(entry.id);
 
+export const getEssayPath = (entryOrSlug: EssayEntry | string) => {
+  const slug = typeof entryOrSlug === 'string' ? entryOrSlug : getEssaySlug(entryOrSlug);
+
+  return `/${slug}/`;
+};
+
+export const getLegacyEssayCommentPath = (entryOrSlug: EssayEntry | string) => {
+  const slug = typeof entryOrSlug === 'string' ? entryOrSlug : getEssaySlug(entryOrSlug);
+
+  return `/archive/${slug}/`;
+};
+
 const assertUniqueEssaySlugs = (entries: readonly EssayEntry[]) => {
   const seen = new Map<string, string>();
   const duplicates = new Map<string, string[]>();
@@ -90,7 +102,7 @@ const assertUniqueEssaySlugs = (entries: readonly EssayEntry[]) => {
           `  Entry:       ${entry.id}`,
           `  Public slug: ${slug}`,
           `  Source:      ${slugSource}`,
-          `  Reason:      "${slug}" is reserved for sibling static routes under /archive/ and /essay/.`,
+          `  Reason:      "${slug}" is reserved for a sibling static route.`,
           '  How to fix:  change frontmatter.slug, or rename the file/path so the final public slug is no longer reserved.'
         ].join('\n')
       );

@@ -7,7 +7,7 @@ import {
   ADMIN_HOME_INTRO_LINK_DEFAULT,
   getAdminHomeIntroLinkOption
 } from '../lib/admin-console/shared';
-import { getEssayDerivedText, getEssaySlug, getVisibleEssays } from '../lib/content';
+import { getEssayDerivedText, getEssayPath, getEssaySlug, getVisibleEssays } from '../lib/content';
 import { getThemeSettings, getVisibleArticleMetaTags } from '../lib/theme-settings';
 import { createWithBase } from '../utils/format';
 import { HOME_INDEX_SIZE } from '../../site.config.mjs';
@@ -661,7 +661,7 @@ body[data-reading="immersive"] .reader-toggle .icon-book-open {
   <div class="list">
     {latest.map((entry) => {
       const slug = getEssaySlug(entry);
-      const href = withBase(`/archive/${slug}/`);
+      const href = withBase(getEssayPath(slug));
       const visibleTags = getVisibleArticleMetaTags(entry.data.tags, 'home');
       return (
         <EntryListItem

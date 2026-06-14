@@ -1,5 +1,5 @@
 import rss from '@astrojs/rss';
-import { getArchiveEssays, getEssaySlug } from '../../lib/content';
+import { getArchiveEssays, getEssayPath } from '../../lib/content';
 import { createWithBase } from '../../utils/format';
 import { getThemeSettings } from '../../lib/theme-settings';
 
@@ -20,7 +20,7 @@ export async function buildArchiveFeed(context, overrides = {}) {
       title: entry.data.title,
       pubDate: entry.data.date,
       description: entry.data.description,
-      link: withBase(`/archive/${getEssaySlug(entry)}/`)
+      link: withBase(getEssayPath(entry))
     }))
   });
 }

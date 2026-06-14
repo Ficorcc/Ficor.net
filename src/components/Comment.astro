@@ -11,13 +11,15 @@ const {
   artalkConfig = {},
   walineConfig = {},
   twikooConfig = {},
-  title = ''
+  title = '',
+  path
 } = Astro.props as {
   commentSystem: CommentSystem | 'none';
   artalkConfig?: CommentConfig;
   walineConfig?: CommentConfig;
   twikooConfig?: CommentConfig;
   title?: string;
+  path?: string;
 };
 
 const activeConfigBySystem: Record<CommentSystem, CommentConfig> = {
@@ -31,12 +33,13 @@ const activeSystem = commentSystem as CommentSystem;
 const containerId = `comment-${activeSystem}-container`;
 const configId = `comment-${activeSystem}-config`;
 const pagePath = Astro.url.pathname;
+const commentPath = path ?? pagePath;
 const commentPayload = {
   system: activeSystem,
   containerId,
   config: isSupportedSystem ? activeConfigBySystem[activeSystem] : {},
   page: {
-    path: pagePath,
+    path: commentPath,
     title,
     url: `${site.url}${pagePath}`,
     siteTitle: site.title

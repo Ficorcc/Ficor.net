@@ -1,5 +1,6 @@
 ---
-import { getVisibleEssayRouteEntries } from '../../lib/content';
+import { getEssayPath, getVisibleEssayRouteEntries } from '../../lib/content';
+import { createWithBase } from '../../utils/format';
 
 export const prerender = true;
 
@@ -13,8 +14,8 @@ export async function getStaticPaths() {
   });
 }
 
-return Astro.redirect(
-  `${(import.meta.env.BASE_URL ?? '/').replace(/\/?$/, '/')}archive/${Astro.params.slug}/`,
-  301
-);
+const base = import.meta.env.BASE_URL ?? '/';
+const withBase = createWithBase(base);
+
+return Astro.redirect(withBase(getEssayPath(Astro.props.slug)), 301);
 ---
