@@ -30,7 +30,7 @@ export const comment = {
   },
   // Waline 配置
   waline: {
-    serverURL: 'https://waline1.ficor.cc',  // Waline 服务端地址
+    serverURL: 'https://waline.ficor.cc',  // Waline 服务端地址
     // 其他 Waline 配置选项
   },
   // Twikoo 配置

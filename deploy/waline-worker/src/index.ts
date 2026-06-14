@@ -4,6 +4,7 @@ interface Env {
   ADMIN_NICK?: string;
   ADMIN_EMAIL?: string;
   ADMIN_URL?: string;
+  SITE_NAME?: string;
   SITE_URL?: string;
 }
 
@@ -64,8 +65,52 @@ const JSON_HEADERS = {
   "access-control-allow-headers": "content-type,authorization",
 };
 
+class HttpError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
 const ADMIN_ID = "waline-admin";
 const WALINE_ADMIN_VERSION = "0.34.1";
+const NAMESPACE_PREFIX = "site:";
+const WORKER_VERSION = "2026-06-14-no-ficor-net";
+const BLOCKED_HOSTS = ["ficor.net", "www.ficor.net"];
+
+type SiteConfig = {
+  key: string;
+  name: string;
+  url: string;
+  origins: string[];
+  hosts: string[];
+};
+
+const SITES: SiteConfig[] = [
+  {
+    key: "vii",
+    name: "vii.ink",
+    url: "https://vii.ink",
+    origins: ["https://vii.ink", "https://www.vii.ink", "http://127.0.0.1:4321", "http://localhost:4321"],
+    hosts: ["vii.ink", "www.vii.ink"],
+  },
+  {
+    key: "warmpaper",
+    name: "Warmpaper",
+    url: "https://warmpaper.pages.dev",
+    origins: ["https://warmpaper.pages.dev"],
+    hosts: ["warmpaper.pages.dev"],
+  },
+  {
+    key: "fangtang",
+    name: "方糖",
+    url: "https://linglingtu.com",
+    origins: ["https://linglingtu.com", "https://www.linglingtu.com", "https://fangtang.pages.dev"],
+    hosts: ["linglingtu.com", "www.linglingtu.com", "fangtang.pages.dev"],
+  },
+];
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -81,7 +126,7 @@ export default {
       }
 
       if (url.pathname === "/" || url.pathname === "/health") {
-        return json({ errno: 0, data: { name: "vii-ink-waline", ok: true } });
+        return json({ errno: 0, data: { name: "ficor-waline", version: WORKER_VERSION, ok: true, sites: SITES.map((site) => site.name) } });
       }
 
       if (url.pathname === "/ui" || url.pathname.startsWith("/ui/")) {
@@ -89,12 +134,12 @@ export default {
       }
 
       if (url.pathname === "/api/login" && request.method === "POST") {
-        return handleLogin(request, env);
+        return await handleLogin(request, env);
       }
 
       if (url.pathname === "/token") {
-        if (request.method === "GET") return handleToken(request, env);
-        if (request.method === "POST") return handleTokenLogin(request, env);
+        if (request.method === "GET") return await handleToken(request, env);
+        if (request.method === "POST") return await handleTokenLogin(request, env);
       }
 
       if (url.pathname === "/token/2fa") {
@@ -103,9 +148,9 @@ export default {
       }
 
       if (url.pathname === "/user") {
-        if (request.method === "GET") return getAdminUsers(url, request, env);
-        if (request.method === "POST") return registerUser(request, env);
-        if (request.method === "PUT") return updateUserProfile(request, env);
+        if (request.method === "GET") return await getAdminUsers(url, request, env);
+        if (request.method === "POST") return await registerUser(request, env);
+        if (request.method === "PUT") return await updateUserProfile(request, env);
       }
 
       if (url.pathname === "/user/password" && request.method === "PUT") {
@@ -115,20 +160,20 @@ export default {
       const userMatch = url.pathname.match(/^\/user\/([^/]+)$/);
 
       if (userMatch) {
-        if (request.method === "PUT") return updateAdminUser(userMatch[1], request, env);
-        if (request.method === "DELETE") return deleteAdminUser(userMatch[1], request, env);
+        if (request.method === "PUT") return await updateAdminUser(userMatch[1], request, env);
+        if (request.method === "DELETE") return await deleteAdminUser(userMatch[1], request, env);
       }
 
       if (url.pathname === "/comment") {
-        if (request.method === "GET") return getAdminComments(url, request, env);
-        if (request.method === "POST") return addComment(request, env);
+        if (request.method === "GET") return await getAdminComments(url, request, env);
+        if (request.method === "POST") return await addComment(request, env);
       }
 
       const adminCommentMatch = url.pathname.match(/^\/comment\/([^/]+)$/);
 
       if (adminCommentMatch) {
-        if (request.method === "PUT") return updateComment(adminCommentMatch[1], request, env);
-        if (request.method === "DELETE") return deleteComment(adminCommentMatch[1], request, env);
+        if (request.method === "PUT") return await updateComment(adminCommentMatch[1], request, env);
+        if (request.method === "DELETE") return await deleteComment(adminCommentMatch[1], request, env);
       }
 
       if (url.pathname === "/db" && request.method === "GET") {
@@ -140,32 +185,38 @@ export default {
       }
 
       if (url.pathname === "/api/comment/rss" && request.method === "GET") {
-        return handleRss(url, env);
+        return await handleRss(url, env);
       }
 
       if (url.pathname === "/api/comment") {
-        if (request.method === "GET") return getComments(url, env);
-        if (request.method === "POST") return addComment(request, env);
+        if (request.method === "GET") return await getComments(url, request, env);
+        if (request.method === "POST") return await addComment(request, env);
       }
 
       const commentMatch = url.pathname.match(/^\/api\/comment\/([^/]+)$/);
 
       if (commentMatch) {
-        if (request.method === "PUT") return updateComment(commentMatch[1], request, env);
-        if (request.method === "DELETE") return deleteComment(commentMatch[1], request, env);
+        if (request.method === "PUT") return await updateComment(commentMatch[1], request, env);
+        if (request.method === "DELETE") return await deleteComment(commentMatch[1], request, env);
       }
 
       if (url.pathname === "/api/article") {
-        if (request.method === "GET") return getArticleCounters(url, env);
-        if (request.method === "POST") return updateArticleCounter(request, env);
+        if (request.method === "GET") return await getArticleCounters(url, request, env);
+        if (request.method === "POST") return await updateArticleCounter(request, env);
       }
 
       if (url.pathname === "/api/user" && request.method === "GET") {
-        return getUsers(url, env);
+        return await getUsers(url, request, env);
       }
 
       return json({ errno: 404, errmsg: "Not found" }, 404);
     } catch (error) {
+      const maybeHttpError = error as { status?: unknown; message?: unknown };
+
+      if (typeof maybeHttpError.status === "number") {
+        return json({ errno: maybeHttpError.status, errmsg: String(maybeHttpError.message || "Error") }, maybeHttpError.status);
+      }
+
       const message = error instanceof Error ? error.message : "Server error";
 
       return json({ errno: 500, errmsg: message }, 500);
@@ -173,13 +224,14 @@ export default {
   },
 };
 
-async function getComments(url: URL, env: Env): Promise<Response> {
+async function getComments(url: URL, request: Request, env: Env): Promise<Response> {
   const type = url.searchParams.get("type");
 
-  if (type === "count") return getCommentCounts(url, env);
-  if (type === "recent") return getRecentComments(url, env);
+  if (type === "count") return getCommentCounts(url, request, env);
+  if (type === "recent") return getRecentComments(url, request, env);
 
-  const path = url.searchParams.get("path") || "/";
+  const site = requireSite(request, url.searchParams.get("path"));
+  const path = namespacedPath(url.searchParams.get("path") || "/", site);
   const pageSize = clampNumber(Number(url.searchParams.get("pageSize") || "10"), 1, 50);
   const page = clampNumber(Number(url.searchParams.get("page") || "1"), 1, 9999);
   const sortBy = url.searchParams.get("sortBy") || "insertedAt_desc";
@@ -218,7 +270,7 @@ async function getComments(url: URL, env: Env): Promise<Response> {
 
     const list = children.get(row.rid) || [];
 
-    list.push(toWalineComment(row));
+    list.push(toWalineComment(row, site));
     children.set(row.rid, list);
   }
 
@@ -226,7 +278,7 @@ async function getComments(url: URL, env: Env): Promise<Response> {
     errno: 0,
     data: {
       count: total,
-      data: roots.results.map((row) => ({ ...toWalineComment(row), children: children.get(row.object_id) || [] })),
+      data: roots.results.map((row) => ({ ...toWalineComment(row, site), children: children.get(row.object_id) || [] })),
       page,
       pageSize,
       totalPages: Math.max(1, Math.ceil(total / pageSize)),
@@ -238,7 +290,8 @@ async function addComment(request: Request, env: Env): Promise<Response> {
   const body = await request.json<WalineCommentInput>();
   const tokenUser = await getAuthorizedUser(request, env);
   const rawComment = String(body.comment || "").trim();
-  const url = String(body.url || "/").trim();
+  const site = requireSite(request, body.url);
+  const url = namespacedPath(body.url || "/", site);
   const nick = tokenUser?.display_name || String(body.nick || "匿名").trim();
 
   if (!rawComment) return json({ errno: 400, errmsg: "请输入评论内容" }, 400);
@@ -285,7 +338,7 @@ async function addComment(request: Request, env: Env): Promise<Response> {
 
   const created = await findComment(env, objectId);
 
-  return json({ errno: 0, data: created ? toWalineComment(created) : null });
+  return json({ errno: 0, data: created ? toWalineComment(created, site) : null });
 }
 
 async function updateComment(objectId: string, request: Request, env: Env): Promise<Response> {
@@ -298,7 +351,7 @@ async function updateComment(objectId: string, request: Request, env: Env): Prom
 
     const row = await findComment(env, objectId);
 
-    return json({ errno: 0, data: row ? toWalineComment(row) : null });
+    return json({ errno: 0, data: row ? toWalineComment(row, resolveSite(request, null)) : null });
   }
 
   const admin = await getAuthorizedUser(request, env);
@@ -332,7 +385,7 @@ async function updateComment(objectId: string, request: Request, env: Env): Prom
 
   const row = await findComment(env, objectId);
 
-  return json({ errno: 0, data: row ? toWalineComment(row) : null });
+  return json({ errno: 0, data: row ? toWalineComment(row, resolveSite(request, null)) : null });
 }
 
 async function deleteComment(objectId: string, request: Request, env: Env): Promise<Response> {
@@ -546,47 +599,50 @@ async function getAdminComments(url: URL, request: Request, env: Env): Promise<R
       page,
       pageSize,
       totalPages: Math.max(1, Math.ceil((totalRow?.total || 0) / pageSize)),
-      data: rows.results.map(toWalineComment),
+      data: rows.results.map((row) => toWalineComment(row, null)),
     },
   });
 }
 
-async function getCommentCounts(url: URL, env: Env): Promise<Response> {
+async function getCommentCounts(url: URL, request: Request, env: Env): Promise<Response> {
+  const site = requireSite(request, url.searchParams.get("url"));
   const paths = (url.searchParams.get("url") || "").split(",").filter(Boolean);
   const data = [];
 
   for (const path of paths) {
-    data.push(await countApproved(env, decodeURIComponent(path)));
+    data.push(await countApproved(env, namespacedPath(decodeURIComponent(path), site)));
   }
 
   return json({ errno: 0, data });
 }
 
-async function getRecentComments(url: URL, env: Env): Promise<Response> {
+async function getRecentComments(url: URL, request: Request, env: Env): Promise<Response> {
+  const site = requireSite(request, null);
   const count = clampNumber(Number(url.searchParams.get("count") || "5"), 1, 20);
   const rows = await env.DB.prepare(
     `SELECT * FROM comments
-     WHERE status = 'approved'
+     WHERE status = 'approved' AND url LIKE ?
      ORDER BY inserted_at DESC
      LIMIT ?`,
   )
-    .bind(count)
+    .bind(`${NAMESPACE_PREFIX}${site.key}:%`, count)
     .all<CommentRow>();
 
-  return json({ errno: 0, data: rows.results.map(toWalineComment) });
+  return json({ errno: 0, data: rows.results.map((row) => toWalineComment(row, site)) });
 }
 
-async function getUsers(url: URL, env: Env): Promise<Response> {
+async function getUsers(url: URL, request: Request, env: Env): Promise<Response> {
+  const site = requireSite(request, null);
   const pageSize = clampNumber(Number(url.searchParams.get("pageSize") || "10"), 1, 100);
   const rows = await env.DB.prepare(
     `SELECT nick, mail, link, COUNT(*) AS count
      FROM comments
-     WHERE status = 'approved'
+     WHERE status = 'approved' AND url LIKE ?
      GROUP BY lower(mail), nick, link
      ORDER BY count DESC
      LIMIT ?`,
   )
-    .bind(pageSize)
+    .bind(`${NAMESPACE_PREFIX}${site.key}:%`, pageSize)
     .all<{ nick: string; mail: string | null; link: string | null; count: number }>();
 
   return json({
@@ -600,17 +656,20 @@ async function getUsers(url: URL, env: Env): Promise<Response> {
   });
 }
 
-async function getArticleCounters(url: URL, env: Env): Promise<Response> {
+async function getArticleCounters(url: URL, request: Request, env: Env): Promise<Response> {
+  const site = requireSite(request, url.searchParams.get("path"));
   const paths = (url.searchParams.get("path") || "").split(",").filter(Boolean);
   const types = (url.searchParams.get("type") || "time").split(",").filter(Boolean);
   const data = [];
 
   for (const path of paths) {
-    const item: Record<string, number | string> = { path };
+    const clientPath = normalizeClientPath(path);
+    const storedPath = namespacedPath(clientPath, site);
+    const item: Record<string, number | string> = { path: clientPath };
 
     for (const type of types) {
       const row = await env.DB.prepare("SELECT value FROM article_counters WHERE path = ? AND type = ?")
-        .bind(path, type)
+        .bind(storedPath, type)
         .first<{ value: number }>();
 
       item[type] = row?.value || 0;
@@ -624,7 +683,8 @@ async function getArticleCounters(url: URL, env: Env): Promise<Response> {
 
 async function updateArticleCounter(request: Request, env: Env): Promise<Response> {
   const body = await request.json<{ path?: string; type?: string; action?: string }>();
-  const path = body.path || "/";
+  const site = requireSite(request, body.path);
+  const path = namespacedPath(body.path || "/", site);
   const type = body.type || "time";
   const delta = body.action === "desc" ? -1 : 1;
 
@@ -644,19 +704,19 @@ async function updateArticleCounter(request: Request, env: Env): Promise<Respons
 }
 
 async function handleRss(url: URL, env: Env): Promise<Response> {
+  const site = siteFromUrlParam(url.searchParams.get("site")) || SITES[0];
   const path = url.searchParams.get("path");
   const rows = await env.DB.prepare(
     `SELECT * FROM comments
-     WHERE status = 'approved' ${path ? "AND url = ?" : ""}
+     WHERE status = 'approved' AND url LIKE ? ${path ? "AND url = ?" : ""}
      ORDER BY inserted_at DESC
      LIMIT 20`,
   )
-    .bind(...(path ? [path] : []))
+    .bind(`${NAMESPACE_PREFIX}${site.key}:%`, ...(path ? [namespacedPath(path, site)] : []))
     .all<CommentRow>();
-  const site = env.SITE_URL || "https://vii.ink";
   const items = rows.results
     .map(
-      (row) => `<item><title>${xmlEscape(row.nick)} 的评论</title><link>${xmlEscape(site + row.url)}</link><description>${xmlEscape(
+      (row) => `<item><title>${xmlEscape(row.nick)} 的评论</title><link>${xmlEscape(publicUrl(row.url))}</link><description>${xmlEscape(
         row.raw_comment,
       )}</description><pubDate>${new Date(row.inserted_at).toUTCString()}</pubDate></item>`,
     )
@@ -678,7 +738,7 @@ function adminPage(env: Env): Response {
 <body>
   <script>
     window.serverURL = "/";
-    window.SITE_NAME = "Waline";
+    window.SITE_NAME = ${JSON.stringify(env.SITE_NAME || "Ficor Waline")};
     window.SITE_URL = ${JSON.stringify(env.SITE_URL || "https://vii.ink")};
     window.oauthServices = [];
   </script>
@@ -755,14 +815,122 @@ async function countApproved(env: Env, path: string): Promise<number> {
   return row?.total || 0;
 }
 
-function toWalineComment(row: CommentRow) {
+function requireSite(request: Request, pathCandidate: string | null | undefined): SiteConfig {
+  const site = resolveSite(request, pathCandidate);
+
+  if (!site) {
+    throw new HttpError(403, "当前来源不在 Waline 允许的网站列表中");
+  }
+
+  return site;
+}
+
+function resolveSite(request: Request, pathCandidate: string | null | undefined): SiteConfig | null {
+  assertNotBlocked(request.headers.get("origin"));
+  assertNotBlocked(request.headers.get("referer"));
+
+  return siteFromUrlParam(pathCandidate) || siteFromUrlParam(request.headers.get("origin")) || siteFromUrlParam(request.headers.get("referer"));
+}
+
+function siteFromUrlParam(value: string | null | undefined): SiteConfig | null {
+  if (!value) return null;
+
+  const text = value.trim();
+  const host = hostFromMaybeUrl(text);
+
+  if (host) {
+    return SITES.find((site) => site.hosts.includes(host)) || null;
+  }
+
+  return SITES.find((site) => text.startsWith(`${NAMESPACE_PREFIX}${site.key}:`) || text === site.key) || null;
+}
+
+function hostFromMaybeUrl(value: string): string | null {
+  try {
+    if (/^https?:\/\//i.test(value)) return new URL(value).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+function assertNotBlocked(value: string | null | undefined): void {
+  const host = value ? hostFromMaybeUrl(value) : null;
+
+  if (host && BLOCKED_HOSTS.includes(host)) {
+    throw new HttpError(403, "当前来源不在 Waline 允许的网站列表中");
+  }
+}
+
+function namespacedPath(value: string, site: SiteConfig): string {
+  return `${NAMESPACE_PREFIX}${site.key}:${normalizeClientPath(value)}`;
+}
+
+function normalizeClientPath(value: string): string {
+  const text = String(value || "/").trim() || "/";
+
+  if (text.startsWith(NAMESPACE_PREFIX)) {
+    const parsed = parseNamespacedPath(text);
+
+    return parsed.path;
+  }
+
+  try {
+    if (/^https?:\/\//i.test(text)) {
+      const url = new URL(text);
+
+      return `${url.pathname || "/"}${url.search || ""}${url.hash || ""}`;
+    }
+  } catch {
+    // Fall through to path normalization.
+  }
+
+  return text.startsWith("/") ? text : `/${text}`;
+}
+
+function parseNamespacedPath(value: string): { site: SiteConfig | null; path: string } {
+  if (!value.startsWith(NAMESPACE_PREFIX)) return { site: null, path: normalizeClientPath(value) };
+
+  const rest = value.slice(NAMESPACE_PREFIX.length);
+  const delimiter = rest.indexOf(":");
+
+  if (delimiter < 0) return { site: null, path: normalizeClientPath(rest) };
+
+  const key = rest.slice(0, delimiter);
+  const path = rest.slice(delimiter + 1) || "/";
+
+  return {
+    site: SITES.find((item) => item.key === key) || null,
+    path: normalizeClientPath(path),
+  };
+}
+
+function visiblePath(value: string, currentSite: SiteConfig | null): string {
+  const parsed = parseNamespacedPath(value);
+
+  if (!parsed.site) return parsed.path;
+  if (currentSite && parsed.site.key === currentSite.key) return parsed.path;
+
+  return `${parsed.site.url}${parsed.path}`;
+}
+
+function publicUrl(value: string): string {
+  const parsed = parseNamespacedPath(value);
+
+  if (!parsed.site) return parsed.path;
+
+  return `${parsed.site.url}${parsed.path}`;
+}
+
+function toWalineComment(row: CommentRow, site: SiteConfig | null = null) {
   return {
     objectId: row.object_id,
     nick: row.nick,
     link: row.link || "",
     mail: row.mail || "",
     comment: row.comment,
-    url: row.url,
+    url: visiblePath(row.url, site),
     time: row.inserted_at,
     insertedAt: row.inserted_at,
     updatedAt: row.updated_at,

@@ -1,19 +1,20 @@
-name = "vii-ink-waline"
+name = "ficor-waline"
 main = "src/index.ts"
 compatibility_date = "2026-06-01"
 workers_dev = true
 
 [[routes]]
-pattern = "waline1.ficor.cc"
+pattern = "waline.ficor.cc"
 custom_domain = true
 
 [vars]
 SITE_URL = "https://vii.ink"
+SITE_NAME = "Ficor Waline"
 ADMIN_NICK = "Ficor"
 ADMIN_EMAIL = "ficor@qq.com"
 ADMIN_URL = "https://vii.ink"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "vii-ink-waline"
-database_id = "fed0ca8e-25b8-49a9-a6ca-8d77767fa380"
+database_name = "ficor-waline"
+database_id = "dc44b5d8-2686-4ede-b790-6540af6fb7a7"
