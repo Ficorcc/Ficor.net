@@ -1,7 +1,7 @@
 ---
 import BitsPageView from '../../../components/BitsPageView.astro';
 import { buildPaginatedPaths } from '../../../lib/content';
-import { getBitsPageData, getBitsPagePath } from '../../../lib/bits';
+import { getBitsPageData } from '../../../lib/bits';
 import { PAGE_SIZE_BITS } from '../../../../site.config.mjs';
 
 export const prerender = true;
@@ -26,6 +26,4 @@ if (!Number.isInteger(currentPage) || currentPage <= 1 || currentPage > totalPag
   currentPage={currentPage}
   totalPages={totalPages}
   yearOptions={yearOptions}
-  prevPath={currentPage === 2 ? getBitsPagePath(1) : getBitsPagePath(currentPage - 1)}
-  nextPath={currentPage < totalPages ? getBitsPagePath(currentPage + 1) : null}
 />

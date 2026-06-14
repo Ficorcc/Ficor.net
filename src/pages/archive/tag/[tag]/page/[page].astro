@@ -46,8 +46,6 @@ const pageItems = getPageSlice(filteredItems, currentPage, PAGE_SIZE_ARCHIVE);
   currentPage={currentPage}
   totalPages={totalPages}
   currentPath={getTagPath('archive', currentTag.key, currentPage)}
-  prevPath={currentPage === 2 ? getTagPath('archive', currentTag.key) : getTagPath('archive', currentTag.key, currentPage - 1)}
-  nextPath={currentPage < totalPages ? getTagPath('archive', currentTag.key, currentPage + 1) : null}
   tagSummaries={tagSummaries}
   currentTag={currentTag}
 />

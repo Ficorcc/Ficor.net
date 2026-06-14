@@ -423,10 +423,12 @@
 .pagination__inner {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
 .pagination__link {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -438,6 +440,13 @@
   color: var(--text);
   font-size: 13px;
   font-family: "LXGW WenKai Lite", "Kaiti SC", "STKaiti", serif;
+}
+
+.pagination__pages {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .pagination__link:hover,
@@ -452,8 +461,34 @@
   outline-offset: 2px;
 }
 
-.pagination__link--next {
-  margin-left: auto;
+.pagination__link--current {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.pagination__link--current::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 1.4em;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+  transform: translateX(-50%);
+}
+
+.pagination__link--disabled {
+  color: var(--faint);
+  cursor: default;
+  opacity: 0.58;
+}
+
+.pagination__ellipsis {
+  color: var(--faint);
+  font-family: "LXGW WenKai Lite", "Kaiti SC", "STKaiti", serif;
 }
 
 .essay-page .pagination__inner {

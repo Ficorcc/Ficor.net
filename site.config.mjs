@@ -30,7 +30,7 @@ export const comment = {
   },
   // Waline 配置
   waline: {
-    serverURL: 'https://waline.ficor.cc',  // Waline 服务端地址
+    serverURL: 'https://waline1.ficor.cc',  // Waline 服务端地址
     // 其他 Waline 配置选项
   },
   // Twikoo 配置
@@ -43,5 +43,6 @@ export const comment = {
 export const PAGE_SIZE_ARCHIVE = 12;
 export const PAGE_SIZE_ESSAY = 12;
 export const PAGE_SIZE_BITS = 20;
+export const HOME_INDEX_SIZE = 3;
 
 export { hasSiteUrl, siteUrl };

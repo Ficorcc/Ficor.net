@@ -1,0 +1,86 @@
+---
+import { createWithBase } from '../utils/format';
+
+type PageItem = number | 'ellipsis';
+
+const {
+  currentPage,
+  firstPath,
+  getPagePath,
+  label = '分页',
+  totalPages
+} = Astro.props as {
+  currentPage: number;
+  firstPath: string;
+  getPagePath: (page: number) => string;
+  label?: string;
+  totalPages: number;
+};
+
+const base = import.meta.env.BASE_URL ?? '/';
+const withBase = createWithBase(base);
+const normalizedCurrentPage = Math.min(Math.max(currentPage, 1), totalPages);
+const getPath = (page: number) => (page === 1 ? firstPath : getPagePath(page));
+const prevPath = normalizedCurrentPage > 1 ? getPath(normalizedCurrentPage - 1) : null;
+const nextPath = normalizedCurrentPage < totalPages ? getPath(normalizedCurrentPage + 1) : null;
+
+const buildPageItems = (): PageItem[] => {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const pages = new Set<number>([1, totalPages]);
+  for (
+    let page = Math.max(2, normalizedCurrentPage - 1);
+    page <= Math.min(totalPages - 1, normalizedCurrentPage + 1);
+    page += 1
+  ) {
+    pages.add(page);
+  }
+
+  const sortedPages = Array.from(pages).sort((a, b) => a - b);
+  const items: PageItem[] = [];
+
+  sortedPages.forEach((page, index) => {
+    const previous = sortedPages[index - 1];
+    if (previous && page - previous > 1) {
+      items.push('ellipsis');
+    }
+    items.push(page);
+  });
+
+  return items;
+};
+
+const pageItems = buildPageItems();
+---
+
+{totalPages > 1 ? (
+  <nav class="pagination" aria-label={label}>
+    <div class="pagination__inner">
+      {prevPath ? (
+        <a class="pagination__link" rel="prev" href={withBase(prevPath)}>上一页</a>
+      ) : (
+        <span class="pagination__link pagination__link--disabled" aria-disabled="true">上一页</span>
+      )}
+
+      <div class="pagination__pages" aria-label="页码">
+        {pageItems.map((item) => (
+          item === 'ellipsis' ? (
+            <span class="pagination__ellipsis" aria-hidden="true">...</span>
+          ) : item === normalizedCurrentPage ? (
+            <span class="pagination__link pagination__link--current" aria-current="page">{item}</span>
+          ) : (
+            <a class="pagination__link pagination__link--number" href={withBase(getPath(item))}>{item}</a>
+          )
+        ))}
+      </div>
+
+      {nextPath ? (
+        <a class="pagination__link" rel="next" href={withBase(nextPath)}>下一页</a>
+      ) : (
+        <span class="pagination__link pagination__link--disabled" aria-disabled="true">下一页</span>
+      )}
+    </div>
+  </nav>
+) : null}

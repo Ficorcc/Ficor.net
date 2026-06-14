@@ -22,6 +22,4 @@ const pageEssays = getPageSlice(visibleEssays, currentPage, PAGE_SIZE_ESSAY);
   resultCount={visibleEssays.length}
   currentPage={currentPage}
   totalPages={totalPages}
-  prevPath={currentPage === 2 ? '/essay/' : `/essay/page/${currentPage - 1}/`}
-  nextPath={currentPage < totalPages ? `/essay/page/${currentPage + 1}/` : null}
 />

@@ -164,6 +164,9 @@ const payloadJson = JSON.stringify(commentPayload).replace(/</g, '\\u003c');
   
   .comment-container {
     max-width: 100%;
+    --waline-theme-color: var(--accent);
+    --waline-active-color: color-mix(in srgb, var(--accent) 78%, var(--text));
+    --waline-badge-color: var(--accent);
   }
 
   .comment-container :global(.wl-panel),
@@ -182,6 +185,10 @@ const payloadJson = JSON.stringify(commentPayload).replace(/</g, '\\u003c');
   .comment-container :global(.atk-textarea),
   .comment-container :global(.tk-input) {
     font-family: inherit;
+  }
+
+  .comment-container :global(.wl-header input.wl-input) {
+    font-size: 0.9375em;
   }
 
   .comment-container :global(.wl-content),

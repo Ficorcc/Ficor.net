@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BitCard from './BitCard.astro';
 import Lightbox from './Lightbox.astro';
+import Pagination from './Pagination.astro';
 import '../styles/bits-page.css';
 import { MAX_PRIMARY_BITS_FILTER_YEARS, getBitsDerivedText, type BitsEntry, type BitsYearOption } from '../lib/bits';
 import { createWithBase } from '../utils/format';
@@ -12,16 +13,12 @@ import { joinPageSubtitleText } from '../utils/format';
 const {
   currentPage,
   items,
-  nextPath = null,
-  prevPath = null,
   resultCount,
   totalPages,
   yearOptions = []
 } = Astro.props as {
   currentPage: number;
   items: BitsEntry[];
-  nextPath?: string | null;
-  prevPath?: string | null;
   resultCount: number;
   totalPages: number;
   yearOptions?: BitsYearOption[];
@@ -208,16 +205,13 @@ const cards = await Promise.all(
       ))}
     </div>
 
-    {totalPages > 1 ? (
-      <nav class="pagination" aria-label={`${pageTitleText}分页`}>
-        <div class="pagination__inner">
-          {prevPath ? <a class="pagination__link" rel="prev" href={withBase(prevPath)}>上一页</a> : null}
-          {nextPath ? (
-            <a class="pagination__link pagination__link--next" rel="next" href={withBase(nextPath)}>下一页</a>
-          ) : null}
-        </div>
-      </nav>
-    ) : null}
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      firstPath="/bits/"
+      getPagePath={(pageNumber) => `/bits/page/${pageNumber}/`}
+      label={`${pageTitleText}分页`}
+    />
   </div>
 
   <section

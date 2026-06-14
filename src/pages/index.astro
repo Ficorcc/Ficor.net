@@ -10,6 +10,7 @@ import {
 import { getEssayDerivedText, getEssaySlug, getVisibleEssays } from '../lib/content';
 import { getThemeSettings, getVisibleArticleMetaTags } from '../lib/theme-settings';
 import { createWithBase } from '../utils/format';
+import { HOME_INDEX_SIZE } from '../../site.config.mjs';
 
 const base = import.meta.env.BASE_URL ?? '/';
 const withBase = createWithBase(base);
@@ -33,7 +34,8 @@ const resolvedIntroMoreLinks = (introMoreLinks.length ? introMoreLinks : [...ADM
   (linkKey) => getAdminHomeIntroLinkOption(linkKey)
 );
 
-const latest = (await getVisibleEssays()).slice(0, 12);
+const visibleEssays = await getVisibleEssays();
+const latest = visibleEssays.slice(0, HOME_INDEX_SIZE);
 
 type HomeHeadCriticalFontFace = {
   family: 'LXGW WenKai Lite' | 'Noto Serif SC';

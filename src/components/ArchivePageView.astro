@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TagFilterHeader from './TagFilterHeader.astro';
+import Pagination from './Pagination.astro';
 import { createWithBase, getEssaySlug, type EssayEntry } from '../lib/content';
 import { getTagPath, type TagSummary } from '../lib/tags';
 import { getThemeSettings } from '../lib/theme-settings';
@@ -11,8 +12,6 @@ const {
   currentPath,
   currentTag = null,
   items,
-  nextPath = null,
-  prevPath = null,
   resultCount,
   tagSummaries,
   totalPages
@@ -21,8 +20,6 @@ const {
   currentPath: string;
   currentTag?: TagSummary | null;
   items: EssayEntry[];
-  nextPath?: string | null;
-  prevPath?: string | null;
   resultCount: number;
   tagSummaries: TagSummary[];
   totalPages: number;
@@ -65,6 +62,9 @@ const currentTagState = currentTag
       label: currentTag.label
     }
   : null;
+const paginationFirstPath = currentTag ? getTagPath('archive', currentTag.key) : '/archive/';
+const getPaginationPagePath = (pageNumber: number) =>
+  currentTag ? getTagPath('archive', currentTag.key, pageNumber) : `/archive/page/${pageNumber}/`;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -117,16 +117,13 @@ const currentTagState = currentTag
     </section>
   ))}
 
-  {totalPages > 1 ? (
-    <nav class="pagination" aria-label={`${pageTitleText}分页`}>
-      <div class="pagination__inner">
-        {prevPath ? <a class="pagination__link" rel="prev" href={withBase(prevPath)}>上一页</a> : null}
-        {nextPath ? (
-          <a class="pagination__link pagination__link--next" rel="next" href={withBase(nextPath)}>下一页</a>
-        ) : null}
-      </div>
-    </nav>
-  ) : null}
+  <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    firstPath={paginationFirstPath}
+    getPagePath={getPaginationPagePath}
+    label={`${pageTitleText}分页`}
+  />
 
   <script>
     import '../scripts/entry-search.ts';
