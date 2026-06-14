@@ -93,8 +93,15 @@ const SITES: SiteConfig[] = [
     key: "vii",
     name: "vii.ink",
     url: "https://vii.ink",
-    origins: ["https://vii.ink", "https://www.vii.ink", "http://127.0.0.1:4321", "http://localhost:4321"],
-    hosts: ["vii.ink", "www.vii.ink"],
+    origins: [
+      "https://vii.ink",
+      "https://www.vii.ink",
+      "http://127.0.0.1:4321",
+      "http://localhost:4321",
+      "http://127.0.0.1:4322",
+      "http://localhost:4322",
+    ],
+    hosts: ["vii.ink", "www.vii.ink", "127.0.0.1", "localhost"],
   },
   {
     key: "warmpaper",
@@ -839,10 +846,22 @@ function siteFromUrlParam(value: string | null | undefined): SiteConfig | null {
   const host = hostFromMaybeUrl(text);
 
   if (host) {
-    return SITES.find((site) => site.hosts.includes(host)) || null;
+    const origin = originFromMaybeUrl(text);
+
+    return SITES.find((site) => (origin && site.origins.includes(origin)) || site.hosts.includes(host)) || null;
   }
 
   return SITES.find((site) => text.startsWith(`${NAMESPACE_PREFIX}${site.key}:`) || text === site.key) || null;
+}
+
+function originFromMaybeUrl(value: string): string | null {
+  try {
+    if (/^https?:\/\//i.test(value)) return new URL(value).origin.toLowerCase();
+  } catch {
+    return null;
+  }
+
+  return null;
 }
 
 function hostFromMaybeUrl(value: string): string | null {
