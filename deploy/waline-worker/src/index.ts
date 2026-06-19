@@ -77,7 +77,7 @@ class HttpError extends Error {
 const ADMIN_ID = "waline-admin";
 const WALINE_ADMIN_VERSION = "0.34.1";
 const NAMESPACE_PREFIX = "site:";
-const WORKER_VERSION = "2026-06-14-no-ficor-net";
+const WORKER_VERSION = "2026-06-14-suiyanpianyu";
 const BLOCKED_HOSTS = ["ficor.net", "www.ficor.net"];
 
 type SiteConfig = {
@@ -116,6 +116,13 @@ const SITES: SiteConfig[] = [
     url: "https://linglingtu.com",
     origins: ["https://linglingtu.com", "https://www.linglingtu.com", "https://fangtang.pages.dev"],
     hosts: ["linglingtu.com", "www.linglingtu.com", "fangtang.pages.dev"],
+  },
+  {
+    key: "suiyanpianyu",
+    name: "碎言片语",
+    url: "https://suiyanpianyu.pages.dev",
+    origins: ["https://suiyanpianyu.pages.dev"],
+    hosts: ["suiyanpianyu.pages.dev"],
   },
 ];
 

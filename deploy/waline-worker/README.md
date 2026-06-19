@@ -13,6 +13,7 @@ Supported site groups:
 - `vii.ink`
 - `warmpaper.pages.dev`
 - `linglingtu.com` / `fangtang.pages.dev`
+- `suiyanpianyu.pages.dev`
 
 Each site only needs this client config:
 

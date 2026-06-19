@@ -1,5 +1,105 @@
 [
   {
+    "id": "jDciCFgWDtTnxFs9cS6NyS",
+    "memosName": "memos/jDciCFgWDtTnxFs9cS6NyS",
+    "content": "一个人也可以活成一支队伍，对着自己的头脑和心灵招兵买马",
+    "visibility": "PUBLIC",
+    "createdAt": "2026-06-15T01:26:00Z",
+    "updatedAt": "2026-06-15T01:26:00Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "9CTuocKZ5JgX9infTcQBSd",
+    "memosName": "memos/9CTuocKZ5JgX9infTcQBSd",
+    "content": "00后说80后没见过世面。小屁孩，我就问你，你见过国足进世界杯吗？",
+    "visibility": "PROTECTED",
+    "createdAt": "2026-06-12T03:44:45Z",
+    "updatedAt": "2026-06-12T03:44:45Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "F6LNdqoqkWEZYPsWf76WYK",
+    "memosName": "memos/F6LNdqoqkWEZYPsWf76WYK",
+    "content": "弄了一个后台，试试怎么个事",
+    "visibility": "PUBLIC",
+    "createdAt": "2026-06-06T13:38:01Z",
+    "updatedAt": "2026-06-06T13:38:01Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "TfuKZuStRGP9gU53diVFQe",
+    "memosName": "memos/TfuKZuStRGP9gU53diVFQe",
+    "content": "官娘子死满街站，官家死了没人抬",
+    "visibility": "PUBLIC",
+    "createdAt": "2026-06-04T00:12:35Z",
+    "updatedAt": "2026-06-04T00:12:35Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "gHtMiwD9XsmCChZ8rxiNyS",
+    "memosName": "memos/gHtMiwD9XsmCChZ8rxiNyS",
+    "content": "人生如果事事都能如意，那就不叫生活了，所以睡前原谅一切，醒来不问过往。珍惜所有的不期而遇，看淡所有的不辞而别，生活嘛，慢慢来，你又不差",
+    "visibility": "PUBLIC",
+    "createdAt": "2026-06-03T04:12:03Z",
+    "updatedAt": "2026-06-03T04:12:03Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "DfuZwzScbhjGcaHFQdGrbi",
+    "memosName": "memos/DfuZwzScbhjGcaHFQdGrbi",
+    "content": "要想日子过得好，不做媒来不担保",
+    "visibility": "PROTECTED",
+    "createdAt": "2026-06-02T04:43:15Z",
+    "updatedAt": "2026-06-02T04:43:15Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "oHsdkm2NSissp7dZFHhVPf",
+    "memosName": "memos/oHsdkm2NSissp7dZFHhVPf",
+    "content": "鞠萍姐姐今天退休了，时间啊",
+    "visibility": "PUBLIC",
+    "createdAt": "2026-06-01T02:20:53Z",
+    "updatedAt": "2026-06-01T02:20:53Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "3NvJAmMdKmtXrGr5RbQFMU",
+    "memosName": "memos/3NvJAmMdKmtXrGr5RbQFMU",
+    "content": "首先你要快乐，其次，都是其次",
+    "visibility": "PUBLIC",
+    "createdAt": "2026-05-29T00:27:12Z",
+    "updatedAt": "2026-05-29T00:27:12Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "KMhzbx79KUgYuVZjM9enUY",
+    "memosName": "memos/KMhzbx79KUgYuVZjM9enUY",
+    "content": "是喝酒之前报备的人重要，还是喝多了之后找的那个人重要？\n如果这俩不是一个人的话，瞒住了最重要。\n你都出来喝酒了，谁陪你喝酒谁最重要。\n你出来喝酒你都不带他，他能有多重要。",
+    "visibility": "PUBLIC",
+    "createdAt": "2026-05-27T19:18:08Z",
+    "updatedAt": "2026-05-27T19:18:08Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "AGGA3RKJ6BxFEYS26DUvHN",
+    "memosName": "memos/AGGA3RKJ6BxFEYS26DUvHN",
+    "content": "苍蝇这小东西，跟人一样，也能闻到同类的血腥味。嗡嗡的围着我转，拿苍蝇拍拍死一个后，其余的就都飞走了，远离是非之地了。",
+    "visibility": "PUBLIC",
+    "createdAt": "2026-05-24T07:05:36Z",
+    "updatedAt": "2026-05-24T07:05:36Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
     "id": "eFUCVdboyvBzS2AqwVfxVo",
     "memosName": "memos/eFUCVdboyvBzS2AqwVfxVo",
     "content": "不用通过git bash 来更新静态博客，出了订阅不能直接调用默认浏览器，其他的功能完全够用。现在只需要封装成软件包就可以了。",
@@ -896,106 +996,6 @@
     "visibility": "PUBLIC",
     "createdAt": "2025-10-16T11:26:36Z",
     "updatedAt": "2025-10-30T01:14:37Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "Tzwt62CxCD2t2ahD26e5ZL",
-    "memosName": "memos/Tzwt62CxCD2t2ahD26e5ZL",
-    "content": "#生活 #感悟 长大了才发现“时间过得真快啊”这句小时候听大人说起的口头禅，慢慢变成了自己的口头禅",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-13T22:49:24Z",
-    "updatedAt": "2025-10-30T01:14:49Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "Qo7ACSWWKdhu5kQP2wf9Un",
-    "memosName": "memos/Qo7ACSWWKdhu5kQP2wf9Un",
-    "content": "#生活 找出来一台旧的索尼CCD相机，玩了一天玩坏了，好象是时间长了，光学防抖松动了，一开机振动\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-13T08:54:33Z",
-    "updatedAt": "2025-10-30T01:11:31Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "aetGpNhiskCX9kDs9k6o4M",
-    "memosName": "memos/aetGpNhiskCX9kDs9k6o4M",
-    "content": "#生活 #网站  一直有三篇文章不能显示在首页，原来是文章形式的错误，这个主题识别不出来，把三篇文章合并了，重新发布了也不行，换成了Wordpress默认主题，发现文章形式是日志，改成标准就好了\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-12T09:37:28Z",
-    "updatedAt": "2025-10-30T01:12:04Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "jw9SC3hHUkEmZGFpbbTr9t",
-    "memosName": "memos/jw9SC3hHUkEmZGFpbbTr9t",
-    "content": "#生活 我们拼命变好，是因为心里住着不想辜负的人\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-12T00:53:28Z",
-    "updatedAt": "2025-10-30T01:12:15Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "7BD7exfP6sfwie692GonRH",
-    "memosName": "memos/7BD7exfP6sfwie692GonRH",
-    "content": "#生活 #手机 iOS18和iOS26，要不要更新，这是一个问题\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-09T06:29:37Z",
-    "updatedAt": "2025-10-30T01:12:29Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "cWynFUHnVdPJgntvaY9GEP",
-    "memosName": "memos/cWynFUHnVdPJgntvaY9GEP",
-    "content": "中秋团圆，吉祥快乐",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-06T04:49:41Z",
-    "updatedAt": "2025-10-06T04:49:41Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "mXJ5SuTC25NsL8pDJfiWeF",
-    "memosName": "memos/mXJ5SuTC25NsL8pDJfiWeF",
-    "content": "#笔记 人生就像品茗，懂得吃苦，才能回甘\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-05T09:20:06Z",
-    "updatedAt": "2025-10-30T01:12:41Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "PQgKRcZJ86XdnyVTbvoTki",
-    "memosName": "memos/PQgKRcZJ86XdnyVTbvoTki",
-    "content": "#笔记 \n我不想在所有人面前当好人。\n如果我的内心足够平静，就不会在意别人的评价。\n过度看别人眼色、修复破碎的自尊心已经花费了我人生的大部分时间，余生我不想再这样下去了\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-05T09:00:42Z",
-    "updatedAt": "2025-10-30T01:12:54Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "U6jp6ncAQKfJHG2BW4KiJY",
-    "memosName": "memos/U6jp6ncAQKfJHG2BW4KiJY",
-    "content": "#笔记 人生不是轨道，而是一片原野，伟大的事物通常始于渺小\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-05T09:00:15Z",
-    "updatedAt": "2025-10-30T01:13:03Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "4o2sVcuxwVzDkFy84PKfbH",
-    "memosName": "memos/4o2sVcuxwVzDkFy84PKfbH",
-    "content": "#笔记 当你把历史的包袱放下，你就可以更好的拥抱未来",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-04T02:13:24Z",
-    "updatedAt": "2025-10-30T01:13:27Z",
     "pinned": false,
     "resources": []
   }
