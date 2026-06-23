@@ -62,8 +62,8 @@ for (const url of feedUrls) {
 }
 
 feeds.sort((a, b) => {
-  const timestampA = parseInt(a.timestamp) || 0;
-  const timestampB = parseInt(b.timestamp) || 0;
+  const timestampA = parseInt(a.timestamp ?? '', 10) || 0;
+  const timestampB = parseInt(b.timestamp ?? '', 10) || 0;
   return timestampB - timestampA;
 });
 
@@ -107,8 +107,8 @@ const stripHtml = (html: string): string => {
     </div>
     
     <div class="feed-list">
-      {feeds.map((item, index) => (
-        <article class="feed-item" key={index}>
+      {feeds.map((item) => (
+        <article class="feed-item">
           <a href={item.link} target="_blank" rel="noopener noreferrer" class="feed-link">
             <div class="feed-header">
               <span class="feed-source">{item.source_title}</span>

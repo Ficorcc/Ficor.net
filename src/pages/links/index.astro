@@ -50,7 +50,7 @@ import { siteInfo, links } from '../../data/links';
         <h2 class="section-title">友情链接</h2>
         <div class="links-grid">
           {links.map((link) => (
-            <div class="link-item" key={link.id}>
+            <div class="link-item">
               <a href={link.url} target="_blank" rel="noopener noreferrer">
                 <div class="link-avatar">
                   <img src={link.avatar} alt={link.name} width="48" height="48">
@@ -383,15 +383,6 @@ import { siteInfo, links } from '../../data/links';
 </style>
 
 <script>
-  const CSS_VAR_STORAGE_KEY = '__links_theme_vars__';
-
-  const getThemeVar = (name: string, fallback: string): string => {
-    const root = document.documentElement;
-    const computed = getComputedStyle(root);
-    const value = computed.getPropertyValue(name).trim();
-    return value || fallback;
-  };
-
   const COLORS = {
     success: '#10b981',
     error: '#ef4444',
@@ -399,15 +390,6 @@ import { siteInfo, links } from '../../data/links';
   };
 
   const setButtonState = (button: HTMLButtonElement, state: 'default' | 'success' | 'error') => {
-    const accentColor = getThemeVar('--accent', COLORS.success);
-    const root = document.documentElement;
-    const computedStyle = getComputedStyle(root);
-    
-    const getColor = (name: string) => {
-      const value = computedStyle.getPropertyValue(name).trim();
-      return value || undefined;
-    };
-
     if (state === 'success') {
       button.textContent = '已复制';
       button.style.setProperty('background-color', COLORS.success);

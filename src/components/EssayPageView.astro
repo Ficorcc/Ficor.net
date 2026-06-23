@@ -82,7 +82,7 @@ const fallbackListId = 'essay-tag-list';
     currentPage={currentPage}
     totalPages={totalPages}
     firstPath="/essay/"
-    getPagePath={(pageNumber) => `/essay/page/${pageNumber}/`}
+    getPagePath={(pageNumber: number) => `/essay/page/${pageNumber}/`}
     label={`${pageTitleText}分页`}
   />
 

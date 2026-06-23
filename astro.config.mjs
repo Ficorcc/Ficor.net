@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig, passthroughImageService } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
 import remarkDirective from 'remark-directive';
 import rehypeRaw from 'rehype-raw';
@@ -148,8 +149,10 @@ export default defineConfig({
     }
   },
   markdown: {
-    remarkPlugins: [remarkDirective, remarkCallout],
-    rehypePlugins: [rehypeRaw, [rehypeSanitize, sanitizeSchema]],
+    processor: unified({
+      remarkPlugins: [remarkDirective, remarkCallout],
+      rehypePlugins: [rehypeRaw, [rehypeSanitize, sanitizeSchema]]
+    }),
     shikiConfig: {
       themes: {
         light: 'github-light',

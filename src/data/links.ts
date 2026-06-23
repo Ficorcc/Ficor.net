@@ -549,6 +549,7 @@ export const links: LinkItem[] = [
     name: "徐建伟",
     url: "http://www.xulog.cn",
     description: "记录生活 珍藏回忆",
+    avatar: "http://www.xulog.cn/favicon.ico",
     feed: "http://www.xulog.cn/index.php?act=rss",
     is_active: true,
     status: "online",
