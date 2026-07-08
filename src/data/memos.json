@@ -1,5 +1,25 @@
 [
   {
+    "id": "GPxXwRfpqMkouVc2RJGcsK",
+    "memosName": "memos/GPxXwRfpqMkouVc2RJGcsK",
+    "content": "我来测试一下",
+    "visibility": "PUBLIC",
+    "createdAt": "2026-07-08T02:37:12Z",
+    "updatedAt": "2026-07-08T02:37:12Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
+    "id": "AyUXixFeX3wMUY8v6SpUnS",
+    "memosName": "memos/AyUXixFeX3wMUY8v6SpUnS",
+    "content": "一怒之下我站起来了，两眼一黑我又坐下了",
+    "visibility": "PROTECTED",
+    "createdAt": "2026-07-02T10:24:05Z",
+    "updatedAt": "2026-07-02T10:24:05Z",
+    "pinned": false,
+    "resources": []
+  },
+  {
     "id": "4sNjGvE4gVyNxmYQihurgP",
     "memosName": "memos/4sNjGvE4gVyNxmYQihurgP",
     "content": "半夜听到院子里有动静，来了一个不速之客",
@@ -976,26 +996,6 @@
     "visibility": "PUBLIC",
     "createdAt": "2025-10-25T11:19:18Z",
     "updatedAt": "2025-10-30T01:10:46Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "CDmkH8AX3jH4ns8uyvmrQm",
-    "memosName": "memos/CDmkH8AX3jH4ns8uyvmrQm",
-    "content": "#生活 今天收到一张明信片\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-25T01:59:00Z",
-    "updatedAt": "2025-10-30T01:10:53Z",
-    "pinned": false,
-    "resources": []
-  },
-  {
-    "id": "VhcoRL62Bv5RWXj2vP4jQY",
-    "memosName": "memos/VhcoRL62Bv5RWXj2vP4jQY",
-    "content": "#感悟 当所有办法都没有用或者不想尝试的时候，最有效的办法就是封建迷信\n",
-    "visibility": "PUBLIC",
-    "createdAt": "2025-10-21T07:54:14Z",
-    "updatedAt": "2025-10-30T01:11:00Z",
     "pinned": false,
     "resources": []
   }
