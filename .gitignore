@@ -27,5 +27,8 @@ Thumbs.db
 # Misc
 *.tsbuildinfo
 
+# ZCode agent workspace (local only)
+.zcode/
+
 # Font sources (local only)
 tools/fonts-src/
