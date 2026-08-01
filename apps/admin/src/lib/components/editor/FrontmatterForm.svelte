@@ -94,17 +94,6 @@
 
   {:else if collection === 'bits'}
     <!-- Bits 字段 -->
-    <div class="field field--full">
-      <label class="field__label" for="fm-title">标题（可选）</label>
-      <input
-        id="fm-title"
-        type="text"
-        value={str(frontmatter.title)}
-        oninput={(e) => (frontmatter.title = e.currentTarget.value)}
-        placeholder="絮语可无标题"
-      />
-    </div>
-
     <div class="field">
       <label class="field__label" for="fm-date">日期</label>
       <input

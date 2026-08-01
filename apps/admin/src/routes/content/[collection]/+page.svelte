@@ -18,6 +18,11 @@
     return (item.frontmatter ?? {}) as ItemFm;
   }
 
+  function bitsText(item: { excerpt?: string; frontmatter: unknown }): string {
+    const fm = getFm(item);
+    return String(item.excerpt || fm.description || '').trim() || '(空内容)';
+  }
+
   const collectionLabels: Record<string, string> = {
     essay: '随笔',
     bits: '絮语',
@@ -151,20 +156,26 @@
       {@const fm = getFm(item)}
       <a href="{base}/content/{data.collection}/{item.slug}" class="content-item">
         <div class="content-item__main">
-          <div class="content-item__title">
-            {fm.title ?? '(无标题)'}
-          </div>
-          {#if fm.description || item.excerpt}
-            <div class="content-item__excerpt">
-              {fm.description ?? item.excerpt}
+          {#if data.collection === 'bits'}
+            <div class="content-item__bits">
+              {bitsText(item)}
             </div>
-          {/if}
-          {#if Array.isArray(fm.tags) && fm.tags.length}
-            <div class="content-item__tags">
-              {#each fm.tags.slice(0, 5) as tag (tag)}
-                <span class="badge">{tag}</span>
-              {/each}
+          {:else}
+            <div class="content-item__title">
+              {fm.title ?? '(无标题)'}
             </div>
+            {#if fm.description || item.excerpt}
+              <div class="content-item__excerpt">
+                {fm.description ?? item.excerpt}
+              </div>
+            {/if}
+            {#if Array.isArray(fm.tags) && fm.tags.length}
+              <div class="content-item__tags">
+                {#each fm.tags.slice(0, 5) as tag (tag)}
+                  <span class="badge">{tag}</span>
+                {/each}
+              </div>
+            {/if}
           {/if}
         </div>
         <div class="content-item__meta">
@@ -253,6 +264,16 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-bottom: 8px;
+  }
+  .content-item__bits {
+    font-family: var(--font-kai);
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.75;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .content-item__tags {
     display: flex;

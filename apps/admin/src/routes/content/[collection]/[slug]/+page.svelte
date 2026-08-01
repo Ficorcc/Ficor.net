@@ -20,6 +20,14 @@
   let saving = $state(false);
   let polishing = $state(false);
   let aiPanelOpen = $state(false);
+  const generatedBitsSlug =
+    data.collection === 'bits' && data.isNew
+      ? `bits-${new Date()
+          .toISOString()
+          .slice(0, 19)
+          .replace('T', '-')
+          .replace(/:/g, '')}`
+      : '';
 
   // 获取 CSRF token（组件挂载时）
   $effect(() => {
@@ -33,11 +41,14 @@
 
   // 计算实际 slug
   const effectiveSlug = $derived(
-    (frontmatter.slug as string) || slugify((frontmatter.title as string) || '') || data.slug || 'untitled'
+    (frontmatter.slug as string) ||
+      (data.collection === 'bits' ? data.slug || generatedBitsSlug : slugify((frontmatter.title as string) || '')) ||
+      data.slug ||
+      'untitled'
   );
 
   // 保存
-  async function handleSave(deploy: boolean = false) {
+  async function handleSave(deploy: boolean = true) {
     // 校验
     if (data.collection !== 'bits' && !frontmatter.title) {
       toast.error('请填写标题');
@@ -61,7 +72,12 @@
       });
 
       if (result.ok) {
-        toast.ok(deploy ? '已保存并触发部署' : '保存成功');
+        const payload = result.data as { deploy?: { ok?: boolean; message?: string } } | undefined;
+        if (deploy && payload?.deploy?.ok === false) {
+          toast.warn(`已保存，但部署未触发：${payload.deploy.message ?? '部署配置不完整'}`);
+        } else {
+          toast.ok(deploy ? '已保存并触发提交部署' : '保存成功');
+        }
         if (data.isNew) {
           await goto(`${base}/content/${data.collection}/${effectiveSlug}`);
         }
@@ -133,7 +149,7 @@
 
     if (result.ok && result.data?.metadata) {
       const meta = result.data.metadata;
-      if (meta.title) frontmatter.title = meta.title;
+      if (meta.title && data.collection !== 'bits') frontmatter.title = meta.title;
       if (meta.description) frontmatter.description = meta.description;
       if (Array.isArray(meta.tags)) frontmatter.tags = meta.tags;
       if (meta.date) frontmatter.date = meta.date;
@@ -174,13 +190,9 @@
       <Icon name="edit" size={14} /> 补全元数据
     </button>
     <span class="editor-actions__divider"></span>
-    <button class="btn btn--sm" onclick={() => handleSave(false)} disabled={saving}>
-      {#if saving}<span class="spinner"></span>{/if}
-      保存
-    </button>
     <button class="btn btn--primary btn--sm" onclick={() => handleSave(true)} disabled={saving}>
       <Icon name="save" size={14} />
-      保存并部署
+      {saving ? '保存中...' : '保存'}
     </button>
   </div>
 </div>
