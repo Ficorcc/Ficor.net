@@ -72,6 +72,10 @@ export async function api<T = unknown>(
         const errVal = (data as Record<string, unknown>).error;
         if (typeof errVal === 'string') errorMsg = errVal;
       }
+      if (data && typeof data === 'object' && 'message' in data) {
+        const messageVal = (data as Record<string, unknown>).message;
+        if (typeof messageVal === 'string') errorMsg = messageVal;
+      }
       return { ok: false, error: errorMsg, status: res.status, data: data as T };
     }
 

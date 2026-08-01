@@ -1,8 +1,8 @@
 import type { Collection } from '$lib/utils/content-schema';
 
 export interface SourceRepoConfig {
-  owner: string;
-  repo: string;
+  owner?: string;
+  repo?: string;
   ref?: string;
 }
 
@@ -13,6 +13,17 @@ export interface SourceMarkdownFile {
   sha: string;
   size: number;
   markdown: string;
+}
+
+export interface SourceMarkdownBatch {
+  files: SourceMarkdownFile[];
+  total: number;
+  nextCursor?: number;
+}
+
+export interface SourceMarkdownBatchOptions {
+  cursor?: number;
+  limit?: number;
 }
 
 interface GitTreeItem {
@@ -30,28 +41,19 @@ interface GitTreeResponse {
   message?: string;
 }
 
-interface GitBlobResponse {
-  content?: string;
-  encoding?: string;
-  message?: string;
-}
-
-const githubHeaders = (token: string) => ({
-  Accept: 'application/vnd.github+json',
-  Authorization: `Bearer ${token}`,
-  'X-GitHub-Api-Version': '2022-11-28',
-  'User-Agent': 'vii-ink-admin'
-});
+const githubHeaders = (token?: string) => {
+  const headers: Record<string, string> = {
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'User-Agent': 'vii-ink-admin'
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return headers;
+};
 
 const trimSlash = (value: string) => value.replace(/^\/+|\/+$/g, '');
 
-function decodeBase64Utf8(value: string): string {
-  const binary = atob(value.replace(/\s/g, ''));
-  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
-  return new TextDecoder().decode(bytes);
-}
-
-async function fetchGithubJson<T>(url: string, token: string): Promise<T> {
+async function fetchGithubJson<T>(url: string, token?: string): Promise<T> {
   const res = await fetch(url, { headers: githubHeaders(token) });
   const data = (await res.json().catch(() => ({}))) as T & { message?: string };
 
@@ -62,14 +64,37 @@ async function fetchGithubJson<T>(url: string, token: string): Promise<T> {
   return data;
 }
 
+async function fetchGithubRawText(url: string, token?: string): Promise<string> {
+  const headers: Record<string, string> = {
+    'User-Agent': 'vii-ink-admin'
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(url, { headers });
+  if (!res.ok) {
+    const message = await res.text().catch(() => '');
+    throw new Error(message ? `GitHub Raw ${res.status}: ${message}` : `GitHub Raw ${res.status}`);
+  }
+
+  return res.text();
+}
+
 export async function fetchSourceMarkdownFiles(
-  token: string,
+  token: string | undefined,
   repo: SourceRepoConfig,
-  collection: Collection
-): Promise<SourceMarkdownFile[]> {
+  collection: Collection,
+  options: SourceMarkdownBatchOptions = {}
+): Promise<SourceMarkdownBatch> {
   const ref = repo.ref?.trim() || 'main';
+  const owner = repo.owner?.trim();
+  const repoName = repo.repo?.trim();
+  if (!owner || !repoName) {
+    throw new Error('主站 GitHub 仓库配置不完整');
+  }
+  const cursor = Math.max(0, Math.floor(options.cursor ?? 0));
+  const limit = Math.max(1, Math.min(20, Math.floor(options.limit ?? 12)));
   const root = `src/content/${collection}/`;
-  const treeUrl = `https://api.github.com/repos/${repo.owner}/${repo.repo}/git/trees/${encodeURIComponent(ref)}?recursive=1`;
+  const treeUrl = `https://api.github.com/repos/${owner}/${repoName}/git/trees/${encodeURIComponent(ref)}?recursive=1`;
   const tree = await fetchGithubJson<GitTreeResponse>(treeUrl, token);
 
   if (!Array.isArray(tree.tree)) {
@@ -80,22 +105,25 @@ export async function fetchSourceMarkdownFiles(
     throw new Error('主站仓库文件树过大，GitHub 返回结果被截断，无法安全同步');
   }
 
-  const markdownItems = tree.tree.filter((item): item is Required<Pick<GitTreeItem, 'path' | 'sha'>> & GitTreeItem => {
-    const itemPath = item.path ?? '';
-    return item.type === 'blob' && itemPath.startsWith(root) && itemPath.endsWith('.md') && Boolean(item.sha);
-  });
+  const markdownItems = tree.tree
+    .filter((item): item is Required<Pick<GitTreeItem, 'path' | 'sha'>> & GitTreeItem => {
+      const itemPath = item.path ?? '';
+      return item.type === 'blob' && itemPath.startsWith(root) && itemPath.endsWith('.md') && Boolean(item.sha);
+    })
+    .sort((a, b) => a.path.localeCompare(b.path));
 
   const files: SourceMarkdownFile[] = [];
-  for (const item of markdownItems) {
+  const selectedItems = markdownItems.slice(cursor, cursor + limit);
+  for (const item of selectedItems) {
     const relativePath = trimSlash(item.path.slice(root.length));
     const slug = relativePath.replace(/\.md$/i, '');
     if (!slug || slug.split('/').some((part) => part === '..')) continue;
 
-    const blobUrl = `https://api.github.com/repos/${repo.owner}/${repo.repo}/git/blobs/${item.sha}`;
-    const blob = await fetchGithubJson<GitBlobResponse>(blobUrl, token);
-    if (blob.encoding !== 'base64' || typeof blob.content !== 'string') {
-      throw new Error(`无法读取主站文件：${item.path}`);
-    }
+    const rawUrl = `https://raw.githubusercontent.com/${owner}/${repoName}/${encodeURIComponent(ref)}/${item.path
+      .split('/')
+      .map((part) => encodeURIComponent(part))
+      .join('/')}`;
+    const markdown = await fetchGithubRawText(rawUrl, token);
 
     files.push({
       collection,
@@ -103,9 +131,14 @@ export async function fetchSourceMarkdownFiles(
       path: item.path,
       sha: item.sha,
       size: item.size ?? 0,
-      markdown: decodeBase64Utf8(blob.content)
+      markdown
     });
   }
 
-  return files;
+  const nextCursor = cursor + selectedItems.length;
+  return {
+    files,
+    total: markdownItems.length,
+    nextCursor: nextCursor < markdownItems.length ? nextCursor : undefined
+  };
 }

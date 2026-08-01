@@ -32,6 +32,16 @@
 
   let searchKeyword = $state(data.keyword ?? '');
   let pullingSource = $state(false);
+  let pullProgress = $state('');
+
+  interface PullSourcePayload {
+    count?: number;
+    total?: number;
+    nextCursor?: number;
+    done?: boolean;
+    source?: string;
+    ref?: string;
+  }
 
   function handleCollectionChange(value: string) {
     goto(`${base}/content/${value}`);
@@ -46,18 +56,38 @@
 
   async function pullSourceContent() {
     pullingSource = true;
-    const result = await api<{ count?: number; source?: string; ref?: string }>('CONTENT_PULL_SOURCE', {
-      collection: data.collection
-    });
+    pullProgress = '';
+    let cursor: number | undefined = 0;
+    let pulledCount = 0;
+    let totalCount = 0;
 
-    if (result.ok) {
-      const payload = result.data as { count?: number; source?: string; ref?: string } | undefined;
-      toast.ok(`已从主站抓取 ${payload?.count ?? 0} 篇${collectionLabels[data.collection]}`);
-      await invalidateAll();
-    } else {
-      toast.error(result.error ?? '抓取失败');
+    try {
+      while (cursor !== undefined) {
+        const result = await api<PullSourcePayload>('CONTENT_PULL_SOURCE', {
+          collection: data.collection,
+          cursor
+        });
+
+        if (!result.ok) {
+          toast.error(result.error ?? '抓取失败');
+          return;
+        }
+
+        const payload = result.data;
+        pulledCount += payload?.count ?? 0;
+        totalCount = payload?.total ?? totalCount;
+        cursor = payload?.done ? undefined : payload?.nextCursor;
+        pullProgress = totalCount ? `${Math.min(pulledCount, totalCount)}/${totalCount}` : '';
+
+        if (cursor === undefined) {
+          toast.ok(`已从主站抓取 ${pulledCount} 篇${collectionLabels[data.collection]}`);
+          await invalidateAll();
+        }
+      }
+    } finally {
+      pullingSource = false;
+      pullProgress = '';
     }
-    pullingSource = false;
   }
 </script>
 
@@ -73,7 +103,7 @@
     </div>
     <div class="page-actions">
       <button class="btn btn--ghost" onclick={pullSourceContent} disabled={pullingSource}>
-        <Icon name="download" size={16} /> {pullingSource ? '抓取中...' : '从主站抓取'}
+        <Icon name="download" size={16} /> {pullingSource ? `抓取中${pullProgress ? ` ${pullProgress}` : '...'}` : '从主站抓取'}
       </button>
       <a href="{base}/content/{data.collection}/new" class="btn btn--primary">
         <Icon name="plus" size={16} /> 新建

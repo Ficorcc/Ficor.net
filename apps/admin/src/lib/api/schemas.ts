@@ -74,7 +74,8 @@ export const contentPublishSchema = z.object({
 
 export const contentPullSourceSchema = z.object({
   event: z.literal('CONTENT_PULL_SOURCE'),
-  collection: z.enum(['essay', 'bits', 'memo'])
+  collection: z.enum(['essay', 'bits', 'memo']),
+  cursor: z.number().int().nonnegative().optional()
 });
 
 // --- 主站数据 ---

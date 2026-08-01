@@ -252,21 +252,24 @@ async function handleContentPublish(ctx: ApiContext) {
 
 async function handleContentPullSource(ctx: ApiContext) {
   const collection = ctx.body.collection as 'essay' | 'bits' | 'memo';
+  const cursor = typeof ctx.body.cursor === 'number' ? ctx.body.cursor : 0;
   const token = ctx.env.GITHUB_TOKEN;
   const deployConfig = await ctx.repos.config.get<SourceRepoConfig>('deploy');
-  const owner = deployConfig?.owner || ctx.env.GITHUB_OWNER;
-  const repo = deployConfig?.repo || ctx.env.GITHUB_REPO;
-  const ref = deployConfig?.ref;
+  const owner = deployConfig?.owner || ctx.env.GITHUB_OWNER || 'Ficorcc';
+  const repo = deployConfig?.repo || ctx.env.GITHUB_REPO || 'Ficor.net';
+  const ref = deployConfig?.ref || 'main';
 
-  if (!token) {
-    throw error(400, '缺少 GITHUB_TOKEN，无法从主站仓库抓取文章');
-  }
   if (!owner || !repo) {
     throw error(400, '主站 GitHub 仓库配置不完整，请先在系统设置里填写部署仓库');
   }
 
-  const files = await fetchSourceMarkdownFiles(token, { owner, repo, ref }, collection);
-  for (const file of files) {
+  let batch;
+  try {
+    batch = await fetchSourceMarkdownFiles(token, { owner, repo, ref }, collection, { cursor, limit: 12 });
+  } catch (e) {
+    throw error(400, e instanceof Error ? e.message : '主站数据源抓取失败');
+  }
+  for (const file of batch.files) {
     await ctx.content.writeRaw(collection, file.slug, file.markdown);
   }
 
@@ -274,13 +277,24 @@ async function handleContentPullSource(ctx: ApiContext) {
     sessionId: ctx.locals.session!.id,
     action: 'CONTENT_PULL_SOURCE',
     target: collection,
-    detail: { owner, repo, ref: ref || 'main', count: files.length },
+    detail: {
+      owner,
+      repo,
+      ref: ref || 'main',
+      count: batch.files.length,
+      cursor,
+      nextCursor: batch.nextCursor,
+      total: batch.total
+    },
     ip: ctx.locals.ip
   });
 
   return json({
     ok: true,
-    count: files.length,
+    count: batch.files.length,
+    total: batch.total,
+    nextCursor: batch.nextCursor,
+    done: batch.nextCursor === undefined,
     source: `${owner}/${repo}`,
     ref: ref || 'main'
   });
