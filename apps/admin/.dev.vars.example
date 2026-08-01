@@ -1,0 +1,31 @@
+# ============================================================================
+# 本地开发密钥模板
+# 用法：复制本文件为 .dev.vars，填入真实值。.dev.vars 不会被提交到 git。
+# ============================================================================
+
+# 管理后台登录密码（首次登录时输入此密码）
+# 生产环境请用 wrangler secret put ADMIN_PASSWORD 设置
+ADMIN_PASSWORD=change-me-to-a-strong-password
+
+# GitHub Personal Access Token
+# 需要读取主站 contents，并能触发 workflow，用于抓取主站 Markdown 和触发重建
+# 生成地址：https://github.com/settings/tokens
+GITHUB_TOKEN=ghp_your_github_token_here
+
+# Waline 评论系统的管理 token（用于评论管理）
+# 在 Waline 服务端管理后台生成
+WALINE_TOKEN=
+
+# Memos 数据源（用于后台「说说」同步）
+# 示例：MEMOS_API_URL=https://memos.example.com
+MEMOS_API_URL=
+MEMOS_ACCESS_TOKEN=
+# 可选：追加到 Memos 列表接口的查询串，例如 filter=visibilities==PUBLIC
+MEMOS_FILTER=
+
+# 主站仓库信息（用于触发部署）
+# 格式：用户名/仓库名，例如 Ficorcc/Ficor.net
+GITHUB_OWNER=Ficorcc
+GITHUB_REPO=Ficor.net
+# 要触发的 workflow 文件名（.github/workflows/ 下的文件，需启用 workflow_dispatch）
+GITHUB_WORKFLOW=ci.yml

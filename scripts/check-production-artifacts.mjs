@@ -76,10 +76,13 @@ export const runProductionArtifactCheck = async (options = {}) => {
   expect(!/--admin-status-/.test(aboutHtml), 'Public about page still contains admin CSS tokens');
 
   const adminHtml = readText('dist/admin/index.html');
-  expect(!/index@_@astro\.[^"]+\.css/.test(adminHtml), 'Readonly admin page still links admin-only CSS');
+  const { adminConsole } = await import('../site.config.mjs');
+  expect(adminHtml.includes(adminConsole.url), 'Production /admin/ is missing the online admin URL');
+  expect(adminHtml.includes('http-equiv="refresh"'), 'Production /admin/ no longer redirects to online admin');
+  expect(!/index@_@astro\.[^"]+\.css/.test(adminHtml), 'Online admin launcher still links admin-only CSS');
   expect(
     !/<script type="module" src="\/_astro\/[^"]+"><\/script>/.test(adminHtml),
-    'Readonly admin page still links an external _astro module script'
+    'Online admin launcher still links an external _astro module script'
   );
 
   const indexHtml = readText('dist/index.html');

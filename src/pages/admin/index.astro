@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { createWithBase } from '../../utils/format';
+import { adminConsole } from '../../../site.config.mjs';
 
 const isDev = import.meta.env.DEV;
 const base = import.meta.env.BASE_URL ?? '/';
@@ -124,11 +125,13 @@ const AdminPageSection = adminDevState?.AdminPageSection;
 const AdminSidebarSection = adminDevState?.AdminSidebarSection;
 const AdminSiteSection = adminDevState?.AdminSiteSection;
 const AdminUiSection = adminDevState?.AdminUiSection;
+const onlineAdminUrl = adminConsole.url || 'https://vii.ink/admin';
 ---
 
-<BaseLayout title="Theme Console" bodyClass="admin-page">
+<BaseLayout title={isDev ? 'Theme Console' : '在线后台'} bodyClass="admin-page">
   <Fragment slot="head">
     <meta name="robots" content="noindex,nofollow" />
+    {!isDev ? <meta http-equiv="refresh" content={`0; url=${onlineAdminUrl}`} /> : null}
     {isDev && adminDevState?.adminStylesHref ? <link rel="stylesheet" href={adminDevState.adminStylesHref} /> : null}
   </Fragment>
 
@@ -216,12 +219,15 @@ const AdminUiSection = adminDevState?.AdminUiSection;
       <section class="admin-console admin-console--readonly">
         <header class="page-header page-header--admin">
           <div class="admin-heading">
-            <h1 class="page-title">Theme Console</h1>
-            <span class="page-subtitle">主题设置</span>
+            <h1 class="page-title">在线后台</h1>
+            <span class="page-subtitle">ADMIN Console</span>
           </div>
         </header>
         <p class="admin-hint">
-          Theme Console 仅在本地开发环境开放。如需修改配置，请在本地后台部署。
+          正在打开在线后台。若没有自动跳转，请点击下面的入口。
+        </p>
+        <p class="admin-hint">
+          <a href={onlineAdminUrl} rel="nofollow">打开 {adminConsole.displayUrl || onlineAdminUrl}</a>
         </p>
       </section>
     )

@@ -191,8 +191,25 @@ Then open `http://localhost:4321/admin/` in your browser.
 #### Production behavior
 
 - Theme Console is available only in local development, with config loading, validation, and saving enabled
-- Production builds remain static output; `/admin/` shows a read-only notice only
+- Production builds remain static output; `/admin/` redirects to the online admin console, defaulting to `https://vii.ink/admin`
 - `/api/admin/settings/` is for local development only and should not be treated as a production API
+- To use a different console URL, set `ADMIN_CONSOLE_URL` or `ADMIN_URL` in the build environment
+
+#### admin content sync
+
+The online admin console stores Markdown under the R2 `content/` prefix and theme settings under the `settings/` prefix. `npm run build` now attempts to sync both R2 content and theme settings before running `astro build`. If R2 credentials are not configured, the sync is skipped automatically so local builds keep working.
+
+Production build environments can set:
+
+```bash
+ADMIN_R2_ACCOUNT_ID=your Cloudflare Account ID
+ADMIN_R2_ACCESS_KEY_ID=R2 S3 Access Key
+ADMIN_R2_SECRET_ACCESS_KEY=R2 S3 Secret
+ADMIN_R2_BUCKET=admin-r2
+ADMIN_R2_SYNC_PRUNE=1
+ADMIN_R2_SETTINGS_PREFIX=settings/
+ADMIN_R2_DATA_PREFIX=data/
+```
 
 #### Compatibility for existing forks
 

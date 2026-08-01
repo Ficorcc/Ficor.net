@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  # 允许 fadmin 后台通过 GitHub API 手动触发（workflow_dispatch）
+  # 允许 admin 后台通过 GitHub API 手动触发（workflow_dispatch）
   workflow_dispatch:
 
 permissions:
@@ -46,3 +46,9 @@ jobs:
 
       - name: Run CI gate
         run: npm run ci
+
+      - name: Install admin dependencies
+        run: npm run admin:install
+
+      - name: Build admin
+        run: npm run ci:admin

@@ -1,0 +1,73 @@
+name = "vii-ink-admin"
+main = ".svelte-kit/cloudflare/_worker.js"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ============================================================================
+# 部署配置
+# ============================================================================
+# 自定义域名：vii.ink
+# 应用内 base path 为 /admin，完整访问地址：https://vii.ink/admin
+# 本地开发：https://localhost:5173/admin
+
+# routes = [
+#   { pattern = "vii.ink/admin/*", zone_name = "vii.ink" }
+# ]
+
+# ============================================================================
+# Cloudflare 绑定（部署前请替换占位符）
+# 创建步骤见 docs/SETUP.md
+# ============================================================================
+
+# D1 数据库（存评论/会话/定时任务/审计/限流/配置）
+[[d1_databases]]
+binding = "DB"
+database_name = "admin-db"
+database_id = "8b21b6a1-6d32-4965-995a-e9f475abaa0b"
+
+# R2 存储桶（存 Markdown 文章/上传图片/每日备份）
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "admin-r2"
+
+# Workers AI（文章润色/元数据补全/评论审核）
+[ai]
+binding = "AI"
+
+# ============================================================================
+# 定时任务（Cron Triggers）
+# ============================================================================
+
+# 每分钟档位由 Cloudflare 限制，最低频率为 1 分钟。
+# 这里配置两条：每 15 分钟检查定时发布、每天 UTC 19:00（北京 03:00）备份。
+[triggers]
+crons = [
+  "*/15 * * * *",   # 定时发布检查
+  "0 19 * * *"      # 每日数据备份（UTC 19:00 = 北京时间 03:00）
+]
+
+# ============================================================================
+# 环境变量（非敏感，可直接提交）
+# 敏感密钥请用 wrangler secret put 设置，或本地放 .dev.vars
+# ============================================================================
+
+[vars]
+# 公开端点的 CORS 白名单（逗号分隔），用于 COMMENT_SUBMIT 等公开 API
+PUBLIC_ORIGINS = "https://vii.ink"
+# 会话有效期（天）
+SESSION_MAX_AGE_DAYS = "7"
+# 限流：每个 IP 在窗口内的最大请求数
+RATE_LIMIT_MAX = "60"
+# 限流窗口（秒）
+RATE_LIMIT_WINDOW = "60"
+# 备份保留天数
+BACKUP_RETENTION_DAYS = "30"
+
+# ============================================================================
+# 密钥（请勿在此填写真实值，用下面命令设置）
+# ============================================================================
+# wrangler secret put ADMIN_PASSWORD    管理后台登录密码
+# wrangler secret put GITHUB_TOKEN      触发主站 GitHub Actions 的 PAT
+# wrangler secret put WALINE_TOKEN      Waline 评论系统管理 token（如启用）
+#
+# 本地开发：复制 .dev.vars.example 为 .dev.vars 并填入真实值

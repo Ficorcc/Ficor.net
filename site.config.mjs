@@ -2,6 +2,12 @@ const rawSiteUrl = (process.env.SITE_URL ?? '').trim();
 const siteUrl = rawSiteUrl ? rawSiteUrl.replace(/\/+$/, '') : '';
 const hasSiteUrl = siteUrl.length > 0;
 const fallbackSiteUrl = 'https://vii.ink';
+const rawAdminConsoleUrl = (
+  process.env.ADMIN_URL ??
+  process.env.ADMIN_CONSOLE_URL ??
+  'https://vii.ink/admin'
+).trim();
+const adminConsoleUrl = rawAdminConsoleUrl ? rawAdminConsoleUrl.replace(/\/+$/, '') : '';
 
 if (!hasSiteUrl && process.env.NODE_ENV === 'production') {
   console.warn(
@@ -16,6 +22,11 @@ export const site = {
   author: 'Ficor',
   authorAvatar: 'author/avatar.webp',
   description: '继Wordpress后又一个心灵驿站'
+};
+
+export const adminConsole = {
+  url: adminConsoleUrl,
+  displayUrl: adminConsoleUrl.replace(/^https?:\/\//, '')
 };
 
 // 评论系统配置

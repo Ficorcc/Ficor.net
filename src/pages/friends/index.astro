@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import feedConfig from '../../config/feed.json';
 
 interface FeedItem {
   title: string;
@@ -10,6 +11,11 @@ interface FeedItem {
   timestamp?: string;
   source_title: string;
 }
+
+const toRecord = (value: unknown): Record<string, unknown> =>
+  value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
+
+const text = (value: unknown): string => typeof value === 'string' ? value : '';
 
 const fetchFeedData = async (url: string): Promise<FeedItem[]> => {
   try {
@@ -49,21 +55,42 @@ const fetchFeedData = async (url: string): Promise<FeedItem[]> => {
   }
 };
 
-const feeds: FeedItem[] = [];
+const subscriptions = Array.isArray((feedConfig as Record<string, unknown>).subscriptions)
+  ? (feedConfig as Record<string, unknown>).subscriptions as unknown[]
+  : [];
 
-const feedUrls = [
-  'https://lilog.cn/is/index.php?action=get_user_feeds&uid=54008&limit=30&token=2bd4eea157becfd45baf299494394392',
-  'https://jh.3v.hk/api.php?action=get_all_items&uid=16&token=741afb1d210656544af0490d0824ca6e&limit=40'
-];
+const feeds: FeedItem[] = subscriptions.flatMap((subscription) => {
+  const sub = toRecord(subscription);
+  const latestItems = Array.isArray(sub.latestItems) ? sub.latestItems : [];
+  return latestItems.map((item) => {
+    const entry = toRecord(item);
+    return {
+      title: text(entry.title),
+      link: text(entry.url) || text(entry.link),
+      summary: text(entry.summary),
+      description: text(entry.description),
+      date: text(entry.date),
+      timestamp: text(entry.timestamp),
+      source_title: text(sub.name) || text(entry.source_title) || text(entry.source)
+    };
+  });
+});
 
-for (const url of feedUrls) {
-  const items = await fetchFeedData(url);
-  feeds.push(...items);
+if (feeds.length === 0) {
+  const feedUrls = [
+    'https://lilog.cn/is/index.php?action=get_user_feeds&uid=54008&limit=30&token=2bd4eea157becfd45baf299494394392',
+    'https://jh.3v.hk/api.php?action=get_all_items&uid=16&token=741afb1d210656544af0490d0824ca6e&limit=40'
+  ];
+
+  for (const url of feedUrls) {
+    const items = await fetchFeedData(url);
+    feeds.push(...items);
+  }
 }
 
 feeds.sort((a, b) => {
-  const timestampA = parseInt(a.timestamp ?? '', 10) || 0;
-  const timestampB = parseInt(b.timestamp ?? '', 10) || 0;
+  const timestampA = parseInt(a.timestamp ?? '', 10) || Date.parse(a.date) || 0;
+  const timestampB = parseInt(b.timestamp ?? '', 10) || Date.parse(b.date) || 0;
   return timestampB - timestampA;
 });
 

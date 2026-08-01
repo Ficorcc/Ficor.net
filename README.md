@@ -65,8 +65,36 @@ npm run build && npm run preview
 
   - npm run dev
   - npm run build
+  - npm run dev:admin
+  - npm run build:admin
+  - npm run build:all
   - npm run ci
   - npm run new:bit
+
+### 主站 + 后台单仓库
+
+当前仓库同时包含 Astro 主站和 ADMIN 后台：
+
+- 主站：仓库根目录，继续使用 Astro 构建与预览
+- 后台：`apps/admin/`，独立 SvelteKit + Cloudflare Worker 项目
+
+常用命令：
+
+```bash
+# 主站
+npm run dev
+npm run build
+
+# 后台
+npm run admin:install
+npm run dev:admin
+npm run build:admin
+
+# 一次性构建主站和后台
+npm run build:all
+```
+
+后台本地密钥仍放在 `apps/admin/.dev.vars`，不要提交。生产部署 Worker 需要在 GitHub Secrets 配置 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID`，并在 Cloudflare Worker 上配置 `ADMIN_PASSWORD`、`GITHUB_TOKEN`、`MEMOS_ACCESS_TOKEN` 等运行时密钥。
 
 <details>
   <summary>检查与回归命令说明</summary>
@@ -192,8 +220,25 @@ npm run dev
 #### 生产环境说明
 
 - Theme Console 仅在本地开发环境可用，支持读取、校验和保存配置
-- 生产构建保持静态站点输出；`/admin/` 仅显示只读提示
+- 生产构建保持静态站点输出；`/admin/` 会跳转到在线 admin 后台，默认地址为 `https://vii.ink/admin`
 - `/api/admin/settings/` 仅供本地开发使用，生产环境不要依赖该接口
+- 如需换后台地址，可在构建环境设置 `ADMIN_CONSOLE_URL` 或 `ADMIN_URL`
+
+#### admin 内容同步
+
+在线 admin 将 Markdown 保存到 R2 的 `content/` 前缀，并将主题设置保存到 `settings/` 前缀；Astro 的 `npm run build` 会先尝试同步 R2 内容和主题设置，再执行 `astro build`。未配置 R2 凭据时会自动跳过，不影响本地构建。
+
+生产构建环境可配置：
+
+```bash
+ADMIN_R2_ACCOUNT_ID=你的 Cloudflare Account ID
+ADMIN_R2_ACCESS_KEY_ID=R2 S3 Access Key
+ADMIN_R2_SECRET_ACCESS_KEY=R2 S3 Secret
+ADMIN_R2_BUCKET=admin-r2
+ADMIN_R2_SYNC_PRUNE=1
+ADMIN_R2_SETTINGS_PREFIX=settings/
+ADMIN_R2_DATA_PREFIX=data/
+```
 
 
 #### 兼容迁移（已 fork用户）：
