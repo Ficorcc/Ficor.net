@@ -11,10 +11,8 @@
 
   let { data, children } = $props();
 
-  // 登录页/登出页不需要侧栏 shell
-  const isAuthPage = $derived(
-    page.url.pathname === `${base}/login` || page.url.pathname === `${base}/logout`
-  );
+  // 登录页/登出页不需要侧栏 shell。用 route id 避免 /admin base path 影响判断。
+  const isAuthPage = $derived(page.route.id === '/login' || page.route.id === '/logout');
 
   let sidebarOpen = $state(false);
 
