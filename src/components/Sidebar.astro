@@ -3,6 +3,7 @@ import Icon from './Icon.astro';
 import { ADMIN_NAV_ORNAMENT_DEFAULT } from '../lib/admin-console/shared';
 import { createWithBase } from '../utils/format';
 import { getSidebarHref, getThemeSettings, type SidebarNavId } from '../lib/theme-settings';
+import { adminConsole } from '../../site.config.mjs';
 
 const {
   siteTitle = 'Whono',
@@ -28,6 +29,7 @@ const nav = settings.shell.nav
     href: withBase(getSidebarHref(item.id))
   }));
 const showReaderToggle = settings.ui.readingMode.showEntry;
+const adminHref = adminConsole.url || withBase('/admin/');
 ---
 
 <aside class="sidebar">
@@ -91,6 +93,10 @@ const showReaderToggle = settings.ui.readingMode.showEntry;
       <Icon name="moon" class="icon icon-moon" />
       <Icon name="sun" class="icon icon-sun" />
     </button>
+
+    <a class="icon-button admin-login-link" href={adminHref} aria-label="后台登录" title="后台登录">
+      <Icon name="user-circle" class="icon" />
+    </a>
   </div>
 </aside>
 
