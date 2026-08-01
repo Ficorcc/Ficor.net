@@ -15,12 +15,13 @@ export const load: PageServerLoad = async ({ platform }) => {
   const content = new ContentStore(env.R2);
 
   try {
-    const [commentCounts, essays, bits, schedules, storage] = await Promise.all([
+    const [commentCounts, essayCount, recentEssays, bits, schedules, storage] = await Promise.all([
       repos.comments.countByStatus(),
-      content.list('essay').catch(() => []),
-      content.list('bits').catch(() => []),
+      content.count('essay').catch(() => 0),
+      content.list('essay', { limit: 5, quick: true }).catch(() => []),
+      content.count('bits').catch(() => 0),
       repos.schedules.list().catch(() => []),
-      estimateStorage(env.R2).catch(() => ({ totalSize: 0, count: 0 }))
+      estimateStorage(env.R2, 1).catch(() => ({ totalSize: 0, count: 0 }))
     ]);
 
     const pendingSchedules = schedules.filter((s) => s.status === 'pending');
@@ -28,13 +29,13 @@ export const load: PageServerLoad = async ({ platform }) => {
     return {
       stats: {
         comments: commentCounts,
-        essays: essays.length,
-        bits: bits.length,
+        essays: essayCount,
+        bits,
         pendingSchedules: pendingSchedules.length,
         totalSchedules: schedules.length,
         storage
       },
-      recentEssays: essays.slice(0, 5),
+      recentEssays,
       recentSchedules: pendingSchedules.slice(0, 5)
     };
   } catch (e) {

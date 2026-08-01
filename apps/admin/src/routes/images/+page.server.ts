@@ -1,6 +1,6 @@
 // 图片库：拉取图片列表和存储统计
 import type { PageServerLoad } from './$types';
-import { listImages, estimateStorage } from '$lib/server/r2/images';
+import { listImagesWithStorage } from '$lib/server/r2/images';
 
 export const load: PageServerLoad = async ({ platform }) => {
   if (!platform?.env?.R2) {
@@ -8,10 +8,7 @@ export const load: PageServerLoad = async ({ platform }) => {
   }
 
   try {
-    const [items, storage] = await Promise.all([
-      listImages(platform.env.R2),
-      estimateStorage(platform.env.R2)
-    ]);
+    const { items, storage } = await listImagesWithStorage(platform.env.R2);
     return { items, storage };
   } catch (e) {
     return {

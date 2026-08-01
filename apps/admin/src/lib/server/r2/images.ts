@@ -10,6 +10,17 @@ export interface ImageItem {
   etag: string;
 }
 
+export interface ImageStorageEstimate {
+  totalSize: number;
+  count: number;
+  truncated?: boolean;
+}
+
+export interface ImageListResult {
+  items: ImageItem[];
+  storage: ImageStorageEstimate;
+}
+
 /** 生成图片存储 key */
 export function generateImageKey(filename: string): string {
   const now = new Date();
@@ -32,6 +43,27 @@ export async function listImages(r2: R2Bucket, prefix = ''): Promise<ImageItem[]
   }));
 }
 
+/** 列出首屏图片，并复用同一次 R2 list 结果生成首屏统计 */
+export async function listImagesWithStorage(r2: R2Bucket, prefix = ''): Promise<ImageListResult> {
+  const fullPrefix = prefix ? `images/${prefix}` : 'images/';
+  const result = await r2.list({ prefix: fullPrefix, limit: 200 });
+  const items = result.objects.map((obj) => ({
+    key: obj.key,
+    size: obj.size,
+    uploaded: obj.uploaded.toISOString(),
+    etag: obj.etag
+  }));
+
+  return {
+    items,
+    storage: {
+      totalSize: result.objects.reduce((sum, obj) => sum + obj.size, 0),
+      count: result.objects.length,
+      truncated: result.truncated
+    }
+  };
+}
+
 /** 上传图片（原始字节） */
 export async function uploadImage(
   r2: R2Bucket,
@@ -52,19 +84,23 @@ export async function deleteImage(r2: R2Bucket, key: string): Promise<void> {
 }
 
 /** 估算图片总存储量 */
-export async function estimateStorage(r2: R2Bucket): Promise<{ totalSize: number; count: number }> {
+export async function estimateStorage(r2: R2Bucket, maxPages = Infinity): Promise<ImageStorageEstimate> {
   let totalSize = 0;
   let count = 0;
   let cursor: string | undefined;
+  let pages = 0;
+  let truncated = false;
 
   do {
     const result = await r2.list({ prefix: 'images/', cursor, limit: 500 });
+    pages++;
     for (const obj of result.objects) {
       totalSize += obj.size;
       count++;
     }
-    cursor = result.truncated ? result.cursor : undefined;
+    truncated = result.truncated;
+    cursor = result.truncated && pages < maxPages ? result.cursor : undefined;
   } while (cursor);
 
-  return { totalSize, count };
+  return { totalSize, count, truncated };
 }

@@ -56,7 +56,7 @@
 <aside class="sidebar" data-open={open}>
   <!-- 品牌区 -->
   <div class="sidebar__brand">
-    <a href="{base}/dashboard" class="sidebar__brand-link" onclick={handleNavClick}>
+    <a href="{base}/dashboard" class="sidebar__brand-link" data-sveltekit-preload-data="hover" onclick={handleNavClick}>
       <div class="sidebar__brand-title">柒色墨笺</div>
       <div class="sidebar__brand-sub">ADMIN CONSOLE</div>
     </a>
@@ -70,6 +70,7 @@
         <a
           href={`${base}${item.href}`}
           class="sidebar__link"
+          data-sveltekit-preload-data="hover"
           aria-current={isActive(item.match) ? 'page' : undefined}
           onclick={handleNavClick}
         >

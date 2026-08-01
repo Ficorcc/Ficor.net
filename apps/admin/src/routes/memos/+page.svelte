@@ -2,7 +2,6 @@
   说说管理：同步 Memos 并维护主站 data/memos.json
 -->
 <script lang="ts">
-  import { invalidateAll } from '$app/navigation';
   import Icon from '$lib/components/ui/Icon.svelte';
   import { toast } from '$lib/stores/toast';
   import { api } from '$lib/utils/api';
@@ -14,6 +13,8 @@
   let saving = $state(false);
   let syncing = $state(false);
   let creating = $state(false);
+  let items = $state<MemoRecord[]>([...((Array.isArray(data.items) ? data.items : []) as MemoRecord[])]);
+  let value = $state<MemoRecord[]>([...((Array.isArray(data.value) ? data.value : []) as MemoRecord[])]);
   let newContent = $state('');
   let newCreatedAt = $state(new Date().toISOString().slice(0, 16));
 
@@ -65,19 +66,20 @@
       pinned: false,
       resources: []
     };
-    const value = [item, ...(Array.isArray(data.value) ? data.value : [])];
+    const nextValue = [item, ...value];
 
     saving = true;
     const result = await api<{ deploy?: { ok?: boolean; message?: string } }>('DATA_SAVE', {
       key: 'memos',
-      value,
+      value: nextValue,
       deploy: true
     });
     if (result.ok) {
+      value = nextValue;
+      items = [item, ...items];
       deployToast(result.data, '说说已新建并触发提交部署');
       resetForm();
       creating = false;
-      await invalidateAll();
     } else {
       toast.error(result.error ?? '保存失败');
     }
@@ -88,8 +90,10 @@
     syncing = true;
     const result = await api<{ items?: unknown[]; count?: number }>('MEMOS_SYNC');
     if (result.ok) {
+      const nextItems = Array.isArray(result.data?.items) ? (result.data.items as MemoRecord[]) : [];
+      items = nextItems;
+      value = nextItems;
       toast.ok(`已同步 ${result.data?.count ?? 0} 条说说`);
-      await invalidateAll();
     } else {
       toast.error(result.error ?? '同步失败');
     }
@@ -105,7 +109,7 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="page-header__title">说说管理</h1>
-      <p class="page-header__sub">{data.items.length} 条 · Memos 数据源</p>
+      <p class="page-header__sub">{items.length} 条 · Memos 数据源</p>
     </div>
     <div class="page-actions">
       <button class="btn btn--ghost" onclick={syncMemos} disabled={syncing}>
@@ -156,14 +160,14 @@
 
 <div class="panel">
   <div class="panel__legend">说说预览 <span class="panel__legend-en">MEMOS</span></div>
-  {#if data.items.length === 0}
+  {#if items.length === 0}
     <div class="empty-state">
       <Icon name="content" size={32} />
       <div class="empty-state__title mt-4">还没有说说</div>
     </div>
   {:else}
     <div class="stack-list">
-      {#each data.items.slice(0, 60) as memo, index (memoId(memo as unknown as MemoRecord, index))}
+      {#each items.slice(0, 60) as memo, index (memoId(memo as unknown as MemoRecord, index))}
         {@const record = memo as unknown as MemoRecord}
         <article class="stack-item">
           <div class="stack-item__meta">{formatDateTime(memoDate(record))}</div>

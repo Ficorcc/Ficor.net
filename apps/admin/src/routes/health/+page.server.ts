@@ -50,14 +50,14 @@ export const load: PageServerLoad = async ({ platform }) => {
   try {
     const [commentCounts, essays, bits, storage] = await Promise.all([
       repos.comments.countByStatus(),
-      content.list('essay').catch(() => []),
-      content.list('bits').catch(() => []),
-      estimateStorage(env.R2).catch(() => ({ totalSize: 0, count: 0 }))
+      content.count('essay').catch(() => 0),
+      content.count('bits').catch(() => 0),
+      estimateStorage(env.R2, 1).catch(() => ({ totalSize: 0, count: 0 }))
     ]);
     stats = {
       comments: commentCounts,
-      essays: essays.length,
-      bits: bits.length,
+      essays,
+      bits,
       storage
     };
   } catch (e) {

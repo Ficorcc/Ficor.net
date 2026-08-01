@@ -45,7 +45,7 @@
   {@render children?.()}
 {:else}
   <!-- 管理后台 Shell -->
-  <div class="admin-shell">
+  <div class="admin-shell" data-sveltekit-preload-data="hover">
     <div class="admin-shell__sidebar" data-open={sidebarOpen}>
       <Sidebar bind:open={sidebarOpen} onclose={() => (sidebarOpen = false)} />
     </div>

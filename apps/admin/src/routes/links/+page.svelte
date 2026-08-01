@@ -2,7 +2,6 @@
   友链管理：维护主站 links 数据
 -->
 <script lang="ts">
-  import { invalidateAll } from '$app/navigation';
   import Icon from '$lib/components/ui/Icon.svelte';
   import { toast } from '$lib/stores/toast';
   import { api } from '$lib/utils/api';
@@ -10,6 +9,10 @@
   let { data } = $props();
 
   type LinkRecord = Record<string, unknown>;
+  let sourceValue = $state<Record<string, unknown>>(
+    data.value && typeof data.value === 'object' ? { ...(data.value as Record<string, unknown>) } : {}
+  );
+  let links = $state<LinkRecord[]>([...((Array.isArray(data.links) ? data.links : []) as LinkRecord[])]);
   let saving = $state(false);
   let creating = $state(false);
   let name = $state('');
@@ -67,10 +70,9 @@
       is_active: true,
       status: 'unknown'
     };
-    const base = data.value && typeof data.value === 'object' ? (data.value as Record<string, unknown>) : {};
     const value = {
-      ...base,
-      links: [...(Array.isArray(data.links) ? data.links : []), link]
+      ...sourceValue,
+      links: [...links, link]
     };
 
     saving = true;
@@ -80,10 +82,11 @@
       deploy: true
     });
     if (result.ok) {
+      sourceValue = value;
+      links = value.links as LinkRecord[];
       deployToast(result.data);
       resetForm();
       creating = false;
-      await invalidateAll();
     } else {
       toast.error(result.error ?? '保存失败');
     }
@@ -99,7 +102,7 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="page-header__title">友链管理</h1>
-      <p class="page-header__sub">{data.links.length} 个友链 · 主站 links 数据</p>
+      <p class="page-header__sub">{links.length} 个友链 · 主站 links 数据</p>
     </div>
     <button class="btn btn--primary" onclick={() => (creating = !creating)}>
       <Icon name={creating ? 'close' : 'plus'} size={16} /> {creating ? '取消新建' : '新建'}
@@ -152,14 +155,14 @@
 
 <div class="panel">
   <div class="panel__legend">友链列表 <span class="panel__legend-en">LINKS</span></div>
-  {#if data.links.length === 0}
+  {#if links.length === 0}
     <div class="empty-state">
       <Icon name="database" size={32} />
       <div class="empty-state__title mt-4">还没有友链</div>
     </div>
   {:else}
     <div class="link-list">
-      {#each data.links.slice(0, 80) as item, index (text((item as LinkRecord).url) || index)}
+      {#each links.slice(0, 80) as item, index (text((item as LinkRecord).url) || index)}
         {@const link = item as LinkRecord}
         <a class="link-item" href={text(link.url)} target="_blank" rel="noreferrer">
           <span class="link-item__name">{text(link.name) || '未命名'}</span>

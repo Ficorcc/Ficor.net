@@ -2,7 +2,6 @@
   订阅管理：维护友链订阅与展示数据
 -->
 <script lang="ts">
-  import { invalidateAll } from '$app/navigation';
   import Icon from '$lib/components/ui/Icon.svelte';
   import { toast } from '$lib/stores/toast';
   import { api } from '$lib/utils/api';
@@ -10,6 +9,12 @@
   let { data } = $props();
 
   type FeedRecord = Record<string, unknown>;
+  let sourceValue = $state<Record<string, unknown>>(
+    data.value && typeof data.value === 'object' ? { ...(data.value as Record<string, unknown>) } : {}
+  );
+  let subscriptions = $state<FeedRecord[]>(
+    [...((Array.isArray(data.subscriptions) ? data.subscriptions : []) as FeedRecord[])]
+  );
   let saving = $state(false);
   let creating = $state(false);
   let name = $state('');
@@ -54,10 +59,9 @@
       updated: new Date().toISOString(),
       latestItems: []
     };
-    const base = data.value && typeof data.value === 'object' ? (data.value as Record<string, unknown>) : {};
     const value = {
-      ...base,
-      subscriptions: [...(Array.isArray(data.subscriptions) ? data.subscriptions : []), subscription]
+      ...sourceValue,
+      subscriptions: [...subscriptions, subscription]
     };
 
     saving = true;
@@ -67,10 +71,11 @@
       deploy: true
     });
     if (result.ok) {
+      sourceValue = value;
+      subscriptions = value.subscriptions as FeedRecord[];
       deployToast(result.data);
       resetForm();
       creating = false;
-      await invalidateAll();
     } else {
       toast.error(result.error ?? '保存失败');
     }
@@ -86,7 +91,7 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="page-header__title">订阅管理</h1>
-      <p class="page-header__sub">{data.subscriptions.length} 个订阅 · {data.latestItems.length} 条展示动态</p>
+      <p class="page-header__sub">{subscriptions.length} 个订阅 · {data.latestItems.length} 条展示动态</p>
     </div>
     <button class="btn btn--primary" onclick={() => (creating = !creating)}>
       <Icon name={creating ? 'close' : 'plus'} size={16} /> {creating ? '取消新建' : '新建'}
@@ -139,14 +144,14 @@
 
 <div class="panel">
   <div class="panel__legend">订阅展示 <span class="panel__legend-en">FEEDS</span></div>
-  {#if data.subscriptions.length === 0}
+  {#if subscriptions.length === 0}
     <div class="empty-state">
       <Icon name="cloud" size={32} />
       <div class="empty-state__title mt-4">还没有订阅</div>
     </div>
   {:else}
     <div class="feed-list">
-      {#each data.subscriptions.slice(0, 80) as item, index (text((item as FeedRecord).feedUrl) || index)}
+      {#each subscriptions.slice(0, 80) as item, index (text((item as FeedRecord).feedUrl) || index)}
         {@const sub = item as FeedRecord}
         <article class="feed-item">
           <div class="feed-item__name">{text(sub.name) || '未命名订阅'}</div>

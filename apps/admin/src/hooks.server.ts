@@ -12,10 +12,21 @@ import { resolveSession } from '$lib/server/auth/session';
 /** 不需要登录即可访问的路径前缀（相对于 base /admin） */
 const PUBLIC_PATHS = ['/login', '/api/COMMENT_SUBMIT'];
 
+const ASSET_PATH_PREFIXES = ['/admin/_app/', '/admin/favicon', '/admin/robots.txt'];
+
 /** 是否为公开路径 */
 function isPublicPath(pathname: string): boolean {
   // pathname 已包含 base 前缀 /admin
   return PUBLIC_PATHS.some((p) => pathname === `/admin${p}` || pathname.startsWith(`/admin${p}/`));
+}
+
+function isStaticAsset(pathname: string): boolean {
+  return ASSET_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+}
+
+function shouldRateLimit(method: string, pathname: string): boolean {
+  if (method !== 'GET' && method !== 'HEAD') return true;
+  return pathname === '/admin/login' || pathname.startsWith('/admin/api/');
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
@@ -27,6 +38,10 @@ export const handle: Handle = async ({ event, resolve }) => {
   event.locals.session = null;
   event.locals.csrfValid = false;
 
+  if (isStaticAsset(url.pathname)) {
+    return resolve(event);
+  }
+
   // 如果没有平台绑定（如纯本地 vite dev 无 wrangler），直接放行让页面能渲染
   if (!platform?.env?.DB) {
     return resolve(event);
@@ -35,18 +50,20 @@ export const handle: Handle = async ({ event, resolve }) => {
   const repos = createRepos(platform.env.DB);
 
   // --- 限流（对所有请求） ---
-  try {
-    const rlConfig = await repos.config.get<{ max: number; window: number }>('ratelimit');
-    const max = rlConfig?.max ?? parseInt(platform.env.RATE_LIMIT_MAX ?? '60', 10);
-    const window = rlConfig?.window ?? parseInt(platform.env.RATE_LIMIT_WINDOW ?? '60', 10);
-    const { allowed } = await repos.ratelimit.check(ip, max, window);
-    if (!allowed) {
-      throw error(429, '请求过于频繁，请稍后再试');
+  if (shouldRateLimit(event.request.method, url.pathname)) {
+    try {
+      const rlConfig = await repos.config.get<{ max: number; window: number }>('ratelimit');
+      const max = rlConfig?.max ?? parseInt(platform.env.RATE_LIMIT_MAX ?? '60', 10);
+      const window = rlConfig?.window ?? parseInt(platform.env.RATE_LIMIT_WINDOW ?? '60', 10);
+      const { allowed } = await repos.ratelimit.check(ip, max, window);
+      if (!allowed) {
+        throw error(429, '请求过于频繁，请稍后再试');
+      }
+    } catch (e) {
+      // 限流自身的 429 直接抛出
+      if (e && typeof e === 'object' && 'status' in e && e.status === 429) throw e;
+      // 其他错误（DB 异常）降级放行，不阻塞请求
     }
-  } catch (e) {
-    // 限流自身的 429 直接抛出
-    if (e && typeof e === 'object' && 'status' in e && e.status === 429) throw e;
-    // 其他错误（DB 异常）降级放行，不阻塞请求
   }
 
   // --- 会话解析 ---

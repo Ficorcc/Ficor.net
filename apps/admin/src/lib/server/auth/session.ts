@@ -24,6 +24,11 @@ function shouldRefresh(session: SessionRow, maxAgeDays: number): boolean {
   return remaining < totalMs / 2;
 }
 
+function shouldTouch(session: SessionRow): boolean {
+  const lastSeen = new Date(session.last_seen_at).getTime();
+  return !Number.isFinite(lastSeen) || Date.now() - lastSeen > 5 * 60 * 1000;
+}
+
 /** 从请求 cookie 中提取 token */
 export function extractToken(cookies: Cookies): string | null {
   return cookies.get(SESSION_COOKIE) ?? null;
@@ -52,7 +57,7 @@ export async function resolveSession(
     const newExpires = new Date(Date.now() + maxAgeDays * 24 * 60 * 60 * 1000).toISOString();
     await repos.sessions.updateExpires(session.id, newExpires).catch(() => {});
     setSessionCookie(cookies, token, maxAgeDays);
-  } else {
+  } else if (shouldTouch(session)) {
     await repos.sessions.touch(session.id).catch(() => {});
   }
 
