@@ -4,6 +4,13 @@ type Tone = 'info' | 'error' | 'success';
 type ToolbarSnapshot = { value: string; start: number; end: number };
 type ImageRowState = { lastValue: string; requestId: number };
 type ImageDraft = { src: string; width: number; height: number };
+type BitsDraftPayload = {
+  slug: string;
+  frontmatter: Record<string, unknown>;
+  body: string;
+  markdown: string;
+  deploy: boolean;
+};
 type ImageRowRefs = {
   srcEl: HTMLInputElement;
   widthEl: HTMLInputElement;
@@ -44,10 +51,10 @@ const formatDateLocal = () => {
   return `${datePart}T${timePart}${sign}${tzHours}:${tzRemainder}`;
 };
 
-const formatFileStamp = () => {
+const formatSlugStamp = () => {
   const now = new Date();
   const datePart = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
-  const timePart = `${pad2(now.getHours())}${pad2(now.getMinutes())}`;
+  const timePart = `${pad2(now.getHours())}${pad2(now.getMinutes())}${pad2(now.getSeconds())}`;
   return `${datePart}-${timePart}`;
 };
 
@@ -123,14 +130,12 @@ export const initBitsDraft = (): BitsDraftController | null => {
 
   const form = query<HTMLFormElement>(dialog, '[data-bits-draft-form]');
   const closeBtns = queryAll<HTMLElement>(dialog, '[data-bits-draft-close]');
-  const generateBtn = query<HTMLButtonElement>(dialog, '[data-bits-draft-generate]');
-  const downloadBtn = query<HTMLButtonElement>(dialog, '[data-bits-draft-download]');
+  const publishBtn = query<HTMLButtonElement>(dialog, '[data-bits-draft-publish]');
   const statusEl = query<HTMLElement>(dialog, '[data-bits-draft-status]');
   const manualOpenBtn = query<HTMLButtonElement>(dialog, '[data-bits-manual-open]');
   const manualBox = query<HTMLElement>(dialog, '[data-bits-manual]');
   const manualTextarea = query<HTMLTextAreaElement>(dialog, '[data-bits-manual-textarea]');
   const manualNote = query<HTMLElement>(dialog, '[data-bits-manual-note]');
-  const manualCopyBtn = query<HTMLButtonElement>(dialog, '[data-bits-manual-copy]');
   const toolbar = query<HTMLElement>(dialog, '[data-bits-draft-toolbar]');
   const quoteBtn = query<HTMLButtonElement>(toolbar, '[data-action="quote"]');
   const listBtn = query<HTMLButtonElement>(toolbar, '[data-action="list"]');
@@ -590,15 +595,6 @@ export const initBitsDraft = (): BitsDraftController | null => {
     query<HTMLInputElement>(row, '[data-bits-image-src]')?.focus();
   };
 
-  const tryClipboardCopy = async (value: string) => {
-    try {
-      await navigator.clipboard.writeText(value);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
   const collectImages = (): ImageDraft[] | null => {
     const images: ImageDraft[] = [];
     for (const row of getImageRows()) {
@@ -631,7 +627,7 @@ export const initBitsDraft = (): BitsDraftController | null => {
     return images;
   };
 
-  const buildMarkdown = () => {
+  const buildDraftPayload = (): BitsDraftPayload | null => {
     if (!contentEl) return null;
     const content = contentEl.value.trim();
     if (!content) {
@@ -659,8 +655,27 @@ export const initBitsDraft = (): BitsDraftController | null => {
     const customAuthorName = authorName && authorName !== defaultAuthorName ? authorName : '';
     const customAuthorAvatar = authorAvatar && authorAvatar !== defaultAuthorAvatar ? authorAvatar : '';
     const hasCustomAuthor = !!customAuthorName || !!customAuthorAvatar;
+    const date = formatDateLocal();
+    const draft = draftEl?.checked === true;
+    const slug = `bits-${formatSlugStamp()}`;
+    const frontmatter: Record<string, unknown> = {
+      date,
+      tags,
+      draft
+    };
 
-    const lines = ['---', `date: ${formatDateLocal()}`];
+    if (hasCustomAuthor) {
+      const author: Record<string, string> = {};
+      if (customAuthorName) author.name = customAuthorName;
+      if (customAuthorAvatar) author.avatar = customAuthorAvatar;
+      frontmatter.author = author;
+    }
+
+    if (images.length) {
+      frontmatter.images = images;
+    }
+
+    const lines = ['---', `date: ${date}`];
 
     if (tags.length) {
       lines.push('tags:');
@@ -675,7 +690,7 @@ export const initBitsDraft = (): BitsDraftController | null => {
       if (customAuthorAvatar) lines.push(`  avatar: ${quoteYaml(customAuthorAvatar)}`);
     }
 
-    if (draftEl?.checked) {
+    if (draft) {
       lines.push('draft: true');
     }
 
@@ -689,7 +704,90 @@ export const initBitsDraft = (): BitsDraftController | null => {
     }
 
     lines.push('---', '', content);
-    return lines.join('\n');
+    return {
+      slug,
+      frontmatter,
+      body: content,
+      markdown: lines.join('\n'),
+      deploy: !draft
+    };
+  };
+
+  const readApiError = async (response: Response) => {
+    const contentType = response.headers.get('content-type') ?? '';
+    if (contentType.includes('application/json')) {
+      const data = (await response.json().catch(() => null)) as { message?: string } | null;
+      if (data?.message) return data.message;
+    }
+    const text = await response.text().catch(() => '');
+    return text.trim() || `请求失败 (${response.status})`;
+  };
+
+  const getCsrfToken = async () => {
+    const response = await fetch('/admin/api/CSRF_ISSUE', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ event: 'CSRF_ISSUE' })
+    });
+
+    if (response.status === 401) {
+      throw new Error('请先登录后台，再回到本页发布。');
+    }
+    if (!response.ok) {
+      throw new Error(await readApiError(response));
+    }
+
+    const data = (await response.json()) as { csrfToken?: string };
+    if (!data.csrfToken) throw new Error('后台没有返回 CSRF token，请刷新后重试。');
+    return data.csrfToken;
+  };
+
+  const saveDraftPayload = async (payload: BitsDraftPayload) => {
+    const csrfToken = await getCsrfToken();
+    const response = await fetch('/admin/api/CONTENT_SAVE', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'content-type': 'application/json',
+        'x-csrf-token': csrfToken
+      },
+      body: JSON.stringify({
+        event: 'CONTENT_SAVE',
+        collection: 'bits',
+        slug: payload.slug,
+        frontmatter: payload.frontmatter,
+        body: payload.body,
+        deploy: payload.deploy
+      })
+    });
+
+    if (response.status === 401) {
+      throw new Error('请先登录后台，再回到本页发布。');
+    }
+    if (response.status === 403) {
+      throw new Error('登录校验已过期，请刷新页面或重新登录后台。');
+    }
+    if (!response.ok) {
+      throw new Error(await readApiError(response));
+    }
+
+    return (await response.json()) as { ok?: boolean; deploy?: { ok?: boolean; message?: string } };
+  };
+
+  const setPublishing = (publishing: boolean) => {
+    if (!publishBtn) return;
+    publishBtn.disabled = publishing;
+    publishBtn.textContent = publishing
+      ? (draftEl?.checked ? '保存中...' : '发布中...')
+      : (draftEl?.checked ? '保存草稿' : '发布到站点');
+  };
+
+  const updatePublishLabel = () => {
+    if (!publishBtn || publishBtn.disabled) return;
+    publishBtn.textContent = draftEl?.checked ? '保存草稿' : '发布到站点';
   };
 
   const restoreFocus = () => {
@@ -713,6 +811,7 @@ export const initBitsDraft = (): BitsDraftController | null => {
     setAuthorPlaceholders();
     updateIdentityPill();
     syncIdentityToggleState();
+    updatePublishLabel();
     if (typeof dialog.showModal === 'function') {
       dialog.showModal();
     } else {
@@ -858,16 +957,6 @@ export const initBitsDraft = (): BitsDraftController | null => {
     event.preventDefault();
   });
 
-  manualCopyBtn?.addEventListener('click', async () => {
-    if (!manualTextarea) return;
-    manualTextarea.focus();
-    manualTextarea.select();
-    const copied = await tryClipboardCopy(manualTextarea.value);
-    if (manualNote) {
-      manualNote.textContent = copied ? '已复制草稿。' : '已为你选中文本，按 ⌘C / Ctrl+C 复制。';
-    }
-  });
-
   manualOpenBtn?.addEventListener('click', () => {
     clearStatus();
     if (manualBox && !manualBox.hidden) {
@@ -877,9 +966,9 @@ export const initBitsDraft = (): BitsDraftController | null => {
     const contentValue = contentEl?.value.trim() ?? '';
     let markdown = '';
     if (contentValue) {
-      const built = buildMarkdown();
+      const built = buildDraftPayload();
       if (!built) return;
-      markdown = built;
+      markdown = built.markdown;
       rememberMarkdown(markdown);
     } else if (hasGenerated && lastMarkdown) {
       markdown = lastMarkdown;
@@ -888,7 +977,7 @@ export const initBitsDraft = (): BitsDraftController | null => {
       contentEl?.focus();
       return;
     }
-    showManualCopy(markdown, '已生成草稿。');
+    showManualCopy(markdown, '这是即将提交到后台的 Markdown 内容。');
   });
 
   toolbar?.addEventListener('click', (event) => {
@@ -926,36 +1015,35 @@ export const initBitsDraft = (): BitsDraftController | null => {
     });
   });
 
-  generateBtn?.addEventListener('click', async () => {
-    clearStatus();
-    hideManualCopy();
-    const markdown = buildMarkdown();
-    if (!markdown) return;
-    rememberMarkdown(markdown);
-    if (!window.isSecureContext || !navigator.clipboard?.writeText) {
-      showManualCopy(markdown, '已生成草稿。');
-      return;
-    }
-    const copied = await tryClipboardCopy(markdown);
-    if (copied) setStatus('已复制草稿。', 'success');
-    else showManualCopy(markdown, '已生成草稿。');
+  draftEl?.addEventListener('change', () => {
+    updatePublishLabel();
   });
 
-  downloadBtn?.addEventListener('click', () => {
+  publishBtn?.addEventListener('click', async () => {
     clearStatus();
     hideManualCopy();
-    const markdown = buildMarkdown();
-    if (!markdown) return;
-    const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `bits-${formatFileStamp()}.md`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    setStatus('已下载草稿。', 'success');
+    const payload = buildDraftPayload();
+    if (!payload) return;
+    rememberMarkdown(payload.markdown);
+    setPublishing(true);
+    setStatus(payload.deploy ? '正在发布到后台并触发站点部署...' : '正在保存草稿...');
+    try {
+      const result = await saveDraftPayload(payload);
+      const deployMessage = result.deploy?.message ?? '';
+      if (payload.deploy && result.deploy?.ok === false) {
+        setStatus(`内容已保存，但部署未触发：${deployMessage || '部署配置不完整'}`, 'error');
+        return;
+      }
+      setStatus(payload.deploy ? '已发布，站点部署已触发。页面稍后自动刷新。' : '草稿已保存。', 'success');
+      if (!payload.deploy) return;
+      window.setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : '发布失败，请稍后重试。', 'error');
+    } finally {
+      setPublishing(false);
+    }
   });
 
   cachedController = {

@@ -160,7 +160,7 @@ const { settings } = getThemeSettings();
           <span class="bits-draft-link-icon" aria-hidden="true">
             <Icon name="eye" />
           </span>
-          <span>预览草稿</span>
+          <span>预览内容</span>
           <span class="bits-draft-link-caret" aria-hidden="true">
             <Icon name="chevron-down" />
           </span>
@@ -168,12 +168,9 @@ const { settings } = getThemeSettings();
       </div>
 
       <div class="bits-draft-manual" data-bits-manual hidden>
-        <div class="bits-draft-manual-title">草稿内容（只读）</div>
+        <div class="bits-draft-manual-title">发布内容（只读）</div>
         <textarea class="bits-draft-manual-textarea" data-bits-manual-textarea rows="6" readonly></textarea>
-        <div class="bits-draft-manual-actions">
-          <div class="bits-draft-manual-note" data-bits-manual-note></div>
-          <button class="bits-draft-secondary" type="button" data-bits-manual-copy>手动复制</button>
-        </div>
+        <div class="bits-draft-manual-note" data-bits-manual-note></div>
       </div>
 
       <div class="bits-identity-bar" data-identity-bar>
@@ -245,8 +242,7 @@ const { settings } = getThemeSettings();
         <span class="bits-draft-check-help">草稿:线上/预览默认不显示</span>
       </div>
       <div class="bits-draft-actions">
-        <button class="bits-draft-primary" type="button" data-bits-draft-generate>生成并复制</button>
-        <button class="bits-draft-secondary" type="button" data-bits-draft-download>下载 .md</button>
+        <button class="bits-draft-primary" type="button" data-bits-draft-publish>发布到站点</button>
       </div>
     </div>
   </form>
