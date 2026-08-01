@@ -10,9 +10,9 @@ compatibility_flags = ["nodejs_compat"]
 # 应用内 base path 为 /admin，完整访问地址：https://vii.ink/admin
 # 本地开发：https://localhost:5173/admin
 
-# routes = [
-#   { pattern = "vii.ink/admin/*", zone_name = "vii.ink" }
-# ]
+routes = [
+  { pattern = "vii.ink/admin*", zone_name = "vii.ink" }
+]
 
 # ============================================================================
 # Cloudflare 绑定（部署前请替换占位符）
