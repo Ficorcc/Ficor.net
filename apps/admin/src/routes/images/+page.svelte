@@ -88,6 +88,14 @@
     navigator.clipboard.writeText(key);
     toast.ok('已复制路径');
   }
+
+  function imageUrl(key: string) {
+    return `/admin/api/IMAGE_VIEW?key=${encodeURIComponent(key)}`;
+  }
+
+  function fileName(key: string) {
+    return key.split('/').pop() ?? key;
+  }
 </script>
 
 <svelte:head>
@@ -134,7 +142,15 @@
     {#each data.items as img (img.key)}
       <div class="image-card">
         <div class="image-card__thumb">
-          <!-- 缩略图通过 R2 公开访问或 CDN。这里显示占位+信息 -->
+          <img
+            class="image-card__image"
+            src={imageUrl(img.key)}
+            alt={fileName(img.key)}
+            loading="lazy"
+            onerror={(e) => {
+              e.currentTarget.style.display = 'none';
+            }}
+          />
           <div class="image-card__placeholder">
             <Icon name="images" size={28} />
           </div>
@@ -196,10 +212,21 @@
   .image-card__thumb {
     aspect-ratio: 4 / 3;
     background: var(--panel);
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
     color: var(--faint);
+  }
+  .image-card__image {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--panel);
   }
   .image-card__placeholder {
     opacity: 0.5;

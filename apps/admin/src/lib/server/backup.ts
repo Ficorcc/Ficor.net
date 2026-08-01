@@ -7,7 +7,7 @@
 
 import { createRepos } from './db';
 import { ContentStore } from './r2/content';
-import { triggerDeploy } from './deploy/github';
+import { resolveDeployConfig, triggerDeploy } from './deploy/github';
 import { exportBackup, cleanupOldBackups } from './r2/backup';
 
 interface ScheduledEnv {
@@ -16,6 +16,10 @@ interface ScheduledEnv {
   AI: Ai;
   BACKUP_RETENTION_DAYS?: string;
   GITHUB_TOKEN?: string;
+  GITHUB_OWNER?: string;
+  GITHUB_REPO?: string;
+  GITHUB_WORKFLOW?: string;
+  GITHUB_REF?: string;
 }
 
 /**
@@ -62,13 +66,10 @@ async function runScheduleCheck(
           ref?: string;
         }>('deploy');
 
-        if (deployConfig && env.GITHUB_TOKEN) {
-          const result = await triggerDeploy(env.GITHUB_TOKEN, {
-            owner: deployConfig.owner,
-            repo: deployConfig.repo,
-            workflow: deployConfig.workflow,
-            ref: deployConfig.ref
-          });
+        const config = resolveDeployConfig(deployConfig, env);
+
+        if (env.GITHUB_TOKEN) {
+          const result = await triggerDeploy(env.GITHUB_TOKEN, config);
 
           if (result.ok) {
             await repos.schedules.markDone(item.id);
@@ -83,7 +84,7 @@ async function runScheduleCheck(
             await repos.schedules.markFailed(item.id, result.message);
           }
         } else {
-          await repos.schedules.markFailed(item.id, '部署配置不完整');
+          await repos.schedules.markFailed(item.id, '缺少 GITHUB_TOKEN，无法触发部署');
         }
       } catch (e) {
         const errorMsg = e instanceof Error ? e.message : '未知错误';

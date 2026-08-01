@@ -1,5 +1,5 @@
 <!--
-  友链管理：维护主站 links 数据
+  友链管理：读取主站 links 数据并直接编辑
 -->
 <script lang="ts">
   import Icon from '$lib/components/ui/Icon.svelte';
@@ -14,12 +14,6 @@
   );
   let links = $state<LinkRecord[]>([...((Array.isArray(data.links) ? data.links : []) as LinkRecord[])]);
   let saving = $state(false);
-  let creating = $state(false);
-  let name = $state('');
-  let url = $state('');
-  let avatar = $state('');
-  let description = $state('');
-  let feed = $state('');
 
   function text(value: unknown) {
     return typeof value === 'string' ? value : '';
@@ -37,42 +31,74 @@
     );
   }
 
+  function updateLink(index: number, key: string, value: unknown) {
+    links[index] = {
+      ...links[index],
+      [key]: value
+    };
+  }
+
+  function addLink() {
+    links = [
+      {
+        id: `link-${Date.now().toString(36)}`,
+        name: '',
+        url: '',
+        description: '',
+        avatar: '',
+        feed: '',
+        is_active: true,
+        status: 'unknown'
+      },
+      ...links
+    ];
+  }
+
+  function removeLink(index: number) {
+    links = links.filter((_, itemIndex) => itemIndex !== index);
+  }
+
+  function normalizedLinks(): LinkRecord[] {
+    const nextLinks: LinkRecord[] = [];
+    for (const link of links) {
+      const name = text(link.name).trim();
+      const url = text(link.url).trim();
+      if (!name && !url) continue;
+      nextLinks.push({
+        ...link,
+        id: text(link.id).trim() || recordSlug(url || name),
+        name,
+        url,
+        description: text(link.description).trim(),
+        avatar: text(link.avatar).trim(),
+        feed: text(link.feed).trim() || undefined,
+        is_active: link.is_active !== false,
+        status: text(link.status) || 'unknown'
+      });
+    }
+    return nextLinks;
+  }
+
   function deployToast(result: { deploy?: { ok?: boolean; message?: string } } | undefined) {
     const deployResult = result?.deploy;
     if (deployResult?.ok === false) {
       toast.warn(`已保存，但部署未触发：${deployResult.message ?? '部署配置不完整'}`);
     } else {
-      toast.ok('友链已新建并触发提交部署');
+      toast.ok('友链已保存并触发提交部署');
     }
   }
 
-  function resetForm() {
-    name = '';
-    url = '';
-    avatar = '';
-    description = '';
-    feed = '';
-  }
-
-  async function saveNewLink() {
-    if (!name.trim() || !url.trim()) {
-      toast.error('请填写名称和网址');
+  async function saveLinks() {
+    const nextLinks = normalizedLinks();
+    if (nextLinks.some((link) => !text(link.name) || !text(link.url))) {
+      toast.error('每条友链都需要名称和网址');
       return;
     }
 
-    const link: LinkRecord = {
-      id: recordSlug(url || name),
-      name: name.trim(),
-      url: url.trim(),
-      description: description.trim(),
-      avatar: avatar.trim(),
-      feed: feed.trim() || undefined,
-      is_active: true,
-      status: 'unknown'
-    };
     const value = {
       ...sourceValue,
-      links: [...links, link]
+      siteInfo: sourceValue.siteInfo ?? data.siteInfo,
+      links: nextLinks
     };
 
     saving = true;
@@ -83,14 +109,27 @@
     });
     if (result.ok) {
       sourceValue = value;
-      links = value.links as LinkRecord[];
+      links = nextLinks;
       deployToast(result.data);
-      resetForm();
-      creating = false;
     } else {
       toast.error(result.error ?? '保存失败');
     }
     saving = false;
+  }
+
+  function statusText(link: LinkRecord) {
+    const status = text(link.status);
+    if (status === 'online') return '在线';
+    if (status === 'offline') return '离线';
+    return '未知';
+  }
+
+  function toggleActive(index: number) {
+    updateLink(index, 'is_active', links[index].is_active === false);
+  }
+
+  function sourceLabel() {
+    return (data as Record<string, unknown>).source === 'source' ? '主站仓库' : '后台存储';
   }
 </script>
 
@@ -102,11 +141,16 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="page-header__title">友链管理</h1>
-      <p class="page-header__sub">{links.length} 个友链 · 主站 links 数据</p>
+      <p class="page-header__sub">{links.length} 个友链 · 数据源：{sourceLabel()}</p>
     </div>
-    <button class="btn btn--primary" onclick={() => (creating = !creating)}>
-      <Icon name={creating ? 'close' : 'plus'} size={16} /> {creating ? '取消新建' : '新建'}
-    </button>
+    <div class="header-actions">
+      <button class="btn btn--ghost" onclick={addLink}>
+        <Icon name="plus" size={16} /> 新增
+      </button>
+      <button class="btn btn--primary" onclick={saveLinks} disabled={saving}>
+        <Icon name="save" size={16} /> {saving ? '保存中...' : '保存并部署'}
+      </button>
+    </div>
   </div>
 </div>
 
@@ -119,40 +163,6 @@
   </div>
 {/if}
 
-{#if creating}
-  <div class="panel create-panel">
-    <div class="panel__legend">新建友链 <span class="panel__legend-en">NEW LINK</span></div>
-    <div class="create-form">
-      <div class="field">
-        <label class="field__label" for="link-name">名称</label>
-        <input id="link-name" type="text" bind:value={name} placeholder="站点名称" />
-      </div>
-      <div class="field">
-        <label class="field__label" for="link-url">网址</label>
-        <input id="link-url" type="url" bind:value={url} placeholder="https://example.com" />
-      </div>
-      <div class="field">
-        <label class="field__label" for="link-avatar">头像</label>
-        <input id="link-avatar" type="url" bind:value={avatar} placeholder="https://example.com/avatar.png" />
-      </div>
-      <div class="field">
-        <label class="field__label" for="link-feed">订阅地址</label>
-        <input id="link-feed" type="url" bind:value={feed} placeholder="https://example.com/feed" />
-      </div>
-      <div class="field field--full">
-        <label class="field__label" for="link-description">描述</label>
-        <textarea id="link-description" rows="3" bind:value={description} placeholder="一句话介绍"></textarea>
-      </div>
-      <div class="form-actions field--full">
-        <button class="btn btn--ghost btn--sm" onclick={() => (creating = false)} disabled={saving}>取消</button>
-        <button class="btn btn--primary btn--sm" onclick={saveNewLink} disabled={saving}>
-          <Icon name="save" size={14} /> {saving ? '保存中...' : '保存并部署'}
-        </button>
-      </div>
-    </div>
-  </div>
-{/if}
-
 <div class="panel">
   <div class="panel__legend">友链列表 <span class="panel__legend-en">LINKS</span></div>
   {#if links.length === 0}
@@ -161,63 +171,107 @@
       <div class="empty-state__title mt-4">还没有友链</div>
     </div>
   {:else}
-    <div class="link-list">
-      {#each links.slice(0, 80) as item, index (text((item as LinkRecord).url) || index)}
+    <div class="link-editor-list">
+      {#each links.slice(0, 80) as item, index (text((item as LinkRecord).url) || text((item as LinkRecord).id) || index)}
         {@const link = item as LinkRecord}
-        <a class="link-item" href={text(link.url)} target="_blank" rel="noreferrer">
-          <span class="link-item__name">{text(link.name) || '未命名'}</span>
-          <span class="link-item__desc">{text(link.description)}</span>
-        </a>
+        <article class="link-edit-item" class:is-muted={link.is_active === false}>
+          <div class="link-edit-item__avatar">
+            {#if text(link.avatar)}
+              <img src={text(link.avatar)} alt="" loading="lazy" />
+            {:else}
+              <span>{(text(link.name) || '?').slice(0, 1)}</span>
+            {/if}
+          </div>
+          <div class="link-edit-item__fields">
+            <input aria-label="友链名称" value={text(link.name)} placeholder="站点名称" oninput={(e) => updateLink(index, 'name', e.currentTarget.value)} />
+            <input aria-label="站点网址" type="url" value={text(link.url)} placeholder="https://example.com" oninput={(e) => updateLink(index, 'url', e.currentTarget.value)} />
+            <input aria-label="头像地址" type="url" value={text(link.avatar)} placeholder="头像地址" oninput={(e) => updateLink(index, 'avatar', e.currentTarget.value)} />
+            <input aria-label="订阅地址" type="url" value={text(link.feed)} placeholder="订阅地址" oninput={(e) => updateLink(index, 'feed', e.currentTarget.value)} />
+            <textarea aria-label="描述" rows="2" value={text(link.description)} placeholder="一句话介绍" oninput={(e) => updateLink(index, 'description', e.currentTarget.value)}></textarea>
+          </div>
+          <div class="link-edit-item__actions">
+            <button class="btn btn--ghost btn--sm" onclick={() => toggleActive(index)}>
+              {link.is_active === false ? '启用' : '停用'}
+            </button>
+            <a class="btn btn--ghost btn--sm" href={text(link.url)} target="_blank" rel="noreferrer">打开</a>
+            <button class="btn btn--ghost btn--sm" onclick={() => removeLink(index)}>删除</button>
+            <span class="link-status">{statusText(link)}</span>
+          </div>
+        </article>
       {/each}
     </div>
   {/if}
 </div>
 
 <style>
-  .create-panel {
-    margin-bottom: 18px;
-  }
-  .create-form {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
-  .field--full {
-    grid-column: 1 / -1;
-  }
-  .form-actions {
+  .header-actions {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    justify-content: flex-end;
   }
-  .link-list {
+  .link-editor-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 8px;
+    gap: 12px;
   }
-  .link-item {
+  .link-edit-item {
     display: grid;
-    gap: 4px;
-    padding: 12px;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: start;
+    padding: 14px;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
   }
-  .link-item:hover {
+  .link-edit-item:hover {
     border-color: var(--faint);
   }
-  .link-item__name {
-    font-family: var(--font-serif);
-    font-weight: 600;
+  .link-edit-item.is-muted {
+    opacity: 0.62;
   }
-  .link-item__desc {
-    font-family: var(--font-kai);
-    font-size: 13px;
+  .link-edit-item__avatar {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 50%;
     color: var(--muted);
+    background: var(--panel);
+  }
+  .link-edit-item__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .link-edit-item__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .link-edit-item__fields textarea {
+    grid-column: 1 / -1;
+    resize: vertical;
+  }
+  .link-edit-item__actions {
+    display: grid;
+    gap: 8px;
+    min-width: 74px;
+  }
+  .link-status {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
   }
   @media (max-width: 720px) {
-    .create-form {
+    .link-edit-item,
+    .link-edit-item__fields {
       grid-template-columns: 1fr;
+    }
+    .link-edit-item__actions {
+      display: flex;
+      flex-wrap: wrap;
     }
   }
 </style>

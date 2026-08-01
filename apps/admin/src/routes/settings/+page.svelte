@@ -15,12 +15,20 @@
 
   // 类型断言：config 是 Record<string, Record<string, unknown>>
   const allConfig = (data.config ?? {}) as Record<string, Record<string, unknown>>;
+  const defaultDeployConfig = {
+    owner: 'Ficorcc',
+    repo: 'Ficor.net',
+    workflow: 'ci.yml',
+    ref: 'main'
+  };
 
   // 本地可编辑的配置副本
   let ratelimitConfig = $state<Record<string, unknown>>(structuredClone(allConfig.ratelimit ?? {}));
   let watermarkConfig = $state<Record<string, unknown>>(structuredClone(allConfig.watermark ?? {}));
   let imageConfig = $state<Record<string, unknown>>(structuredClone(allConfig.image ?? {}));
-  let deployConfig = $state<Record<string, unknown>>(structuredClone(allConfig.deploy ?? {}));
+  let deployConfig = $state<Record<string, unknown>>(
+    structuredClone({ ...defaultDeployConfig, ...(allConfig.deploy ?? {}) })
+  );
   let themeSettings = $state<ThemeSettingsBundle>(
     mergeThemeSettings(data.themeSettings ?? cloneThemeSettings())
   );

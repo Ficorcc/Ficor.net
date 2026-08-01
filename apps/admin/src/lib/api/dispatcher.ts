@@ -9,7 +9,7 @@ import { ContentStore } from '$lib/server/r2/content';
 import { validateEvent } from './schemas';
 import { isValidEvent, MUTATION_EVENTS, PUBLIC_EVENTS, Event } from './events';
 import { validateFrontmatter } from '$lib/utils/content-schema';
-import { triggerDeploy } from '$lib/server/deploy/github';
+import { resolveDeployConfig, triggerDeploy } from '$lib/server/deploy/github';
 import { handleAiPolish, handleAiMetadata, handleAiModerate } from '$lib/server/ai/handlers';
 import { listImages, deleteImage } from '$lib/server/r2/images';
 import { writeThemeSettings } from '$lib/server/r2/theme-settings';
@@ -255,9 +255,7 @@ async function handleContentPullSource(ctx: ApiContext) {
   const cursor = typeof ctx.body.cursor === 'number' ? ctx.body.cursor : 0;
   const token = ctx.env.GITHUB_TOKEN;
   const deployConfig = await ctx.repos.config.get<SourceRepoConfig>('deploy');
-  const owner = deployConfig?.owner || ctx.env.GITHUB_OWNER || 'Ficorcc';
-  const repo = deployConfig?.repo || ctx.env.GITHUB_REPO || 'Ficor.net';
-  const ref = deployConfig?.ref || 'main';
+  const { owner, repo, ref } = resolveDeployConfig(deployConfig, ctx.env);
 
   if (!owner || !repo) {
     throw error(400, '主站 GitHub 仓库配置不完整，请先在系统设置里填写部署仓库');
@@ -495,9 +493,14 @@ async function triggerDeployIfNeeded(ctx: ApiContext) {
     ref?: string;
   }>('deploy');
 
-  if (!deployConfig || !ctx.env.GITHUB_TOKEN) {
-    return { ok: false, message: '部署配置不完整（缺少 deploy 配置或 GITHUB_TOKEN）' };
+  const config = resolveDeployConfig(deployConfig, ctx.env);
+
+  if (!ctx.env.GITHUB_TOKEN) {
+    return {
+      ok: false,
+      message: `缺少 GITHUB_TOKEN，无法触发 ${config.owner}/${config.repo} 的 ${config.workflow}`
+    };
   }
 
-  return triggerDeploy(ctx.env.GITHUB_TOKEN, deployConfig);
+  return triggerDeploy(ctx.env.GITHUB_TOKEN, config);
 }

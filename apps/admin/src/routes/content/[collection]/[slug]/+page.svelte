@@ -19,6 +19,7 @@
   let body = $state(data.body);
   let saving = $state(false);
   let polishing = $state(false);
+  let completingMetadata = $state(false);
   let aiPanelOpen = $state(false);
   const generatedBitsSlug =
     data.collection === 'bits' && data.isNew
@@ -142,20 +143,29 @@
       toast.warn('请先输入正文');
       return;
     }
+    completingMetadata = true;
     toast.info('正在分析文章元数据...');
-    const result = await api<{ metadata: Record<string, unknown> }>('AI_METADATA', {
-      content: body
-    });
+    try {
+      const result = await api<{ metadata: Record<string, unknown>; warning?: string }>('AI_METADATA', {
+        content: body
+      });
 
-    if (result.ok && result.data?.metadata) {
-      const meta = result.data.metadata;
-      if (meta.title && data.collection !== 'bits') frontmatter.title = meta.title;
-      if (meta.description) frontmatter.description = meta.description;
-      if (Array.isArray(meta.tags)) frontmatter.tags = meta.tags;
-      if (meta.date) frontmatter.date = meta.date;
-      toast.ok('元数据已补全，请确认');
-    } else {
-      toast.error(result.error ?? '补全失败');
+      if (result.ok && result.data?.metadata) {
+        const meta = result.data.metadata;
+        if (meta.title && data.collection !== 'bits') frontmatter.title = meta.title;
+        if (meta.description) frontmatter.description = meta.description;
+        if (Array.isArray(meta.tags)) frontmatter.tags = meta.tags;
+        if (meta.date) frontmatter.date = meta.date;
+        if (result.data.warning) {
+          toast.warn(result.data.warning);
+        } else {
+          toast.ok('元数据已补全，请确认');
+        }
+      } else {
+        toast.error(result.error ?? '补全失败');
+      }
+    } finally {
+      completingMetadata = false;
     }
   }
 </script>
@@ -186,8 +196,13 @@
       {/if}
       润色
     </button>
-    <button class="btn btn--ghost btn--sm" onclick={handleMetadata} disabled={polishing}>
-      <Icon name="edit" size={14} /> 补全元数据
+    <button class="btn btn--ghost btn--sm" onclick={handleMetadata} disabled={polishing || completingMetadata}>
+      {#if completingMetadata}
+        <span class="spinner"></span>
+      {:else}
+        <Icon name="edit" size={14} />
+      {/if}
+      {completingMetadata ? '补齐中...' : '补全元数据'}
     </button>
     <span class="editor-actions__divider"></span>
     <button class="btn btn--primary btn--sm" onclick={() => handleSave(true)} disabled={saving}>

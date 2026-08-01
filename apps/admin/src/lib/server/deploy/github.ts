@@ -10,10 +10,42 @@ export interface DeployConfig {
   ref?: string; // 分支，默认 main
 }
 
+interface DeployEnv {
+  GITHUB_OWNER?: string;
+  GITHUB_REPO?: string;
+  GITHUB_WORKFLOW?: string;
+  GITHUB_REF?: string;
+}
+
+export const DEFAULT_DEPLOY_CONFIG: DeployConfig = {
+  owner: 'Ficorcc',
+  repo: 'Ficor.net',
+  workflow: 'ci.yml',
+  ref: 'main'
+};
+
 export interface DeployResult {
   ok: boolean;
   message: string;
   workflowRunUrl?: string;
+}
+
+export function resolveDeployConfig(config?: Partial<DeployConfig> | null, env?: DeployEnv): DeployConfig {
+  return {
+    owner: config?.owner || env?.GITHUB_OWNER || DEFAULT_DEPLOY_CONFIG.owner,
+    repo: config?.repo || env?.GITHUB_REPO || DEFAULT_DEPLOY_CONFIG.repo,
+    workflow: config?.workflow || env?.GITHUB_WORKFLOW || DEFAULT_DEPLOY_CONFIG.workflow,
+    ref: config?.ref || env?.GITHUB_REF || DEFAULT_DEPLOY_CONFIG.ref
+  };
+}
+
+export function resolveWorkflowId(workflow: string): string {
+  const normalized = workflow
+    .trim()
+    .replace(/^\.github\/workflows\//, '')
+    .replace(/^workflows\//, '');
+  const workflowId = normalized.split('/').filter(Boolean).pop();
+  return workflowId || DEFAULT_DEPLOY_CONFIG.workflow;
 }
 
 /**
@@ -26,12 +58,10 @@ export async function triggerDeploy(
   payload?: Record<string, unknown>
 ): Promise<DeployResult> {
   const ref = config.ref ?? 'main';
-  const workflowFile = config.workflow.startsWith('.github/')
-    ? config.workflow
-    : `.github/workflows/${config.workflow}`;
+  const workflowId = resolveWorkflowId(config.workflow);
 
   // workflow_dispatch 端点
-  const url = `https://api.github.com/repos/${config.owner}/${config.repo}/actions/workflows/${workflowFile}/dispatches`;
+  const url = `https://api.github.com/repos/${config.owner}/${config.repo}/actions/workflows/${encodeURIComponent(workflowId)}/dispatches`;
 
   try {
     const res = await fetch(url, {
@@ -69,7 +99,7 @@ export async function triggerDeploy(
     if (res.status === 404) {
       return {
         ok: false,
-        message: `未找到 workflow 文件：${config.workflow}（确认仓库 ${config.owner}/${config.repo} 中存在此文件）`
+        message: `未找到 workflow 文件：${workflowId}（确认仓库 ${config.owner}/${config.repo} 中存在此文件）`
       };
     }
 

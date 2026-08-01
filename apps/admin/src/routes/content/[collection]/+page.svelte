@@ -38,6 +38,7 @@
   let searchKeyword = $state(data.keyword ?? '');
   let pullingSource = $state(false);
   let pullProgress = $state('');
+  let deletingSlug = $state('');
 
   interface PullSourcePayload {
     count?: number;
@@ -92,6 +93,28 @@
     } finally {
       pullingSource = false;
       pullProgress = '';
+    }
+  }
+
+  async function deleteItem(slug: string, title: unknown) {
+    const label = String(title || slug || '这条内容');
+    if (!window.confirm(`确认删除「${label}」吗？`)) return;
+
+    deletingSlug = slug;
+    try {
+      const result = await api('CONTENT_DELETE', {
+        collection: data.collection,
+        slug
+      });
+
+      if (result.ok) {
+        toast.ok('已删除');
+        await invalidateAll();
+      } else {
+        toast.error(result.error ?? '删除失败');
+      }
+    } finally {
+      deletingSlug = '';
     }
   }
 </script>
@@ -154,21 +177,16 @@
   <div class="content-list">
     {#each data.items as item (item.slug)}
       {@const fm = getFm(item)}
-      <a href="{base}/content/{data.collection}/{item.slug}" class="content-item">
+      <div class="content-item">
         <div class="content-item__main">
           {#if data.collection === 'bits'}
-            <div class="content-item__bits">
+            <a href="{base}/content/{data.collection}/{item.slug}" class="content-item__bits">
               {bitsText(item)}
-            </div>
+            </a>
           {:else}
-            <div class="content-item__title">
+            <a href="{base}/content/{data.collection}/{item.slug}" class="content-item__title">
               {fm.title ?? '(无标题)'}
-            </div>
-            {#if fm.description || item.excerpt}
-              <div class="content-item__excerpt">
-                {fm.description ?? item.excerpt}
-              </div>
-            {/if}
+            </a>
             {#if Array.isArray(fm.tags) && fm.tags.length}
               <div class="content-item__tags">
                 {#each fm.tags.slice(0, 5) as tag (tag)}
@@ -178,15 +196,30 @@
             {/if}
           {/if}
         </div>
-        <div class="content-item__meta">
+        <div class="content-item__actions">
           {#if fm.draft}
             <span class="badge badge--warn">草稿</span>
           {/if}
-          <span class="content-item__date">
-            {formatDate(String(fm.date ?? item.uploaded))}
-          </span>
+          {#if data.collection !== 'essay'}
+            <span class="content-item__date">
+              {formatDate(String(fm.date ?? item.uploaded))}
+            </span>
+          {/if}
+          <button
+            type="button"
+            class="btn btn--ghost btn--sm content-item__delete"
+            onclick={() => deleteItem(item.slug, data.collection === 'bits' ? bitsText(item) : fm.title)}
+            disabled={deletingSlug === item.slug}
+          >
+            {#if deletingSlug === item.slug}
+              <span class="spinner"></span>
+            {:else}
+              <Icon name="trash" size={14} />
+            {/if}
+            删除
+          </button>
         </div>
-      </a>
+      </div>
     {/each}
   </div>
 {/if}
@@ -251,26 +284,22 @@
     min-width: 0;
   }
   .content-item__title {
+    display: inline-block;
     font-family: var(--font-serif);
     font-size: 15px;
     font-weight: 600;
     margin-bottom: 4px;
   }
-  .content-item__excerpt {
-    font-family: var(--font-kai);
-    font-size: 13px;
+  .content-item__title:hover,
+  .content-item__bits:hover {
     color: var(--muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-bottom: 8px;
   }
   .content-item__bits {
+    display: -webkit-box;
     font-family: var(--font-kai);
     font-size: 14px;
     color: var(--text);
     line-height: 1.75;
-    display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -280,12 +309,15 @@
     gap: 4px;
     flex-wrap: wrap;
   }
-  .content-item__meta {
+  .content-item__actions {
     display: flex;
-    flex-direction: column;
     align-items: flex-end;
+    justify-content: flex-end;
     gap: 6px;
     flex-shrink: 0;
+  }
+  .content-item__delete {
+    white-space: nowrap;
   }
   .content-item__date {
     font-family: var(--font-mono);
@@ -300,9 +332,10 @@
     .content-item {
       flex-direction: column;
     }
-    .content-item__meta {
+    .content-item__actions {
       align-items: flex-start;
       flex-direction: row;
+      flex-wrap: wrap;
     }
   }
 </style>

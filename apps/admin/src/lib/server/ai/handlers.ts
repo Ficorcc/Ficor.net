@@ -57,7 +57,16 @@ export async function handleAiPolish(ctx: ApiContext): Promise<Response> {
 // ---------------------------------------------------------------------------
 export async function handleAiMetadata(ctx: ApiContext): Promise<Response> {
   const { content } = ctx.body as { content: string };
-  if (!ctx.env.AI) throw error(503, 'Workers AI 未绑定');
+  const fallbackMetadata = createLocalMetadata(content);
+
+  if (!ctx.env.AI) {
+    return json({
+      ok: true,
+      metadata: fallbackMetadata,
+      source: 'local',
+      warning: 'Workers AI 未绑定，已使用正文内容自动补齐'
+    });
+  }
 
   const aiConfig = await ctx.repos.config.get<{ model: string; metadata_prompt: string }>('ai');
   const model = aiConfig?.model ?? '@cf/qwen/qwen1.5-14b-chat-aliyun';
@@ -65,19 +74,33 @@ export async function handleAiMetadata(ctx: ApiContext): Promise<Response> {
     aiConfig?.metadata_prompt ??
     '分析文章内容，输出 JSON：{title, description, tags:[], date}。只输出 JSON。';
 
-  const result = await aiRun(ctx.env.AI, model, systemPrompt, content.slice(0, 3000));
+  let result = '';
+  try {
+    result = await aiRun(ctx.env.AI, model, systemPrompt, content.slice(0, 3000));
+  } catch (e) {
+    return json({
+      ok: true,
+      metadata: fallbackMetadata,
+      source: 'local',
+      warning: `AI 元数据生成失败，已使用正文内容自动补齐：${toErrorMessage(e)}`
+    });
+  }
 
   // 尝试从结果中提取 JSON
   const jsonStr = extractJson(result);
   let metadata: Record<string, unknown> = {};
   try {
-    metadata = jsonStr ? JSON.parse(jsonStr) : {};
+    metadata = jsonStr ? JSON.parse(jsonStr) : fallbackMetadata;
   } catch {
-    // 解析失败返回原始文本
-    return json({ ok: false, raw: result, error: 'AI 返回的内容无法解析为 JSON' });
+    return json({
+      ok: true,
+      metadata: fallbackMetadata,
+      source: 'local',
+      warning: 'AI 返回的内容无法解析为 JSON，已使用正文内容自动补齐'
+    });
   }
 
-  return json({ ok: true, metadata });
+  return json({ ok: true, metadata: normalizeMetadata(metadata, fallbackMetadata), source: 'ai' });
 }
 
 // ---------------------------------------------------------------------------
@@ -115,9 +138,10 @@ async function aiRun(ai: Ai, model: string, systemPrompt: string, userContent: s
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userContent }
     ]
-  })) as { response?: string };
+  })) as { response?: string; result?: { response?: string } } | string;
 
-  return response.response ?? '';
+  if (typeof response === 'string') return response;
+  return response.response ?? response.result?.response ?? '';
 }
 
 /** 流式调用 AI，返回 ReadableStream */
@@ -149,4 +173,145 @@ function extractJson(text: string): string | null {
   if (jsonMatch) return jsonMatch[1].trim();
 
   return null;
+}
+
+function normalizeMetadata(
+  metadata: Record<string, unknown>,
+  fallback: Record<string, unknown>
+): Record<string, unknown> {
+  return {
+    title: asNonEmptyString(metadata.title) ?? fallback.title,
+    description: asNonEmptyString(metadata.description) ?? fallback.description,
+    tags: normalizeTags(metadata.tags) ?? fallback.tags,
+    date: normalizeDate(metadata.date) ?? fallback.date
+  };
+}
+
+function createLocalMetadata(content: string): Record<string, unknown> {
+  const plain = toPlainText(content);
+  const title = extractTitle(content, plain);
+  const description = truncateText(firstParagraph(plain) || title, 120);
+  const tags = extractTags(plain);
+
+  return {
+    title,
+    description,
+    tags,
+    date: todayInShanghai()
+  };
+}
+
+function extractTitle(content: string, plain: string): string {
+  const heading = content.match(/^#{1,2}\s+(.+)$/m)?.[1]?.trim();
+  if (heading) return truncateText(stripInlineMarkdown(heading), 32);
+
+  const firstLine = plain
+    .split('\n')
+    .map((line) => line.trim())
+    .find(Boolean);
+  return truncateText(firstLine || '未命名文章', 32);
+}
+
+function firstParagraph(text: string): string {
+  return (
+    text
+      .split(/\n{2,}/)
+      .map((part) => part.trim())
+      .find((part) => part.length > 0) ?? ''
+  );
+}
+
+function toPlainText(markdown: string): string {
+  return stripInlineMarkdown(
+    markdown
+      .replace(/^---[\s\S]*?---\s*/m, '')
+      .replace(/```[\s\S]*?```/g, ' ')
+      .replace(/`[^`]*`/g, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/^\s{0,3}#{1,6}\s+/gm, '')
+      .replace(/^\s{0,3}[-*+]\s+/gm, '')
+      .replace(/^\s{0,3}>\s?/gm, '')
+  )
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+function stripInlineMarkdown(text: string): string {
+  return text
+    .replace(/!\[[^\]]*]\([^)]*\)/g, '')
+    .replace(/\[([^\]]+)]\([^)]*\)/g, '$1')
+    .replace(/[*_~>#`]/g, '')
+    .trim();
+}
+
+function truncateText(text: string, max: number): string {
+  const value = text.replace(/\s+/g, ' ').trim();
+  return value.length > max ? `${value.slice(0, max - 1)}...` : value;
+}
+
+function extractTags(text: string): string[] {
+  const candidates = [
+    '生活',
+    '家庭',
+    '教育',
+    '旅行',
+    '节日',
+    '网站',
+    '博客',
+    '折腾',
+    '阅读',
+    '工作',
+    '孩子',
+    '成长',
+    '情绪',
+    '记录',
+    '随笔'
+  ];
+
+  const matched = candidates.filter((tag) => text.includes(tag));
+  return Array.from(new Set(matched)).slice(0, 5);
+}
+
+function normalizeTags(value: unknown): string[] | undefined {
+  if (Array.isArray(value)) {
+    const tags = value.map((item) => String(item).trim()).filter(Boolean);
+    return tags.length ? tags.slice(0, 8) : undefined;
+  }
+  if (typeof value === 'string') {
+    const tags = value
+      .split(/[,，、\s]+/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+    return tags.length ? tags.slice(0, 8) : undefined;
+  }
+  return undefined;
+}
+
+function normalizeDate(value: unknown): string | undefined {
+  const text = asNonEmptyString(value);
+  if (!text) return undefined;
+  const iso = text.match(/\d{4}-\d{1,2}-\d{1,2}/)?.[0];
+  if (!iso) return undefined;
+  const [year, month, day] = iso.split('-');
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
+function todayInShanghai(): string {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).formatToParts(new Date());
+  const get = (type: string) => parts.find((part) => part.type === type)?.value ?? '';
+  return `${get('year')}-${get('month')}-${get('day')}`;
+}
+
+function asNonEmptyString(value: unknown): string | undefined {
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+}
+
+function toErrorMessage(errorValue: unknown): string {
+  return errorValue instanceof Error ? errorValue.message : '未知错误';
 }

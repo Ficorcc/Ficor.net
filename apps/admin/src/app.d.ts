@@ -35,6 +35,7 @@ declare global {
         GITHUB_OWNER?: string;
         GITHUB_REPO?: string;
         GITHUB_WORKFLOW?: string;
+        GITHUB_REF?: string;
         MEMOS_API_URL?: string;
         MEMOS_ACCESS_TOKEN?: string;
         MEMOS_FILTER?: string;
