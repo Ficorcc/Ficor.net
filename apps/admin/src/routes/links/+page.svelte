@@ -10,37 +10,79 @@
   let { data } = $props();
 
   type LinkRecord = Record<string, unknown>;
-  const initialJson = () => JSON.stringify(data.value ?? { siteInfo: {}, links: [] }, null, 2);
-  let jsonText = $state(initialJson());
   let saving = $state(false);
+  let creating = $state(false);
+  let name = $state('');
+  let url = $state('');
+  let avatar = $state('');
+  let description = $state('');
+  let feed = $state('');
 
   function text(value: unknown) {
     return typeof value === 'string' ? value : '';
   }
 
-  async function saveJson(deploy = false) {
-    let value: unknown;
-    try {
-      value = JSON.parse(jsonText || '{}');
-      const record = value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
-      if (!Array.isArray(record.links)) {
-        toast.error('友链数据需要包含 links 数组');
-        return;
-      }
-    } catch (e) {
-      toast.error(e instanceof Error ? `JSON 错误：${e.message}` : 'JSON 格式错误');
+  function recordSlug(value: string) {
+    return (
+      value
+        .toLowerCase()
+        .replace(/^https?:\/\//, '')
+        .replace(/^www\./, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 40) || `link-${Date.now().toString(36)}`
+    );
+  }
+
+  function deployToast(result: { deploy?: { ok?: boolean; message?: string } } | undefined) {
+    const deployResult = result?.deploy;
+    if (deployResult?.ok === false) {
+      toast.warn(`已保存，但部署未触发：${deployResult.message ?? '部署配置不完整'}`);
+    } else {
+      toast.ok('友链已新建并触发提交部署');
+    }
+  }
+
+  function resetForm() {
+    name = '';
+    url = '';
+    avatar = '';
+    description = '';
+    feed = '';
+  }
+
+  async function saveNewLink() {
+    if (!name.trim() || !url.trim()) {
+      toast.error('请填写名称和网址');
       return;
     }
+
+    const link: LinkRecord = {
+      id: recordSlug(url || name),
+      name: name.trim(),
+      url: url.trim(),
+      description: description.trim(),
+      avatar: avatar.trim(),
+      feed: feed.trim() || undefined,
+      is_active: true,
+      status: 'unknown'
+    };
+    const base = data.value && typeof data.value === 'object' ? (data.value as Record<string, unknown>) : {};
+    const value = {
+      ...base,
+      links: [...(Array.isArray(data.links) ? data.links : []), link]
+    };
 
     saving = true;
     const result = await api<{ deploy?: { ok?: boolean; message?: string } }>('DATA_SAVE', {
       key: 'links',
       value,
-      deploy
+      deploy: true
     });
     if (result.ok) {
-      const deployResult = result.data?.deploy;
-      toast[deployResult?.ok === false ? 'error' : 'ok'](deploy ? (deployResult?.message ?? '友链已保存并触发部署') : '友链已保存');
+      deployToast(result.data);
+      resetForm();
+      creating = false;
       await invalidateAll();
     } else {
       toast.error(result.error ?? '保存失败');
@@ -59,8 +101,8 @@
       <h1 class="page-header__title">友链管理</h1>
       <p class="page-header__sub">{data.links.length} 个友链 · 主站 links 数据</p>
     </div>
-    <button class="btn btn--primary" onclick={() => saveJson(false)} disabled={saving}>
-      <Icon name="save" size={16} /> {saving ? '保存中...' : '保存'}
+    <button class="btn btn--primary" onclick={() => (creating = !creating)}>
+      <Icon name={creating ? 'close' : 'plus'} size={16} /> {creating ? '取消新建' : '新建'}
     </button>
   </div>
 </div>
@@ -74,52 +116,81 @@
   </div>
 {/if}
 
-<div class="data-grid">
-  <div class="panel">
-    <div class="panel__legend">友链列表 <span class="panel__legend-en">LINKS</span></div>
-    {#if data.links.length === 0}
-      <div class="empty-state">
-        <Icon name="database" size={32} />
-        <div class="empty-state__title mt-4">还没有友链</div>
+{#if creating}
+  <div class="panel create-panel">
+    <div class="panel__legend">新建友链 <span class="panel__legend-en">NEW LINK</span></div>
+    <div class="create-form">
+      <div class="field">
+        <label class="field__label" for="link-name">名称</label>
+        <input id="link-name" type="text" bind:value={name} placeholder="站点名称" />
       </div>
-    {:else}
-      <div class="link-list">
-        {#each data.links.slice(0, 60) as item, index (text((item as LinkRecord).url) || index)}
-          {@const link = item as LinkRecord}
-          <a class="link-item" href={text(link.url)} target="_blank" rel="noreferrer">
-            <span class="link-item__name">{text(link.name) || '未命名'}</span>
-            <span class="link-item__desc">{text(link.description)}</span>
-          </a>
-        {/each}
+      <div class="field">
+        <label class="field__label" for="link-url">网址</label>
+        <input id="link-url" type="url" bind:value={url} placeholder="https://example.com" />
       </div>
-    {/if}
-  </div>
-
-  <div class="panel">
-    <div class="panel__legend">数据编辑 <span class="panel__legend-en">JSON</span></div>
-    <textarea class="json-editor" bind:value={jsonText} spellcheck="false"></textarea>
-    <div class="settings-actions">
-      <button class="btn btn--primary btn--sm" onclick={() => saveJson(false)} disabled={saving}>保存</button>
-      <button class="btn btn--ghost btn--sm" onclick={() => saveJson(true)} disabled={saving}>保存并部署</button>
+      <div class="field">
+        <label class="field__label" for="link-avatar">头像</label>
+        <input id="link-avatar" type="url" bind:value={avatar} placeholder="https://example.com/avatar.png" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="link-feed">订阅地址</label>
+        <input id="link-feed" type="url" bind:value={feed} placeholder="https://example.com/feed" />
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="link-description">描述</label>
+        <textarea id="link-description" rows="3" bind:value={description} placeholder="一句话介绍"></textarea>
+      </div>
+      <div class="form-actions field--full">
+        <button class="btn btn--ghost btn--sm" onclick={() => (creating = false)} disabled={saving}>取消</button>
+        <button class="btn btn--primary btn--sm" onclick={saveNewLink} disabled={saving}>
+          <Icon name="save" size={14} /> {saving ? '保存中...' : '保存并部署'}
+        </button>
+      </div>
     </div>
   </div>
+{/if}
+
+<div class="panel">
+  <div class="panel__legend">友链列表 <span class="panel__legend-en">LINKS</span></div>
+  {#if data.links.length === 0}
+    <div class="empty-state">
+      <Icon name="database" size={32} />
+      <div class="empty-state__title mt-4">还没有友链</div>
+    </div>
+  {:else}
+    <div class="link-list">
+      {#each data.links.slice(0, 80) as item, index (text((item as LinkRecord).url) || index)}
+        {@const link = item as LinkRecord}
+        <a class="link-item" href={text(link.url)} target="_blank" rel="noreferrer">
+          <span class="link-item__name">{text(link.name) || '未命名'}</span>
+          <span class="link-item__desc">{text(link.description)}</span>
+        </a>
+      {/each}
+    </div>
+  {/if}
 </div>
 
 <style>
-  .settings-actions {
+  .create-panel {
+    margin-bottom: 18px;
+  }
+  .create-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .field--full {
+    grid-column: 1 / -1;
+  }
+  .form-actions {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    margin-top: 14px;
-  }
-  .data-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
-    gap: 20px;
-    align-items: start;
+    justify-content: flex-end;
   }
   .link-list {
     display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 8px;
   }
   .link-item {
@@ -141,13 +212,8 @@
     font-size: 13px;
     color: var(--muted);
   }
-  .json-editor {
-    min-height: 520px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-  }
-  @media (max-width: 900px) {
-    .data-grid {
+  @media (max-width: 720px) {
+    .create-form {
       grid-template-columns: 1fr;
     }
   }

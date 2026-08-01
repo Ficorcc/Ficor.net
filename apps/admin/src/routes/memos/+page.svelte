@@ -11,10 +11,11 @@
   let { data } = $props();
 
   type MemoRecord = Record<string, unknown>;
-  const initialJson = () => JSON.stringify(data.value ?? [], null, 2);
-  let jsonText = $state(initialJson());
   let saving = $state(false);
   let syncing = $state(false);
+  let creating = $state(false);
+  let newContent = $state('');
+  let newCreatedAt = $state(new Date().toISOString().slice(0, 16));
 
   function memoId(memo: MemoRecord, index: number) {
     return String(memo.id ?? memo.memosName ?? memo.createdAt ?? index);
@@ -28,28 +29,54 @@
     return String(memo.createdAt ?? memo.updatedAt ?? '');
   }
 
-  async function saveJson(deploy = false) {
-    let value: unknown;
-    try {
-      value = JSON.parse(jsonText || '[]');
-      if (!Array.isArray(value)) {
-        toast.error('说说数据必须是 JSON 数组');
-        return;
-      }
-    } catch (e) {
-      toast.error(e instanceof Error ? `JSON 错误：${e.message}` : 'JSON 格式错误');
+  function deployToast(result: { deploy?: { ok?: boolean; message?: string } } | undefined, okText: string) {
+    const deployResult = result?.deploy;
+    if (deployResult?.ok === false) {
+      toast.warn(`已保存，但部署未触发：${deployResult.message ?? '部署配置不完整'}`);
+    } else {
+      toast.ok(okText);
+    }
+  }
+
+  function resetForm() {
+    newContent = '';
+    newCreatedAt = new Date().toISOString().slice(0, 16);
+  }
+
+  async function saveNewMemo() {
+    const content = newContent.trim();
+    if (!content) {
+      toast.error('请填写说说内容');
       return;
     }
+
+    const createdAt = new Date(newCreatedAt || Date.now()).toISOString();
+    const id =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `local-${Date.now().toString(36)}`;
+    const item: MemoRecord = {
+      id,
+      memosName: `memos/${id}`,
+      content,
+      visibility: 'PROTECTED',
+      createdAt,
+      updatedAt: createdAt,
+      pinned: false,
+      resources: []
+    };
+    const value = [item, ...(Array.isArray(data.value) ? data.value : [])];
 
     saving = true;
     const result = await api<{ deploy?: { ok?: boolean; message?: string } }>('DATA_SAVE', {
       key: 'memos',
       value,
-      deploy
+      deploy: true
     });
     if (result.ok) {
-      const deployResult = result.data?.deploy;
-      toast[deployResult?.ok === false ? 'error' : 'ok'](deploy ? (deployResult?.message ?? '说说已保存并触发部署') : '说说已保存');
+      deployToast(result.data, '说说已新建并触发提交部署');
+      resetForm();
+      creating = false;
       await invalidateAll();
     } else {
       toast.error(result.error ?? '保存失败');
@@ -61,7 +88,6 @@
     syncing = true;
     const result = await api<{ items?: unknown[]; count?: number }>('MEMOS_SYNC');
     if (result.ok) {
-      jsonText = JSON.stringify(result.data?.items ?? [], null, 2);
       toast.ok(`已同步 ${result.data?.count ?? 0} 条说说`);
       await invalidateAll();
     } else {
@@ -85,8 +111,8 @@
       <button class="btn btn--ghost" onclick={syncMemos} disabled={syncing}>
         <Icon name="refresh" size={16} /> {syncing ? '同步中...' : '同步 Memos'}
       </button>
-      <button class="btn btn--primary" onclick={() => saveJson(false)} disabled={saving}>
-        <Icon name="save" size={16} /> {saving ? '保存中...' : '保存'}
+      <button class="btn btn--primary" onclick={() => (creating = !creating)}>
+        <Icon name={creating ? 'close' : 'plus'} size={16} /> {creating ? '取消新建' : '新建'}
       </button>
     </div>
   </div>
@@ -101,51 +127,73 @@
   </div>
 {/if}
 
-<div class="data-grid">
-  <div class="panel">
-    <div class="panel__legend">说说预览 <span class="panel__legend-en">MEMOS</span></div>
-    {#if data.items.length === 0}
-      <div class="empty-state">
-        <Icon name="content" size={32} />
-        <div class="empty-state__title mt-4">还没有说说</div>
+{#if creating}
+  <div class="panel create-panel">
+    <div class="panel__legend">新建说说 <span class="panel__legend-en">NEW MEMO</span></div>
+    <div class="create-form">
+      <div class="field field--full">
+        <label class="field__label" for="memo-content">内容</label>
+        <textarea
+          id="memo-content"
+          rows="5"
+          bind:value={newContent}
+          placeholder="写点碎碎念..."
+        ></textarea>
       </div>
-    {:else}
-      <div class="stack-list">
-        {#each data.items.slice(0, 20) as memo, index (memoId(memo as unknown as MemoRecord, index))}
-          {@const record = memo as unknown as MemoRecord}
-          <article class="stack-item">
-            <div class="stack-item__meta">{formatDateTime(memoDate(record))}</div>
-            <div class="stack-item__body">{memoContent(record).slice(0, 180)}</div>
-          </article>
-        {/each}
+      <div class="field">
+        <label class="field__label" for="memo-created">发布时间</label>
+        <input id="memo-created" type="datetime-local" bind:value={newCreatedAt} />
       </div>
-    {/if}
-  </div>
-
-  <div class="panel">
-    <div class="panel__legend">数据编辑 <span class="panel__legend-en">JSON</span></div>
-    <textarea class="json-editor" bind:value={jsonText} spellcheck="false"></textarea>
-    <div class="settings-actions">
-      <button class="btn btn--primary btn--sm" onclick={() => saveJson(false)} disabled={saving}>保存</button>
-      <button class="btn btn--ghost btn--sm" onclick={() => saveJson(true)} disabled={saving}>保存并部署</button>
+      <div class="form-actions">
+        <button class="btn btn--ghost btn--sm" onclick={() => (creating = false)} disabled={saving}>取消</button>
+        <button class="btn btn--primary btn--sm" onclick={saveNewMemo} disabled={saving}>
+          <Icon name="save" size={14} /> {saving ? '保存中...' : '保存并部署'}
+        </button>
+      </div>
     </div>
   </div>
+{/if}
+
+<div class="panel">
+  <div class="panel__legend">说说预览 <span class="panel__legend-en">MEMOS</span></div>
+  {#if data.items.length === 0}
+    <div class="empty-state">
+      <Icon name="content" size={32} />
+      <div class="empty-state__title mt-4">还没有说说</div>
+    </div>
+  {:else}
+    <div class="stack-list">
+      {#each data.items.slice(0, 60) as memo, index (memoId(memo as unknown as MemoRecord, index))}
+        {@const record = memo as unknown as MemoRecord}
+        <article class="stack-item">
+          <div class="stack-item__meta">{formatDateTime(memoDate(record))}</div>
+          <div class="stack-item__body">{memoContent(record).slice(0, 220)}</div>
+        </article>
+      {/each}
+    </div>
+  {/if}
 </div>
 
 <style>
   .page-actions,
-  .settings-actions {
+  .form-actions {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
     justify-content: flex-end;
   }
-  .data-grid {
+  .create-panel {
+    margin-bottom: 18px;
+  }
+  .create-form {
     display: grid;
-    grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
-    gap: 20px;
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: end;
+  }
+  .field--full {
+    grid-column: 1 / -1;
   }
   .stack-list {
     display: grid;
@@ -167,14 +215,12 @@
     font-size: 14px;
     line-height: 1.7;
   }
-  .json-editor {
-    min-height: 520px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-  }
-  @media (max-width: 900px) {
-    .data-grid {
+  @media (max-width: 720px) {
+    .create-form {
       grid-template-columns: 1fr;
+    }
+    .form-actions {
+      justify-content: flex-start;
     }
   }
 </style>
