@@ -1,5 +1,5 @@
 <!--
-  友链管理：读取主站 links 数据并直接编辑
+  友链管理：默认展示卡片，点击条目后编辑
 -->
 <script lang="ts">
   import Icon from '$lib/components/ui/Icon.svelte';
@@ -14,6 +14,8 @@
   );
   let links = $state<LinkRecord[]>([...((Array.isArray(data.links) ? data.links : []) as LinkRecord[])]);
   let saving = $state(false);
+  let editingIndex = $state<number | null>(null);
+  let draft = $state<LinkRecord | null>(null);
 
   function text(value: unknown) {
     return typeof value === 'string' ? value : '';
@@ -31,52 +33,79 @@
     );
   }
 
-  function updateLink(index: number, key: string, value: unknown) {
-    links[index] = {
-      ...links[index],
+  function normalizeLink(link: LinkRecord): LinkRecord | null {
+    const name = text(link.name).trim();
+    const url = text(link.url).trim();
+    if (!name && !url) return null;
+    return {
+      ...link,
+      id: text(link.id).trim() || recordSlug(url || name),
+      name,
+      url,
+      description: text(link.description).trim(),
+      avatar: text(link.avatar).trim(),
+      feed: text(link.feed).trim() || undefined,
+      is_active: link.is_active !== false,
+      status: text(link.status) || 'unknown'
+    };
+  }
+
+  function normalizedLinks(): LinkRecord[] {
+    return links.map(normalizeLink).filter(Boolean) as LinkRecord[];
+  }
+
+  function updateDraft(key: string, value: unknown) {
+    if (!draft) return;
+    draft = {
+      ...draft,
       [key]: value
     };
   }
 
   function addLink() {
-    links = [
-      {
-        id: `link-${Date.now().toString(36)}`,
-        name: '',
-        url: '',
-        description: '',
-        avatar: '',
-        feed: '',
-        is_active: true,
-        status: 'unknown'
-      },
-      ...links
-    ];
+    editingIndex = null;
+    draft = {
+      id: `link-${Date.now().toString(36)}`,
+      name: '',
+      url: '',
+      description: '',
+      avatar: '',
+      feed: '',
+      is_active: true,
+      status: 'unknown'
+    };
+  }
+
+  function editLink(index: number) {
+    editingIndex = index;
+    draft = { ...links[index] };
+  }
+
+  function closeEditor() {
+    editingIndex = null;
+    draft = null;
+  }
+
+  function applyDraft() {
+    if (!draft) return;
+    const normalized = normalizeLink(draft);
+    if (!normalized || !text(normalized.name) || !text(normalized.url)) {
+      toast.error('友链需要名称和网址');
+      return;
+    }
+
+    if (editingIndex === null) {
+      links = [normalized, ...links];
+    } else {
+      links[editingIndex] = normalized;
+    }
+    closeEditor();
   }
 
   function removeLink(index: number) {
+    if (!window.confirm(`确认删除「${text(links[index]?.name) || '这条友链'}」吗？`)) return;
     links = links.filter((_, itemIndex) => itemIndex !== index);
-  }
-
-  function normalizedLinks(): LinkRecord[] {
-    const nextLinks: LinkRecord[] = [];
-    for (const link of links) {
-      const name = text(link.name).trim();
-      const url = text(link.url).trim();
-      if (!name && !url) continue;
-      nextLinks.push({
-        ...link,
-        id: text(link.id).trim() || recordSlug(url || name),
-        name,
-        url,
-        description: text(link.description).trim(),
-        avatar: text(link.avatar).trim(),
-        feed: text(link.feed).trim() || undefined,
-        is_active: link.is_active !== false,
-        status: text(link.status) || 'unknown'
-      });
-    }
-    return nextLinks;
+    closeEditor();
   }
 
   function deployToast(result: { deploy?: { ok?: boolean; message?: string } } | undefined) {
@@ -117,17 +146,6 @@
     saving = false;
   }
 
-  function statusText(link: LinkRecord) {
-    const status = text(link.status);
-    if (status === 'online') return '在线';
-    if (status === 'offline') return '离线';
-    return '未知';
-  }
-
-  function toggleActive(index: number) {
-    updateLink(index, 'is_active', links[index].is_active === false);
-  }
-
   function sourceLabel() {
     return (data as Record<string, unknown>).source === 'source' ? '主站仓库' : '后台存储';
   }
@@ -154,6 +172,45 @@
   </div>
 </div>
 
+{#if draft}
+  <div class="panel link-editor-panel">
+    <div class="panel__legend">
+      {editingIndex === null ? '新增友链' : '编辑友链'} <span class="panel__legend-en">EDIT</span>
+    </div>
+    <div class="link-form">
+      <div class="field">
+        <label class="field__label" for="link-name">名字</label>
+        <input id="link-name" value={text(draft.name)} placeholder="站点名称" oninput={(e) => updateDraft('name', e.currentTarget.value)} />
+      </div>
+      <div class="field">
+        <label class="field__label" for="link-url">网址</label>
+        <input id="link-url" type="url" value={text(draft.url)} placeholder="https://example.com" oninput={(e) => updateDraft('url', e.currentTarget.value)} />
+      </div>
+      <div class="field">
+        <label class="field__label" for="link-avatar">头像</label>
+        <input id="link-avatar" type="url" value={text(draft.avatar)} placeholder="头像地址" oninput={(e) => updateDraft('avatar', e.currentTarget.value)} />
+      </div>
+      <div class="field">
+        <label class="field__label" for="link-feed">订阅</label>
+        <input id="link-feed" type="url" value={text(draft.feed)} placeholder="订阅地址，可选" oninput={(e) => updateDraft('feed', e.currentTarget.value)} />
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="link-description">描述</label>
+        <textarea id="link-description" rows="3" value={text(draft.description)} placeholder="一句话介绍" oninput={(e) => updateDraft('description', e.currentTarget.value)}></textarea>
+      </div>
+      <div class="link-form__actions">
+        <button class="btn btn--ghost btn--sm" onclick={closeEditor}>取消</button>
+        {#if editingIndex !== null}
+          <button class="btn btn--ghost btn--sm" onclick={() => removeLink(editingIndex as number)}>删除</button>
+        {/if}
+        <button class="btn btn--primary btn--sm" onclick={applyDraft}>
+          <Icon name="check" size={14} /> 完成编辑
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
+
 {#if data.error}
   <div class="panel mb-4">
     <div class="empty-state">
@@ -171,33 +228,22 @@
       <div class="empty-state__title mt-4">还没有友链</div>
     </div>
   {:else}
-    <div class="link-editor-list">
+    <div class="link-card-list">
       {#each links.slice(0, 80) as item, index (text((item as LinkRecord).url) || text((item as LinkRecord).id) || index)}
         {@const link = item as LinkRecord}
-        <article class="link-edit-item" class:is-muted={link.is_active === false}>
-          <div class="link-edit-item__avatar">
-            {#if text(link.avatar)}
-              <img src={text(link.avatar)} alt="" loading="lazy" />
-            {:else}
-              <span>{(text(link.name) || '?').slice(0, 1)}</span>
-            {/if}
-          </div>
-          <div class="link-edit-item__fields">
-            <input aria-label="友链名称" value={text(link.name)} placeholder="站点名称" oninput={(e) => updateLink(index, 'name', e.currentTarget.value)} />
-            <input aria-label="站点网址" type="url" value={text(link.url)} placeholder="https://example.com" oninput={(e) => updateLink(index, 'url', e.currentTarget.value)} />
-            <input aria-label="头像地址" type="url" value={text(link.avatar)} placeholder="头像地址" oninput={(e) => updateLink(index, 'avatar', e.currentTarget.value)} />
-            <input aria-label="订阅地址" type="url" value={text(link.feed)} placeholder="订阅地址" oninput={(e) => updateLink(index, 'feed', e.currentTarget.value)} />
-            <textarea aria-label="描述" rows="2" value={text(link.description)} placeholder="一句话介绍" oninput={(e) => updateLink(index, 'description', e.currentTarget.value)}></textarea>
-          </div>
-          <div class="link-edit-item__actions">
-            <button class="btn btn--ghost btn--sm" onclick={() => toggleActive(index)}>
-              {link.is_active === false ? '启用' : '停用'}
-            </button>
-            <a class="btn btn--ghost btn--sm" href={text(link.url)} target="_blank" rel="noreferrer">打开</a>
-            <button class="btn btn--ghost btn--sm" onclick={() => removeLink(index)}>删除</button>
-            <span class="link-status">{statusText(link)}</span>
-          </div>
-        </article>
+        <button type="button" class="link-card" class:is-muted={link.is_active === false} onclick={() => editLink(index)}>
+          <span class="link-card__head">
+            <span class="link-card__avatar">
+              {#if text(link.avatar)}
+                <img src={text(link.avatar)} alt="" loading="lazy" />
+              {:else}
+                <span>{(text(link.name) || '?').slice(0, 1)}</span>
+              {/if}
+            </span>
+            <span class="link-card__name">{text(link.name) || '未命名站点'}</span>
+          </span>
+          <span class="link-card__description">{text(link.description) || '暂无描述'}</span>
+        </button>
       {/each}
     </div>
   {/if}
@@ -209,26 +255,55 @@
     gap: 10px;
     flex-wrap: wrap;
   }
-  .link-editor-list {
+  .link-editor-panel {
+    margin-bottom: 18px;
+  }
+  .link-form {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .field--full {
+    grid-column: 1 / -1;
+  }
+  .link-form__actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .link-card-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
-  .link-edit-item {
+  .link-card {
     display: grid;
-    grid-template-columns: 56px minmax(0, 1fr) auto;
-    gap: 12px;
-    align-items: start;
-    padding: 14px;
+    gap: 10px;
+    width: 100%;
+    min-height: 104px;
+    padding: 14px 16px;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
+    background: var(--panel);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
   }
-  .link-edit-item:hover {
+  .link-card:hover {
     border-color: var(--faint);
   }
-  .link-edit-item.is-muted {
+  .link-card.is-muted {
     opacity: 0.62;
   }
-  .link-edit-item__avatar {
+  .link-card__head {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+  }
+  .link-card__avatar {
     width: 48px;
     height: 48px;
     display: grid;
@@ -237,41 +312,47 @@
     border: 1px solid var(--border);
     border-radius: 50%;
     color: var(--muted);
-    background: var(--panel);
+    background: var(--bg);
   }
-  .link-edit-item__avatar img {
+  .link-card__avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  .link-edit-item__fields {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+  .link-card__name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-serif);
+    font-size: 16px;
+    font-weight: 600;
   }
-  .link-edit-item__fields textarea {
-    grid-column: 1 / -1;
-    resize: vertical;
-  }
-  .link-edit-item__actions {
-    display: grid;
-    gap: 8px;
-    min-width: 74px;
-  }
-  .link-status {
-    font-family: var(--font-mono);
-    font-size: 11px;
+  .link-card__description {
+    display: -webkit-box;
+    min-height: 44px;
+    overflow: hidden;
     color: var(--muted);
-    text-align: center;
+    font-family: var(--font-kai);
+    font-size: 13px;
+    line-height: 1.7;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
   @media (max-width: 720px) {
-    .link-edit-item,
-    .link-edit-item__fields {
+    .link-form,
+    .link-card-list {
       grid-template-columns: 1fr;
     }
-    .link-edit-item__actions {
-      display: flex;
-      flex-wrap: wrap;
+  }
+  @media (max-width: 520px) {
+    .header-actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .link-form__actions {
+      justify-content: flex-start;
     }
   }
 </style>
