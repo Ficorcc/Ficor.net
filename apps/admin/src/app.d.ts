@@ -39,6 +39,7 @@ declare global {
         MEMOS_API_URL?: string;
         MEMOS_ACCESS_TOKEN?: string;
         MEMOS_FILTER?: string;
+        WALINE_API_URL?: string;
         WALINE_TOKEN?: string;
       };
       context: {

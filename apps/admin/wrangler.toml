@@ -69,6 +69,8 @@ RATE_LIMIT_WINDOW = "60"
 BACKUP_RETENTION_DAYS = "30"
 # 说说页 Memos 数据源
 MEMOS_API_URL = "https://memos.ficor.net"
+# 评论页 Waline 数据源
+WALINE_API_URL = "https://waline.ficor.cc"
 
 # ============================================================================
 # 密钥（请勿在此填写真实值，用下面命令设置）

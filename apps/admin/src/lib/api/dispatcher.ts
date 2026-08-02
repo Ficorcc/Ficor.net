@@ -16,6 +16,12 @@ import { writeThemeSettings } from '$lib/server/r2/theme-settings';
 import { fetchSourceMarkdownFiles, type SourceRepoConfig } from '$lib/server/github/content-source';
 import { fetchMemos } from '$lib/server/memos/client';
 import { isSiteDataKey, writeJsonData } from '$lib/server/r2/site-data';
+import {
+  deleteWalineComment,
+  listWalineComments,
+  resolveWalineConfig,
+  updateWalineCommentStatus
+} from '$lib/server/waline/client';
 
 export interface ApiContext {
   request: Request;
@@ -145,8 +151,9 @@ async function handleCommentList(ctx: ApiContext) {
   const status = ctx.body.status as string | undefined;
   const page = (ctx.body.page as number) ?? 1;
   const pageSize = (ctx.body.pageSize as number) ?? 20;
-  const result = await ctx.repos.comments.list({
-    status: status as 'pending' | 'approved' | 'spam' | 'deleted' | undefined,
+  const result = await listWalineComments({
+    ...resolveWalineConfig(ctx.env),
+    status: status as 'pending' | 'approved' | 'spam' | undefined,
     page,
     pageSize
   });
@@ -155,7 +162,11 @@ async function handleCommentList(ctx: ApiContext) {
 
 async function handleCommentModerate(ctx: ApiContext) {
   const { id, status } = ctx.body as { id: string; status: string };
-  await ctx.repos.comments.updateStatus(id, status as 'approved' | 'pending' | 'spam' | 'deleted');
+  await updateWalineCommentStatus({
+    ...resolveWalineConfig(ctx.env),
+    id,
+    status: status as 'approved' | 'pending' | 'spam' | 'deleted'
+  });
   await ctx.repos.audit.log({
     sessionId: ctx.locals.session!.id,
     action: 'COMMENT_MODERATE',
@@ -168,7 +179,7 @@ async function handleCommentModerate(ctx: ApiContext) {
 
 async function handleCommentDelete(ctx: ApiContext) {
   const { id } = ctx.body as { id: string };
-  await ctx.repos.comments.delete(id);
+  await deleteWalineComment({ ...resolveWalineConfig(ctx.env), id });
   await ctx.repos.audit.log({
     sessionId: ctx.locals.session!.id,
     action: 'COMMENT_DELETE',

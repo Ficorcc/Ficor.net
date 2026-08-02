@@ -13,13 +13,13 @@
   import { relativeTime } from '$lib/utils/date';
 
   let { data } = $props();
-  const counts = (data.counts ?? {}) as Record<string, number>;
+  let counts = $derived((data.counts ?? {}) as Record<string, number>);
+  let walineAdminUrl = $derived(`${String(data.walineUrl ?? 'https://waline.ficor.cc').replace(/\/+$/, '')}/ui`);
 
   const statusOptions = [
     { label: '待审', value: 'pending' },
     { label: '通过', value: 'approved' },
-    { label: '垃圾', value: 'spam' },
-    { label: '已删', value: 'deleted' }
+    { label: '垃圾', value: 'spam' }
   ];
 
   function handleStatusChange(value: string) {
@@ -58,6 +58,7 @@
     {#if data.counts}
       待审 {counts.pending ?? 0} · 通过 {counts.approved ?? 0} · 垃圾 {counts.spam ?? 0}
     {/if}
+    · Waline: {data.walineUrl}
   </p>
 </div>
 
@@ -70,6 +71,24 @@
     <div class="empty-state">
       <div class="empty-state__title">加载失败</div>
       <p class="text-sm">{data.error}</p>
+      <a class="btn mt-4" href={walineAdminUrl} target="_blank" rel="noreferrer">
+        <Icon name="cloud" size={14} /> 打开 Waline 后台
+      </a>
+    </div>
+  </div>
+{:else if data.tokenMissing}
+  <div class="panel waline-panel">
+    <div class="waline-panel__header">
+      <div>
+        <div class="waline-panel__title">Waline 评论后台</div>
+        <div class="waline-panel__meta">当前接入 {data.walineUrl}，未配置 WALINE_TOKEN 时使用 Waline 原生后台登录管理。</div>
+      </div>
+      <a class="btn" href={walineAdminUrl} target="_blank" rel="noreferrer">
+        <Icon name="cloud" size={14} /> 新窗口打开
+      </a>
+    </div>
+    <div class="waline-frame-wrap">
+      <iframe class="waline-frame" title="Waline 评论后台" src={walineAdminUrl}></iframe>
     </div>
   </div>
 {:else if data.items.length === 0}
@@ -141,6 +160,38 @@
     flex-direction: column;
     gap: 12px;
   }
+  .waline-panel {
+    padding: 0;
+    overflow: hidden;
+  }
+  .waline-panel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .waline-panel__title {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .waline-panel__meta {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .waline-frame-wrap {
+    height: min(760px, calc(100vh - 260px));
+    min-height: 520px;
+    background: var(--panel-2);
+  }
+  .waline-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: white;
+  }
   .comment-card {
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
@@ -171,6 +222,7 @@
     font-size: 12px;
     color: var(--muted);
     margin-bottom: 8px;
+    word-break: break-all;
   }
   .comment-card__content {
     font-family: var(--font-kai);
