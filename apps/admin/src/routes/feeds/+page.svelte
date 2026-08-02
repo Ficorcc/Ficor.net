@@ -2,9 +2,12 @@
   订阅管理：从友链订阅源展示文章
 -->
 <script lang="ts">
+  import { invalidateAll } from '$app/navigation';
   import Icon from '$lib/components/ui/Icon.svelte';
+  import { toast } from '$lib/stores/toast';
 
   let { data } = $props();
+  let refreshing = $state(false);
 
   type FeedItem = Record<string, unknown>;
 
@@ -23,6 +26,18 @@
       day: '2-digit'
     }).format(date);
   }
+
+  async function refreshFeeds() {
+    refreshing = true;
+    try {
+      await invalidateAll();
+      toast.ok('订阅文章已刷新');
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : '刷新失败');
+    } finally {
+      refreshing = false;
+    }
+  }
 </script>
 
 <svelte:head>
@@ -35,6 +50,14 @@
       <h1 class="page-header__title">订阅管理</h1>
       <p class="page-header__sub">{data.subscriptions.length} 个友链订阅源 · {data.latestItems.length} 篇订阅文章</p>
     </div>
+    <button class="btn btn--ghost" onclick={refreshFeeds} disabled={refreshing}>
+      {#if refreshing}
+        <span class="spinner"></span>
+      {:else}
+        <Icon name="refresh" size={16} />
+      {/if}
+      {refreshing ? '刷新中...' : '刷新'}
+    </button>
   </div>
 </div>
 
