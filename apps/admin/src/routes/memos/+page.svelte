@@ -30,6 +30,12 @@
     return String(memo.createdAt ?? memo.updatedAt ?? '');
   }
 
+  function sourceLabel() {
+    if (data.source === 'memos') return `Memos 实时数据 · ${data.memosUrl ?? 'memos.ficor.net'}`;
+    if (data.source === 'r2') return 'R2 缓存数据';
+    return 'Memos 数据源';
+  }
+
   function deployToast(result: { deploy?: { ok?: boolean; message?: string } } | undefined, okText: string) {
     const deployResult = result?.deploy;
     if (deployResult?.ok === false) {
@@ -109,7 +115,7 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="page-header__title">说说管理</h1>
-      <p class="page-header__sub">{items.length} 条 · Memos 数据源</p>
+      <p class="page-header__sub">{items.length} 条 · {sourceLabel()}</p>
     </div>
     <div class="page-actions">
       <button class="btn btn--ghost" onclick={syncMemos} disabled={syncing}>
