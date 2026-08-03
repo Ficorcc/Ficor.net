@@ -18,7 +18,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:admin": "npm run dev --prefix apps/admin -- --host 127.0.0.1",
-    "build": "node ./scripts/sync-admin-r2-content.mjs && astro build",
+    "build": "node ./scripts/sync-admin-r2-content.mjs && node ./scripts/commit-admin-content.mjs && astro build",
     "build:astro": "astro build",
     "build:admin": "npm run build --prefix apps/admin",
     "build:all": "npm run build && npm run build:admin",
