@@ -10,6 +10,7 @@ import { validateEvent } from './schemas';
 import { isValidEvent, MUTATION_EVENTS, PUBLIC_EVENTS, Event } from './events';
 import { validateFrontmatter } from '$lib/utils/content-schema';
 import { resolveDeployConfig, triggerDeploy } from '$lib/server/deploy/github';
+import { triggerPagesDeploy } from '$lib/server/deploy/cloudflare';
 import { handleAiPolish, handleAiMetadata, handleAiModerate } from '$lib/server/ai/handlers';
 import { listImages, deleteImage } from '$lib/server/r2/images';
 import { writeThemeSettings } from '$lib/server/r2/theme-settings';
@@ -474,11 +475,15 @@ async function handleHealthCheck(ctx: ApiContext) {
   );
 
   // 部署钩子
-  services.push(
-    ctx.env.GITHUB_TOKEN
-      ? { name: 'GitHub 部署', status: 'ok' }
-      : { name: 'GitHub 部署', status: 'degraded', detail: '未配置 GITHUB_TOKEN' }
-  );
+  if (ctx.env.CLOUDFLARE_DEPLOY_HOOK) {
+    services.push({ name: 'Cloudflare 部署', status: 'ok' });
+  } else {
+    services.push(
+      ctx.env.GITHUB_TOKEN
+        ? { name: 'GitHub 部署', status: 'ok' }
+        : { name: '部署', status: 'degraded', detail: '未配置 CLOUDFLARE_DEPLOY_HOOK 或 GITHUB_TOKEN' }
+    );
+  }
 
   // 统计
   const commentCounts = await ctx.repos.comments.countByStatus().catch(() => ({}));
@@ -497,6 +502,12 @@ async function handleHealthCheck(ctx: ApiContext) {
 }
 
 async function triggerDeployIfNeeded(ctx: ApiContext) {
+  // 优先直接调用 Cloudflare Pages 部署钩子（不经过 GitHub Actions）
+  if (ctx.env.CLOUDFLARE_DEPLOY_HOOK) {
+    return triggerPagesDeploy(ctx.env.CLOUDFLARE_DEPLOY_HOOK);
+  }
+
+  // 回退：通过 GitHub Actions workflow_dispatch 间接触发
   const deployConfig = await ctx.repos.config.get<{
     owner: string;
     repo: string;
@@ -509,7 +520,7 @@ async function triggerDeployIfNeeded(ctx: ApiContext) {
   if (!ctx.env.GITHUB_TOKEN) {
     return {
       ok: false,
-      message: `缺少 GITHUB_TOKEN，无法触发 ${config.owner}/${config.repo} 的 ${config.workflow}`
+      message: `未配置 CLOUDFLARE_DEPLOY_HOOK 或 GITHUB_TOKEN，无法触发部署`
     };
   }
 

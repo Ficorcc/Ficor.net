@@ -8,6 +8,7 @@
 import { createRepos } from './db';
 import { ContentStore } from './r2/content';
 import { resolveDeployConfig, triggerDeploy } from './deploy/github';
+import { triggerPagesDeploy } from './deploy/cloudflare';
 import { exportBackup, cleanupOldBackups } from './r2/backup';
 
 interface ScheduledEnv {
@@ -20,6 +21,7 @@ interface ScheduledEnv {
   GITHUB_REPO?: string;
   GITHUB_WORKFLOW?: string;
   GITHUB_REF?: string;
+  CLOUDFLARE_DEPLOY_HOOK?: string;
 }
 
 /**
@@ -58,7 +60,26 @@ async function runScheduleCheck(
       if (!acquired) continue;
 
       try {
-        // 触发主站部署
+        // 触发主站部署：优先直接调用 Cloudflare Pages 部署钩子
+        if (env.CLOUDFLARE_DEPLOY_HOOK) {
+          const result = await triggerPagesDeploy(env.CLOUDFLARE_DEPLOY_HOOK);
+
+          if (result.ok) {
+            await repos.schedules.markDone(item.id);
+            await repos.audit.log({
+              sessionId: null,
+              action: 'SCHEDULE_AUTO_PUBLISH',
+              target: `${item.collection}/${item.slug}`,
+              detail: { scheduleId: item.id, via: 'cloudflare-hook' },
+              ip: 'cron'
+            });
+          } else {
+            await repos.schedules.markFailed(item.id, result.message);
+          }
+          continue;
+        }
+
+        // 回退：通过 GitHub Actions workflow_dispatch 间接触发
         const deployConfig = await repos.config.get<{
           owner: string;
           repo: string;
