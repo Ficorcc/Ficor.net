@@ -52,3 +52,24 @@ jobs:
 
       - name: Build admin
         run: npm run ci:admin
+
+  # admin 后台「保存并部署」通过 workflow_dispatch 触发本 workflow。
+  # Cloudflare Pages 的 Git 集成只响应 git push，不会响应 workflow 运行，
+  # 因此这里在 CI 通过后显式调用 Pages 部署钩子触发重建。
+  # push 到 main 时 Pages 会自动构建，无需调用钩子。
+  deploy:
+    name: Trigger Cloudflare Pages rebuild
+    needs: ci
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Cloudflare Pages deploy hook
+        env:
+          CF_PAGES_DEPLOY_HOOK: ${{ secrets.CF_PAGES_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$CF_PAGES_DEPLOY_HOOK" ]; then
+            echo "::error::缺少 CF_PAGES_DEPLOY_HOOK secret。请在仓库 Settings → Secrets and variables → Actions 中配置 Cloudflare Pages 部署钩子 URL。"
+            exit 1
+          fi
+          curl -fsS -X POST "$CF_PAGES_DEPLOY_HOOK"
+          echo "已触发 Cloudflare Pages 重建"
