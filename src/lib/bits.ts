@@ -1,5 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
 import { getPublished, getPageSlice, getTotalPages } from './content';
+import { getMemos, getMemoAnchorId, type MemoItem } from './memos';
 import { createWithBase, formatDateTime } from '../utils/format';
 import { deriveMarkdownText, truncateText } from '../utils/excerpt';
 
@@ -8,6 +9,10 @@ export type BitsYearOption = {
   value: number;
   count: number;
 };
+
+export type BitsStreamItem =
+  | { kind: 'bit'; bit: BitsEntry; date: Date }
+  | { kind: 'memo'; memo: MemoItem; date: Date };
 
 export type BitsIndexItem = {
   key: string;
@@ -46,6 +51,7 @@ const base = import.meta.env.BASE_URL ?? '/';
 const withBase = createWithBase(base);
 
 let sortedBitsPromise: Promise<BitsEntry[]> | null = null;
+let sortedStreamPromise: Promise<BitsStreamItem[]> | null = null;
 const bitsIndexPromiseByPageSize = new Map<number, Promise<BitsIndexItem[]>>();
 const bitsDerivedTextById = new Map<string, BitsDerivedText>();
 
@@ -62,11 +68,11 @@ export const getBitAnchorId = (key: string) => `bit-${key}`;
 
 export const getBitsPagePath = (page: number) => (page <= 1 ? '/bits/' : `/bits/page/${page}/`);
 
-const buildBitsYearOptions = (bits: readonly BitsEntry[]): BitsYearOption[] => {
+const buildBitsYearOptions = (items: readonly BitsStreamItem[]): BitsYearOption[] => {
   const yearCountMap = new Map<number, number>();
 
-  for (const bit of bits) {
-    const year = bit.data.date.getFullYear();
+  for (const item of items) {
+    const year = item.date.getFullYear();
     yearCountMap.set(year, (yearCountMap.get(year) ?? 0) + 1);
   }
 
@@ -87,14 +93,33 @@ export async function getSortedBits() {
   return cloneBitEntries(await sortedBitsPromise);
 }
 
+const loadSortedStream = async (): Promise<BitsStreamItem[]> => {
+  const [bits, memos] = await Promise.all([getSortedBits(), getMemos()]);
+  const stream: BitsStreamItem[] = [
+    ...bits.map((bit) => ({ kind: 'bit' as const, bit, date: bit.data.date })),
+    ...memos.map((memo) => ({ kind: 'memo' as const, memo, date: memo.date }))
+  ];
+  stream.sort((a, b) => b.date.valueOf() - a.date.valueOf());
+  return stream;
+};
+
+export async function getSortedStream(): Promise<BitsStreamItem[]> {
+  if (!shouldMemoizeBitQueries) {
+    return loadSortedStream();
+  }
+
+  sortedStreamPromise ??= loadSortedStream();
+  return (await sortedStreamPromise).slice();
+}
+
 export async function getBitsPageData(currentPage: number, pageSize: number) {
-  const bits = await getSortedBits();
-  const totalCount = bits.length;
+  const stream = await getSortedStream();
+  const totalCount = stream.length;
   const totalPages = Math.max(getTotalPages(totalCount, pageSize), 1);
 
   return {
-    items: getPageSlice(bits, currentPage, pageSize),
-    yearOptions: buildBitsYearOptions(bits),
+    items: getPageSlice(stream, currentPage, pageSize),
+    yearOptions: buildBitsYearOptions(stream),
     totalCount,
     totalPages
   };
@@ -128,11 +153,60 @@ export function getBitsDerivedText(bit: BitsEntry): BitsDerivedText {
   return derivedText;
 }
 
+const buildMemoDerivedText = (memo: MemoItem): BitsDerivedText => {
+  const { plainText, excerptText } = deriveMarkdownText(memo.content);
+
+  return {
+    plainText,
+    text: getSearchIndexText(plainText),
+    excerpt: truncateText(excerptText, FULL_RENDER_LIMIT),
+    shouldRenderFull: plainText.length <= FULL_RENDER_LIMIT
+  };
+};
+
+export function getMemoDerivedText(memo: MemoItem): BitsDerivedText {
+  if (!shouldMemoizeBitQueries) {
+    return buildMemoDerivedText(memo);
+  }
+
+  const cacheKey = `memo:${memo.id}`;
+  let derivedText = bitsDerivedTextById.get(cacheKey);
+  if (!derivedText) {
+    derivedText = buildMemoDerivedText(memo);
+    bitsDerivedTextById.set(cacheKey, derivedText);
+  }
+
+  return derivedText;
+}
+
 const buildBitsIndex = async (pageSize: number) => {
-  const bits = await getSortedBits();
-  return bits.map((bit, index) => {
-    const derivedText = getBitsDerivedText(bit);
+  const stream = await getSortedStream();
+  return stream.map((item, index) => {
     const page = Math.floor(index / pageSize) + 1;
+
+    if (item.kind === 'memo') {
+      const { memo } = item;
+      const derivedText = getMemoDerivedText(memo);
+
+      return {
+        key: `memo-${memo.id}`,
+        slug: `memo-${memo.id}`,
+        title: '',
+        description: '',
+        tags: ['说说'],
+        text: derivedText.text,
+        excerpt: derivedText.excerpt,
+        date: memo.date.toISOString(),
+        dateLabel: formatDateTime(memo.date),
+        year: memo.date.getFullYear(),
+        page,
+        href: `${withBase(getBitsPagePath(page))}#${getMemoAnchorId(memo.id)}`,
+        thumbnail: null
+      };
+    }
+
+    const { bit } = item;
+    const derivedText = getBitsDerivedText(bit);
     const firstImage = bit.data.images?.[0];
 
     return {

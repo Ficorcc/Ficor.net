@@ -2,10 +2,12 @@
 import { render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BitCard from './BitCard.astro';
+import MemoCard from './MemoCard.astro';
 import Lightbox from './Lightbox.astro';
 import Pagination from './Pagination.astro';
 import '../styles/bits-page.css';
-import { MAX_PRIMARY_BITS_FILTER_YEARS, getBitsDerivedText, type BitsEntry, type BitsYearOption } from '../lib/bits';
+import { MAX_PRIMARY_BITS_FILTER_YEARS, getBitsDerivedText, type BitsStreamItem, type BitsYearOption } from '../lib/bits';
+import { renderMarkdownToHtml } from '../lib/markdown';
 import { getThemeSettings } from '../lib/theme-settings';
 import { joinPageSubtitleText } from '../utils/format';
 
@@ -17,7 +19,7 @@ const {
   yearOptions = []
 } = Astro.props as {
   currentPage: number;
-  items: BitsEntry[];
+  items: BitsStreamItem[];
   resultCount: number;
   totalPages: number;
   yearOptions?: BitsYearOption[];
@@ -45,16 +47,26 @@ const pageDescription = joinPageSubtitleText(
 
 const primaryYearOptions = yearOptions.slice(0, MAX_PRIMARY_BITS_FILTER_YEARS);
 const overflowYearOptions = yearOptions.slice(MAX_PRIMARY_BITS_FILTER_YEARS);
-const priorityMediaBitId = items.find((bit) => (bit.data.images?.length ?? 0) > 0)?.id ?? null;
+type BitsStreamBit = Extract<BitsStreamItem, { kind: 'bit' }>;
+
+const priorityMediaBit = items.find(
+  (item): item is BitsStreamBit => item.kind === 'bit' && (item.bit.data.images?.length ?? 0) > 0
+);
+const priorityMediaBitId = priorityMediaBit?.bit.id ?? null;
 
 const cards = await Promise.all(
-  items.map(async (bit) => {
-    const derivedText = getBitsDerivedText(bit);
-    if (derivedText.shouldRenderFull) {
-      const { Content } = await render(bit);
-      return { bit, excerpt: '', Content };
+  items.map(async (item) => {
+    if (item.kind === 'memo') {
+      const html = await renderMarkdownToHtml(item.memo.content);
+      return { kind: 'memo' as const, memo: item.memo, html };
     }
-    return { bit, excerpt: derivedText.excerpt, Content: null };
+
+    const derivedText = getBitsDerivedText(item.bit);
+    if (derivedText.shouldRenderFull) {
+      const { Content } = await render(item.bit);
+      return { kind: 'bit' as const, bit: item.bit, excerpt: '', Content };
+    }
+    return { kind: 'bit' as const, bit: item.bit, excerpt: derivedText.excerpt, Content: null };
   })
 );
 ---
@@ -197,9 +209,18 @@ const cards = await Promise.all(
 
   <div data-bits-browse>
     <div id="bits-list">
-      {cards.map(({ bit, excerpt, Content }) => (
-        <BitCard bit={bit} excerpt={excerpt} Content={Content} prioritizeLeadMedia={bit.id === priorityMediaBitId} />
-      ))}
+      {cards.map((card) =>
+        card.kind === 'memo' ? (
+          <MemoCard memo={card.memo} html={card.html} />
+        ) : (
+          <BitCard
+            bit={card.bit}
+            excerpt={card.excerpt}
+            Content={card.Content}
+            prioritizeLeadMedia={card.bit.id === priorityMediaBitId}
+          />
+        )
+      )}
     </div>
 
     <Pagination

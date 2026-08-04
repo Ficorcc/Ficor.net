@@ -1043,6 +1043,14 @@
   color: var(--muted);
 }
 
+.bit-tag--source {
+  color: var(--muted);
+  font-size: 12px;
+  padding: 1px 8px;
+  border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
+  border-radius: 999px;
+}
+
 @media (max-width: 900px) {
   .bits-toolbar {
     align-items: flex-start;
