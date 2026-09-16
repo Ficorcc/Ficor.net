@@ -44,11 +44,11 @@ jobs:
       - name: Security audit gate (high+ prod dependencies)
         run: npm run audit:prod
 
-      - name: Run CI gate
-        run: npm run ci
-
       - name: Install admin dependencies
         run: npm run admin:install
+
+      - name: Run CI gate
+        run: npm run ci
 
       - name: Build admin
         run: npm run ci:admin

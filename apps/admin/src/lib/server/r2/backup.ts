@@ -6,6 +6,11 @@
 /** 需要备份的表 */
 const BACKUP_TABLES = [
   'comments',
+  'fiscus_comments',
+  'fiscus_comment_settings',
+  'fiscus_comment_moderation_logs',
+  'fiscus_comment_sync_logs',
+  'fiscus_comment_import_logs',
   'config',
   'schedules',
   'audit',
@@ -33,17 +38,22 @@ export async function exportBackup(db: D1Database, r2: R2Bucket): Promise<Backup
   let totalSize = 0;
 
   for (const table of BACKUP_TABLES) {
-    try {
-      // 分批读取全表（D1 一次最多返回 1000 行，这里简单处理）
-      const result = await db.prepare(`SELECT * FROM ${table}`).all();
-      const rows = result.results ?? [];
-      backup[table] = rows;
-      tableCounts[table] = rows.length;
-    } catch (e) {
-      console.error(`备份表 ${table} 失败:`, e);
-      backup[table] = [];
-      tableCounts[table] = 0;
+    // Keyset pagination keeps responses bounded and avoids silently truncated backups.
+    const rows: Record<string, unknown>[] = [];
+    let cursor = 0;
+    while (true) {
+      const result = await db.prepare(`SELECT rowid AS __backup_rowid, * FROM ${table} WHERE rowid > ? ORDER BY rowid LIMIT 500`).bind(cursor).all<Record<string, unknown>>();
+      if (!result.success) throw new Error(`备份表 ${table} 失败`);
+      const batch = result.results ?? [];
+      for (const row of batch) {
+        cursor = Number(row.__backup_rowid);
+        const { __backup_rowid, ...data } = row;
+        rows.push(data);
+      }
+      if (batch.length < 500) break;
     }
+    backup[table] = rows;
+    tableCounts[table] = rows.length;
   }
 
   const payload = {
@@ -56,7 +66,7 @@ export async function exportBackup(db: D1Database, r2: R2Bucket): Promise<Backup
   };
 
   const json = JSON.stringify(payload);
-  totalSize = json.length;
+  totalSize = new TextEncoder().encode(json).byteLength;
 
   const key = `backups/${dateStr}.json`;
   await r2.put(key, json, {
@@ -76,16 +86,21 @@ export async function exportBackup(db: D1Database, r2: R2Bucket): Promise<Backup
  */
 export async function cleanupOldBackups(r2: R2Bucket, retentionDays: number): Promise<number> {
   const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
-  const result = await r2.list({ prefix: 'backups/', limit: 100 });
-  let deleted = 0;
-
-  for (const obj of result.objects) {
-    if (obj.uploaded < cutoff) {
-      await r2.delete(obj.key);
-      deleted++;
+  if (!Number.isInteger(retentionDays) || retentionDays < 1) throw new Error('备份保留天数必须为正整数');
+  const expired: string[] = [];
+  let cursor: string | undefined;
+  do {
+    const result = await r2.list({ prefix: 'backups/', limit: 100, cursor });
+    for (const obj of result.objects) {
+      if (/^backups\/\d{4}-\d{2}-\d{2}\.json$/.test(obj.key) && obj.uploaded < cutoff) expired.push(obj.key);
     }
+    cursor = result.truncated ? result.cursor : undefined;
+  } while (cursor);
+  let deleted = 0;
+  for (const key of expired) {
+    await r2.delete(key);
+    deleted++;
   }
-
   return deleted;
 }
 

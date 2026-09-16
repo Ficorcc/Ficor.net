@@ -19,6 +19,7 @@
   }
 
   async function deploySite() {
+    if (deploying) return;
     deploying = true;
     const result = await api<{ ok?: boolean; message?: string; deploy?: { ok?: boolean; message?: string } }>('CONTENT_PUBLISH');
     if (result.ok) {
@@ -40,7 +41,7 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="page-header__title">仪表盘</h1>
-      <p class="page-header__sub">站点概览与发布状态</p>
+      <p class="page-header__sub">保存只记录改动；完成编辑后，点击一键部署统一发布</p>
     </div>
     <button class="btn btn--primary" onclick={deploySite} disabled={deploying}>
       <Icon name={deploying ? 'refresh' : 'upload'} size={16} />

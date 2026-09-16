@@ -2,6 +2,9 @@
   订阅管理：从友链订阅源展示文章
 -->
 <script lang="ts">
+  import { api } from '$lib/utils/api';
+  import { base } from '$app/paths';
+  import { feedSummary, formatFeedDate } from '../../../../../src/lib/community';
   import { invalidateAll } from '$app/navigation';
   import Icon from '$lib/components/ui/Icon.svelte';
   import { toast } from '$lib/stores/toast';
@@ -16,22 +19,25 @@
   }
 
   function formatDate(value: unknown) {
-    const raw = text(value);
-    if (!raw) return '';
-    const date = new Date(raw);
-    if (Number.isNaN(date.getTime())) return raw;
-    return new Intl.DateTimeFormat('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }).format(date);
+    return formatFeedDate(text(value));
   }
 
   async function refreshFeeds() {
     refreshing = true;
     try {
+      let cursor = 0;
+      let failed = 0;
+      while (true) {
+        const result = await api<{ nextCursor: number; done: boolean; failed: number }>('FEEDS_REFRESH', { cursor });
+        if (!result.ok || !result.data) throw new Error(result.error || '刷新失败');
+        failed += result.data.failed;
+        if (result.data.done) break;
+        if (result.data.nextCursor <= cursor) throw new Error('刷新进度异常，请重试');
+        cursor = result.data.nextCursor;
+      }
       await invalidateAll();
-      toast.ok('订阅文章已刷新');
+      if (failed) toast.warn(`刷新完成，${failed} 个订阅源抓取失败，已保留原有文章；结果等待一键部署`);
+      else toast.ok('订阅已刷新并保存，等待一键部署后更新友圈');
     } catch (e) {
       toast.error(e instanceof Error ? e.message : '刷新失败');
     } finally {
@@ -70,6 +76,8 @@
   </div>
 {/if}
 
+<p class="text-sm mb-4">订阅源与友链共用；在<a href={`${base}/links`}>友链管理</a>中修改 RSS 地址，保存后在这里刷新文章，最后一键部署到前台。</p>
+
 <div class="panel">
   <div class="panel__legend">订阅文章 <span class="panel__legend-en">ARTICLES</span></div>
   {#if data.latestItems.length === 0}
@@ -79,7 +87,7 @@
     </div>
   {:else}
     <div class="article-list">
-      {#each data.latestItems.slice(0, 120) as item, index (text((item as FeedItem).url) || index)}
+      {#each data.latestItems as item, index (text((item as FeedItem).url) || index)}
         {@const article = item as FeedItem}
         <article class="article-item">
           <a class="article-item__link" href={text(article.url)} target="_blank" rel="noreferrer">
@@ -89,7 +97,7 @@
             </div>
             <h2>{text(article.title) || '未命名文章'}</h2>
             {#if text(article.summary)}
-              <p>{text(article.summary)}</p>
+              <p>{feedSummary(text(article.summary))}</p>
             {/if}
           </a>
         </article>

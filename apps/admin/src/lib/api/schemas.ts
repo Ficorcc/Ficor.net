@@ -53,8 +53,7 @@ export const contentSaveSchema = z.object({
   collection: z.enum(['essay', 'bits', 'memo']),
   slug: z.string().min(1),
   frontmatter: z.record(z.unknown()),
-  body: z.string(),
-  deploy: z.boolean().optional() // 保存后是否触发部署
+  body: z.string()
 });
 
 export const contentDeleteSchema = z.object({
@@ -78,17 +77,26 @@ export const contentPullSourceSchema = z.object({
   cursor: z.number().int().nonnegative().optional()
 });
 
+export const contentImportMarkdownSchema = z.object({
+  event: z.literal('CONTENT_IMPORT_MARKDOWN'),
+  collection: z.enum(['essay', 'bits', 'memo']),
+  overwrite: z.boolean().optional(),
+  files: z.array(z.object({
+    name: z.string().min(1).max(240),
+    markdown: z.string().min(1).max(1_000_000),
+    lastModified: z.number().int().nonnegative().optional()
+  })).min(1).max(50)
+});
+
 // --- 主站数据 ---
 export const dataSaveSchema = z.object({
   event: z.literal('DATA_SAVE'),
   key: z.enum(['memos', 'links', 'feed']),
-  value: z.unknown(),
-  deploy: z.boolean().optional()
+  value: z.unknown()
 });
 
 export const memosSyncSchema = z.object({
-  event: z.literal('MEMOS_SYNC'),
-  deploy: z.boolean().optional()
+  event: z.literal('MEMOS_SYNC')
 });
 
 // --- 图片 ---
@@ -141,8 +149,7 @@ export const configUpdateSchema = z.object({
 
 export const themeSettingsSaveSchema = z.object({
   event: z.literal('THEME_SETTINGS_SAVE'),
-  settings: z.record(z.unknown()),
-  deploy: z.boolean().optional()
+  settings: z.record(z.unknown())
 });
 
 // --- 审计 ---
@@ -172,7 +179,9 @@ export function validateEvent(
     CONTENT_SEARCH: contentSearchSchema,
     CONTENT_PUBLISH: contentPublishSchema,
     CONTENT_PULL_SOURCE: contentPullSourceSchema,
+    CONTENT_IMPORT_MARKDOWN: contentImportMarkdownSchema,
     DATA_SAVE: dataSaveSchema,
+    FEEDS_REFRESH: z.object({ event: z.literal('FEEDS_REFRESH'), cursor: z.number().int().nonnegative().default(0) }),
     MEMOS_SYNC: memosSyncSchema,
     IMAGE_LIST: imageListSchema,
     IMAGE_DELETE: imageDeleteSchema,

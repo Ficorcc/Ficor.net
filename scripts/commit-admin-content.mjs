@@ -51,7 +51,10 @@ git(['config', 'user.email', 'vii-ink-bot@users.noreply.github.com']);
 git(['add', '--', ...watchPaths]);
 
 const date = new Date().toISOString().slice(0, 10);
-git(['commit', '-m', `chore: sync content from admin R2 (${date})`]);
+// This commit records the content already included in the current build.
+// Skip the redundant Pages build and GitHub push workflows, not the active build.
+// https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/
+git(['commit', '-m', `[CF-Pages-Skip] chore: sync content from admin R2 (${date}) [skip ci]`]);
 console.log(`[content-push] Committed changes:\n${status.trim()}`);
 
 // 3. 推送（失败时 rebase 后重试一次；仍失败则放弃，不影响构建）

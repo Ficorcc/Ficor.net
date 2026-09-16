@@ -40,8 +40,9 @@ declare global {
         MEMOS_API_URL?: string;
         MEMOS_ACCESS_TOKEN?: string;
         MEMOS_FILTER?: string;
-        WALINE_API_URL?: string;
-        WALINE_TOKEN?: string;
+        COMMENT_SITE_NAME?: string;
+        COMMENT_SITE_URL?: string;
+        COMMENT_IP_SALT?: string;
       };
       context: {
         waitUntil(promise: Promise<unknown>): void;

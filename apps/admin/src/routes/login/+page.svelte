@@ -4,13 +4,14 @@
 <script lang="ts">
   import { base } from '$app/paths';
   import { enhance } from '$app/forms';
+  import type { SubmitFunction } from '@sveltejs/kit';
   import { toast } from '$lib/stores/toast';
 
   let { form } = $props();
   let loading = $state(false);
 
   // 用 enhance 提交表单，自动适配 +page.server.ts 的 form action
-  const handleSubmit = async ({ cancel }: SubmitEvent) => {
+  const handleSubmit: SubmitFunction = async () => {
     loading = true;
     // 不阻止默认提交，让 enhance 接管（发送 form-data，与 action 的 formData() 匹配）
     return async ({ result, update }) => {
@@ -47,7 +48,6 @@
           id="password"
           name="password"
           type="password"
-          value={form?.password ?? ''}
           placeholder="请输入管理密码"
           autocomplete="current-password"
           autofocus

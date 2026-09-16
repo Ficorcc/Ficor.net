@@ -26,9 +26,9 @@
   ];
 
   const statusBadge: Record<string, { label: string; cls: string }> = {
-    pending: { label: '待发布', cls: 'badge--warn' },
+    pending: { label: '待统一部署', cls: 'badge--warn' },
     running: { label: '进行中', cls: 'badge--info' },
-    done: { label: '已完成', cls: 'badge--ok' },
+    done: { label: '已提交部署', cls: 'badge--ok' },
     failed: { label: '失败', cls: 'badge--danger' },
     cancelled: { label: '已取消', cls: '' }
   };
@@ -48,7 +48,7 @@
       scheduledAt: new Date(newScheduledAt).toISOString()
     });
     if (result.ok) {
-      toast.ok('定时任务已创建');
+      toast.ok('任务已保存，到期后请点击一键部署');
       showCreate = false;
       newSlug = '';
       setTimeout(() => location.reload(), 500);
@@ -79,6 +79,7 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="page-header__title">定时任务</h1>
+      <p class="page-header__sub">到期任务不会自动部署，请在仪表盘一键部署统一发布。</p>
       <p class="page-header__sub">{data.items.length} 个任务 · 每 15 分钟检查一次</p>
     </div>
     <button class="btn btn--primary" onclick={() => (showCreate = true)}>
@@ -99,7 +100,7 @@
     <div class="empty-state">
       <Icon name="schedules" size={32} />
       <div class="empty-state__title mt-4">还没有定时任务</div>
-      <p class="text-sm mt-2">创建任务后，到期的文章会自动触发主站部署</p>
+      <p class="text-sm mt-2">任务到期后仍等待一键部署，不会自动触发主站构建</p>
     </div>
   </div>
 {:else}

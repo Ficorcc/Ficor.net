@@ -65,22 +65,19 @@ export const POST: RequestHandler = async ({ request, locals, platform }) => {
   let contentType = file.type;
   let filename = file.name;
 
-  try {
-    const processed = await processImage({
-      data: arrayBuffer,
-      contentType: file.type,
-      config: imageConfig ?? { auto_webp: true, max_width: 2400, quality: 82 },
-      watermark: watermarkConfig,
-      r2: platform.env.R2
-    });
-    processedData = processed.data;
-    contentType = processed.contentType;
-    if (processed.contentType === 'image/webp') {
-      filename = filename.replace(/\.[^.]+$/, '.webp');
-    }
-  } catch (e) {
-    // 图片处理失败则用原图
-    console.error('图片处理失败:', e);
+  const processed = await processImage({
+    data: arrayBuffer,
+    contentType: file.type,
+    config: imageConfig ?? { auto_webp: true, max_width: 2400, quality: 82 },
+    watermark: watermarkConfig,
+    r2: platform.env.R2
+  }).catch((e) => {
+    throw error(422, e instanceof Error ? `图片处理失败：${e.message}` : '图片处理失败');
+  });
+  processedData = processed.data;
+  contentType = processed.contentType;
+  if (processed.contentType === 'image/webp') {
+    filename = filename.replace(/\.[^.]+$/, '.webp');
   }
 
   // 上传到 R2

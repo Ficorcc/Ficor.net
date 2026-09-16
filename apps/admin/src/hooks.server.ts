@@ -10,7 +10,7 @@ import { createRepos } from '$lib/server/db';
 import { resolveSession } from '$lib/server/auth/session';
 
 /** 不需要登录即可访问的路径前缀（相对于 base /admin） */
-const PUBLIC_PATHS = ['/login', '/api/COMMENT_SUBMIT'];
+const PUBLIC_PATHS = ['/login'];
 
 const ASSET_PATH_PREFIXES = ['/admin/_app/', '/admin/favicon', '/admin/robots.txt'];
 
@@ -37,6 +37,10 @@ export const handle: Handle = async ({ event, resolve }) => {
   event.locals.ip = ip;
   event.locals.session = null;
   event.locals.csrfValid = false;
+
+  // This endpoint exposes only the public projection and has no write handlers.
+  if ((event.request.method === 'GET' || event.request.method === 'HEAD')
+    && /^\/admin\/api\/community\/?$/.test(url.pathname)) return resolve(event);
 
   if (isStaticAsset(url.pathname)) {
     return resolve(event);
@@ -80,6 +84,8 @@ export const handle: Handle = async ({ event, resolve }) => {
   } catch {
     // 会话解析失败不阻塞，当作未登录
   }
+
+  if (/^\/admin\/api\/comments\/?$/.test(url.pathname) && ['GET', 'HEAD', 'POST'].includes(event.request.method)) return resolve(event);
 
   // --- 路由守卫：非公开路径要求登录 ---
   if (!isPublicPath(url.pathname) && !event.locals.session) {

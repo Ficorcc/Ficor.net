@@ -66,7 +66,7 @@
     saving = null;
   }
 
-  async function saveThemeSettings(deploy = false) {
+  async function saveThemeSettings() {
     let custom: unknown = [];
     try {
       custom = JSON.parse(customSocialJson || '[]');
@@ -80,10 +80,10 @@
     }
 
     getRecord(themeSettings.site.socialLinks).custom = custom;
-    saving = deploy ? 'theme-deploy' : 'theme';
-    const result = await api<{ settings?: ThemeSettingsBundle; deploy?: { ok: boolean; message?: string } }>(
+    saving = 'theme';
+    const result = await api<{ settings?: ThemeSettingsBundle }>(
       'THEME_SETTINGS_SAVE',
-      { settings: themeSettings, deploy }
+      { settings: themeSettings }
     );
 
     if (result.ok) {
@@ -92,12 +92,7 @@
         themeSettings = mergeThemeSettings(payload.settings);
         customSocialJson = JSON.stringify(getArray(getRecord(themeSettings.site.socialLinks).custom), null, 2);
       }
-      if (deploy) {
-        const deployResult = payload?.deploy as { ok?: boolean; message?: string } | undefined;
-        toast[deployResult?.ok === false ? 'error' : 'ok'](deployResult?.message ?? '主题设置已保存，已触发主站重建');
-      } else {
-        toast.ok('站点信息已保存');
-      }
+      toast.ok('站点信息已保存到记录，等待一键部署');
     } else {
       toast.error(result.error ?? '保存失败');
     }
@@ -359,12 +354,10 @@
       {/if}
 
       <div class="settings-actions">
-        <button class="btn btn--primary btn--sm" onclick={() => saveThemeSettings(false)} disabled={saving === 'theme'}>
+        <button class="btn btn--primary btn--sm" onclick={() => saveThemeSettings()} disabled={saving === 'theme'}>
           {saving === 'theme' ? '保存中...' : '保存站点信息'}
         </button>
-        <button class="btn btn--ghost btn--sm" onclick={() => saveThemeSettings(true)} disabled={saving === 'theme-deploy'}>
-          {saving === 'theme-deploy' ? '触发中...' : '保存并重建主站'}
-        </button>
+
       </div>
     </div>
 

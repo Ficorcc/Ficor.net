@@ -34,7 +34,7 @@ POST /admin/api/CONTENT_SAVE
 |---|---|---|---|
 | `AUTH_LOGIN` / `AUTH_LOGOUT` | 登录 / 登出 | — | — |
 | `CSRF_ISSUE` | 颁发/轮换 CSRF token | ✓ | — |
-| `COMMENT_SUBMIT` | 公开提交评论（主站调用） | — | — |
+| `/admin/api/comments/` | 公开评论读取/提交（主站调用） | — | 提交需同源 |
 | `COMMENT_MODERATE` / `COMMENT_DELETE` | 审核 / 删除评论 | ✓ | ✓ |
 | `CONTENT_LIST` / `CONTENT_GET` | 列表 / 读取文章 | ✓ | — |
 | `CONTENT_SAVE` / `CONTENT_DELETE` | 保存 / 删除文章 | ✓ | ✓ |
@@ -57,7 +57,7 @@ POST /admin/api/CONTENT_SAVE
    │    └ 超限 → 429
    ├─ 会话解析（cookie → DB sessions 表）
    ├─ 路由守卫
-   │    ├ 公开路径（/login, /api/COMMENT_SUBMIT）→ 放行
+   │    ├ 公开路径（/login, /api/comments）→ 放行
    │    ├ 已登录 → 注入 locals.session
    │    └ 未登录且访问受保护路径 → 401（API）或重定向（页面）
    └─ 放行到路由 handler

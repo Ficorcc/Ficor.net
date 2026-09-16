@@ -1,3 +1,4 @@
+import { countComments } from '$lib/server/fiscus/admin';
 // 健康检查：调用 dispatcher 的 HEALTH_CHECK
 import type { PageServerLoad } from './$types';
 import { createRepos } from '$lib/server/db';
@@ -49,7 +50,7 @@ export const load: PageServerLoad = async ({ platform }) => {
   let stats: Record<string, unknown> = {};
   try {
     const [commentCounts, essays, bits, storage] = await Promise.all([
-      repos.comments.countByStatus(),
+      countComments(platform.env),
       content.count('essay').catch(() => 0),
       content.count('bits').catch(() => 0),
       estimateStorage(env.R2, 1).catch(() => ({ totalSize: 0, count: 0 }))

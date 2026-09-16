@@ -21,7 +21,7 @@ export class SessionsRepo {
   /** 按 token 查找有效会话 */
   async findByToken(token: string): Promise<SessionRow | null> {
     return this.db.one<SessionRow>(
-      `SELECT * FROM sessions WHERE token = ? AND expires_at > datetime('now') LIMIT 1`,
+      `SELECT * FROM sessions WHERE token = ? AND julianday(expires_at) > julianday('now') LIMIT 1`,
       token
     );
   }
@@ -52,7 +52,7 @@ export class SessionsRepo {
 
   /** 更新最后活跃时间（滑动续期用） */
   async touch(id: string): Promise<void> {
-    await this.db.exec(`UPDATE sessions SET last_seen_at = datetime('now') WHERE id = ?`, id);
+    await this.db.exec(`UPDATE sessions SET last_seen_at = ? WHERE id = ?`, new Date().toISOString(), id);
   }
 
   /** 延长会话过期时间（滑动续期） */
@@ -67,7 +67,7 @@ export class SessionsRepo {
 
   /** 删除所有过期会话（清理） */
   async deleteExpired(): Promise<void> {
-    await this.db.exec(`DELETE FROM sessions WHERE expires_at <= datetime('now')`);
+    await this.db.exec(`DELETE FROM sessions WHERE julianday(expires_at) <= julianday('now') OR julianday(expires_at) IS NULL`);
   }
 
   /** 轮换 CSRF token */

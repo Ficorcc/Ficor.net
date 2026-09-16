@@ -100,6 +100,9 @@ export async function fetchMemos(env: MemosEnv): Promise<MemoItem[]> {
       const response = await fetch(url, { headers });
       const text = await response.text();
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Memos 需要访问令牌，请在后台环境变量中配置 MEMOS_ACCESS_TOKEN');
+        }
         lastError = `Memos 请求失败 (${response.status}): ${text.slice(0, 200)}`;
         continue;
       }
@@ -107,6 +110,7 @@ export async function fetchMemos(env: MemosEnv): Promise<MemoItem[]> {
         .map(normalizeMemo)
         .filter((memo) => memo.content.trim().length > 0);
     } catch (e) {
+      if (e instanceof Error && e.message.includes('MEMOS_ACCESS_TOKEN')) throw e;
       lastError = e instanceof Error ? e.message : 'Memos 请求失败';
     }
   }

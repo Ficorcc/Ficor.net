@@ -8,13 +8,16 @@ export const load: PageServerLoad = async ({ platform }) => {
   }
 
   try {
-    const value = await readJsonData<MemoItem[]>(platform.env.R2, 'memos', []);
+    const value = await readJsonData<MemoItem[] | null>(platform.env.R2, 'memos', null);
     const cachedItems = Array.isArray(value) ? value : [];
+
+    // Once records exist, show saved edits, including an explicitly empty list.
+    if (value !== null) return { items: cachedItems, value: cachedItems, source: 'r2' };
 
     if (platform.env.MEMOS_API_URL?.trim()) {
       try {
         const items = await fetchMemos(platform.env);
-        return { items, value: cachedItems, source: 'memos', memosUrl: platform.env.MEMOS_API_URL };
+        return { items, value: items, source: 'memos', memosUrl: platform.env.MEMOS_API_URL };
       } catch (e) {
         return {
           items: cachedItems,

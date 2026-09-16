@@ -99,7 +99,7 @@ GITHUB_TOKEN=ghp_xxx               # 上一步生成的
 GITHUB_OWNER=Ficorcc               # 主站仓库 owner
 GITHUB_REPO=Ficor.net              # 主站仓库名
 GITHUB_WORKFLOW=ci.yml             # .github/workflows/ 下的部署文件（需启用 workflow_dispatch）
-WALINE_TOKEN=                      # Waline 管理 token（如启用评论管理）
+COMMENT_IP_SALT=                   # 评论 IP 哈希盐
 MEMOS_API_URL=                     # Memos 站点地址，例如 https://memos.example.com
 MEMOS_ACCESS_TOKEN=                # Memos Access Token（公开实例可留空）
 MEMOS_FILTER=                      # 可选，追加到 Memos 列表接口的查询串
@@ -110,7 +110,7 @@ MEMOS_FILTER=                      # 可选，追加到 Memos 列表接口的查
 ```bash
 npx wrangler secret put ADMIN_PASSWORD
 npx wrangler secret put GITHUB_TOKEN
-npx wrangler secret put WALINE_TOKEN
+npx wrangler secret put COMMENT_IP_SALT
 npx wrangler secret put MEMOS_ACCESS_TOKEN
 ```
 

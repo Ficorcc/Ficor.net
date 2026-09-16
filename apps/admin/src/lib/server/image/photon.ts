@@ -1,9 +1,4 @@
-// ============================================================================
-// 图片处理（WebP 转换 + 水印）
-// 使用 photon-rs WASM 库，在 Workers 环境中运行。
-// 由于 photon WASM 加载的特殊性，这里做了 try-catch 容错：
-// 如果 photon 不可用，回退为原图。
-// ============================================================================
+import { PhotonImage, SamplingFilter, resize, watermark } from '@cf-wasm/photon';
 
 export interface ProcessImageParams {
   data: ArrayBuffer;
@@ -28,126 +23,91 @@ export interface ProcessImageResult {
   contentType: string;
 }
 
-/**
- * 处理图片：可选 WebP 转换 + 水印。
- * photon-rs 的 WASM 模块需要动态加载。
- *
- * 实现说明：
- * - 在 Workers 环境中，photon-rs 通过 wasm-bindgen 绑定。
- * - 由于 Workers 对 WASM 的加载有限制，实际部署时可能需要用
- *   @cf-wasm/photon 等专门为 Workers 打包的版本。
- * - 这里实现接口和调用框架，具体 WASM 调用用 dynamic import。
- */
 export async function processImage(params: ProcessImageParams): Promise<ProcessImageResult> {
   const { data, contentType, config } = params;
+  if (!isPhotonSupported(contentType)) return { data, contentType };
 
-  // 如果不需要转换格式且不需要水印，直接返回
   const wantWebp = config.auto_webp && contentType !== 'image/webp' && contentType !== 'image/gif';
   const wantWatermark = params.watermark?.enabled && !!params.r2;
+  const wantResize = Number.isFinite(config.max_width) && config.max_width > 0;
 
-  if (!wantWebp && !wantWatermark) {
-    return { data, contentType };
-  }
+  if (!wantWebp && !wantWatermark && !wantResize) return { data, contentType };
+
+  let image: PhotonImage | null = null;
+  let current: PhotonImage | null = null;
 
   try {
-    // 动态加载 photon WASM
-    // 注意：实际部署时确保 photon 包被正确打包
-    const photon = await importPhoton();
+    image = PhotonImage.new_from_byteslice(new Uint8Array(data));
+    current = image;
 
-    if (!photon) {
-      // photon 不可用，回退原图
-      return { data, contentType };
-    }
-
-    // 用 photon 处理
-    const image = photon.PhotonImage.new(new Uint8Array(data));
-    const width = image.get_width();
-
-    // 缩放（如果超过最大宽度）
-    if (config.max_width && width > config.max_width) {
+    const width = current.get_width();
+    if (wantResize && width > config.max_width) {
       const ratio = config.max_width / width;
-      const newWidth = config.max_width;
-      const newHeight = Math.round(image.get_height() * ratio);
-      photon.resize.resize(
-        image,
-        newWidth,
-        newHeight,
-        photon.SamplingFilter.Lanczos3
-      );
+      const resized = resize(current, config.max_width, Math.round(current.get_height() * ratio), SamplingFilter.Lanczos3);
+      if (current !== image) current.free();
+      current = resized;
     }
 
-    // 水印
     if (wantWatermark && params.r2) {
       const wmObj = await params.r2.get(params.watermark!.image_key);
-      if (wmObj) {
-        const wmData = await wmObj.arrayBuffer();
-        const watermark = photon.PhotonImage.new(new Uint8Array(wmData));
-        // 水印缩放
-        const wmWidth = image.get_width() * params.watermark!.scale;
-        const wmHeight = Math.round(
-          (watermark.get_height() / watermark.get_width()) * wmWidth
-        );
-        photon.resize.resize(
-          watermark,
-          Math.round(wmWidth),
-          wmHeight,
-          photon.SamplingFilter.Lanczos3
-        );
-        // 计算位置
-        const { x, y } = calcPosition(
-          params.watermark!.position,
-          image.get_width(),
-          image.get_height(),
-          Math.round(wmWidth),
-          wmHeight
-        );
-        // 应用水印（photon-rs 的 watermark 函数）
-        if (typeof photon.apply_watermark === 'function') {
-          photon.apply_watermark(image, watermark, x, y, params.watermark!.opacity * 255);
-        } else if (photon.multiple && typeof photon.multiple.apply_watermark === 'function') {
-          photon.multiple.apply_watermark(image, watermark, x, y, params.watermark!.opacity * 255);
-        }
+      if (!wmObj) throw new Error('水印图片不存在');
+      const wmData = await wmObj.arrayBuffer();
+      const watermarkImage = PhotonImage.new_from_byteslice(new Uint8Array(wmData));
+      let resizedWatermark: PhotonImage | null = null;
+      let finalWatermark: PhotonImage | null = null;
+      try {
+        const scale = clamp(params.watermark!.scale, 0.01, 1);
+        const wmWidth = Math.max(1, Math.round(current.get_width() * scale));
+        const wmHeight = Math.max(1, Math.round((watermarkImage.get_height() / watermarkImage.get_width()) * wmWidth));
+        resizedWatermark = resize(watermarkImage, wmWidth, wmHeight, SamplingFilter.Lanczos3);
+        finalWatermark = withOpacity(resizedWatermark, clamp(params.watermark!.opacity, 0, 1));
+        const { x, y } = calcPosition(params.watermark!.position, current.get_width(), current.get_height(), wmWidth, wmHeight);
+        watermark(current, finalWatermark, BigInt(x), BigInt(y));
+      } finally {
+        finalWatermark?.free();
+        resizedWatermark?.free();
+        watermarkImage.free();
       }
     }
 
-    // 输出
-    if (wantWebp) {
-      const output = image.get_bytes_webp(config.quality);
-      return {
-        data: output.buffer.slice(output.byteOffset, output.byteOffset + output.byteLength),
-        contentType: 'image/webp'
-      };
-    } else {
-      const output = image.get_bytes();
-      return {
-        data: output.buffer.slice(output.byteOffset, output.byteOffset + output.byteLength),
-        contentType
-      };
-    }
-  } catch (e) {
-    console.error('Photon 图片处理失败，使用原图:', e);
-    return { data, contentType };
+    const outputType = wantWebp ? 'image/webp' : contentType;
+    const output = encodeImage(current, outputType, config.quality);
+    return { data: toArrayBuffer(output), contentType: outputType === 'image/jpg' ? 'image/jpeg' : outputType };
+  } finally {
+    if (current && current !== image) current.free();
+    image?.free();
   }
 }
 
-/** 动态导入 photon WASM 模块
- * 使用变量名避免构建时静态分析报错。
- * photon-rs 包需要单独安装（见 docs/SETUP.md），未安装时返回 null，图片处理回退为原图。
- */
-async function importPhoton(): Promise<any | null> {
-  try {
-    // 用变量构造模块名，防止 Vite/Rollup 静态分析时报 "模块不存在"
-    const moduleName = 'photon-rs';
-    // @ts-ignore - 运行时动态加载，构建时不解析
-    const mod = await import(/* @vite-ignore */ moduleName);
-    return mod;
-  } catch {
-    // photon 未安装或无法加载
-    return null;
-  }
+function isPhotonSupported(contentType: string) {
+  return ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'].includes(contentType.toLowerCase());
 }
 
-/** 计算水印位置 */
+function encodeImage(image: PhotonImage, contentType: string, quality: number): Uint8Array & { contentType?: string } {
+  if (contentType === 'image/webp') return Object.assign(image.get_bytes_webp(), { contentType: 'image/webp' });
+  if (contentType === 'image/jpeg' || contentType === 'image/jpg') {
+    return Object.assign(image.get_bytes_jpeg(clamp(Math.round(quality), 1, 100)), { contentType: 'image/jpeg' });
+  }
+  return Object.assign(image.get_bytes(), { contentType: 'image/png' });
+}
+
+function withOpacity(image: PhotonImage, opacity: number): PhotonImage {
+  if (opacity >= 0.995) return new PhotonImage(image.get_raw_pixels(), image.get_width(), image.get_height());
+  const pixels = new Uint8Array(image.get_raw_pixels());
+  for (let index = 3; index < pixels.length; index += 4) pixels[index] = Math.round(pixels[index] * opacity);
+  return new PhotonImage(pixels, image.get_width(), image.get_height());
+}
+
+function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  return copy.buffer;
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
+}
+
 function calcPosition(
   position: string,
   imgWidth: number,

@@ -49,7 +49,7 @@
   );
 
   // 保存
-  async function handleSave(deploy: boolean = true) {
+  async function handleSave() {
     // 校验
     if (data.collection !== 'bits' && !frontmatter.title) {
       toast.error('请填写标题');
@@ -68,17 +68,11 @@
         collection: data.collection,
         slug: effectiveSlug,
         frontmatter,
-        body,
-        deploy
+        body
       });
 
       if (result.ok) {
-        const payload = result.data as { deploy?: { ok?: boolean; message?: string } } | undefined;
-        if (deploy && payload?.deploy?.ok === false) {
-          toast.warn(`已保存，但部署未触发：${payload.deploy.message ?? '部署配置不完整'}`);
-        } else {
-          toast.ok(deploy ? '已保存并触发提交部署' : '保存成功');
-        }
+        toast.ok('已保存到记录，请在仪表盘点击一键部署后发布');
         if (data.isNew) {
           await goto(`${base}/content/${data.collection}/${effectiveSlug}`);
         }
@@ -205,7 +199,7 @@
       {completingMetadata ? '补齐中...' : '补全元数据'}
     </button>
     <span class="editor-actions__divider"></span>
-    <button class="btn btn--primary btn--sm" onclick={() => handleSave(true)} disabled={saving}>
+    <button class="btn btn--primary btn--sm" onclick={() => handleSave()} disabled={saving}>
       <Icon name="save" size={14} />
       {saving ? '保存中...' : '保存'}
     </button>

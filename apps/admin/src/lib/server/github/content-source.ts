@@ -41,6 +41,16 @@ interface GitTreeResponse {
   message?: string;
 }
 
+class GitHubRequestError extends Error {
+  constructor(
+    public readonly status: number,
+    message: string
+  ) {
+    super(message);
+    this.name = 'GitHubRequestError';
+  }
+}
+
 const githubHeaders = (token?: string) => {
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json',
@@ -58,7 +68,7 @@ async function fetchGithubJson<T>(url: string, token?: string): Promise<T> {
   const data = (await res.json().catch(() => ({}))) as T & { message?: string };
 
   if (!res.ok) {
-    throw new Error(data.message ? `GitHub API ${res.status}: ${data.message}` : `GitHub API ${res.status}`);
+    throw new GitHubRequestError(res.status, data.message ? `GitHub API ${res.status}: ${data.message}` : `GitHub API ${res.status}`);
   }
 
   return data;
@@ -73,10 +83,27 @@ async function fetchGithubRawText(url: string, token?: string): Promise<string> 
   const res = await fetch(url, { headers });
   if (!res.ok) {
     const message = await res.text().catch(() => '');
-    throw new Error(message ? `GitHub Raw ${res.status}: ${message}` : `GitHub Raw ${res.status}`);
+    throw new GitHubRequestError(res.status, message ? `GitHub Raw ${res.status}: ${message}` : `GitHub Raw ${res.status}`);
   }
 
   return res.text();
+}
+
+function isBadCredentials(error: unknown): boolean {
+  return error instanceof GitHubRequestError
+    && error.status === 401
+    && /bad credentials/i.test(error.message);
+}
+
+async function fetchGithubJsonWithPublicRetry<T>(url: string, token?: string): Promise<{ data: T; token?: string }> {
+  try {
+    return { data: await fetchGithubJson<T>(url, token), token };
+  } catch (error) {
+    if (token && isBadCredentials(error)) {
+      return { data: await fetchGithubJson<T>(url), token: undefined };
+    }
+    throw error;
+  }
 }
 
 export async function fetchSourceMarkdownFiles(
@@ -95,7 +122,7 @@ export async function fetchSourceMarkdownFiles(
   const limit = Math.max(1, Math.min(20, Math.floor(options.limit ?? 12)));
   const root = `src/content/${collection}/`;
   const treeUrl = `https://api.github.com/repos/${owner}/${repoName}/git/trees/${encodeURIComponent(ref)}?recursive=1`;
-  const tree = await fetchGithubJson<GitTreeResponse>(treeUrl, token);
+  const { data: tree, token: readToken } = await fetchGithubJsonWithPublicRetry<GitTreeResponse>(treeUrl, token);
 
   if (!Array.isArray(tree.tree)) {
     throw new Error('GitHub 返回的文件树为空');
@@ -123,7 +150,7 @@ export async function fetchSourceMarkdownFiles(
       .split('/')
       .map((part) => encodeURIComponent(part))
       .join('/')}`;
-    const markdown = await fetchGithubRawText(rawUrl, token);
+    const markdown = await fetchGithubRawText(rawUrl, readToken);
 
     files.push({
       collection,

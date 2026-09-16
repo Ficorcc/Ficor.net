@@ -1,6 +1,7 @@
 import { createHash, createHmac } from 'node:crypto';
-import { mkdir, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { collectLocalFiles, contentRelativePathFromKey, pruneDeletedContent } from './lib/content-sync.mjs';
 
 const env = process.env;
 const accountId = env.ADMIN_R2_ACCOUNT_ID ?? env.R2_ACCOUNT_ID ?? '';
@@ -168,22 +169,6 @@ async function downloadObjectText(key) {
   return (await fetchObjectBody(key)).toString('utf8');
 }
 
-async function collectLocalFiles(dir, base = dir) {
-  const entries = await readdir(dir, { withFileTypes: true }).catch(() => []);
-  const files = [];
-
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...await collectLocalFiles(fullPath, base));
-    } else if (entry.isFile()) {
-      files.push(path.relative(base, fullPath).replace(/\\/g, '/'));
-    }
-  }
-
-  return files;
-}
-
 async function pruneLocalContent(remoteRelativePaths) {
   if (!shouldPrune || remoteRelativePaths.size === 0) return 0;
 
@@ -204,12 +189,16 @@ let copied = 0;
 for (const key of remoteKeys) {
   const local = toLocalPath(key);
   if (!local) continue;
-  remoteRelativePaths.add(local.relativePath);
+  const contentPath = contentRelativePathFromKey(key, sourcePrefix);
+  if (!contentPath) continue;
+  remoteRelativePaths.add(contentPath);
   await downloadObject(key, local.target);
   copied += 1;
 }
 
-const removed = await pruneLocalContent(remoteRelativePaths);
+const tombstoneKeys = await listObjectsForPrefix('deleted/content/');
+const removedByTombstone = await pruneDeletedContent({ contentRoot, remoteRelativePaths, tombstoneKeys });
+const removed = removedByTombstone + await pruneLocalContent(remoteRelativePaths);
 
 const settingsKeys = settingsPrefix === sourcePrefix
   ? []
@@ -234,6 +223,7 @@ function linksModuleSource(jsonText) {
     '// Generated from admin R2 data/links.json during Astro build.',
     `const payload = ${JSON.stringify(payload, null, 2)};`,
     '',
+    'export const communitySchemaVersion = Number(payload.communitySchemaVersion) || 1;',
     'export const siteInfo = payload.siteInfo ?? {};',
     'export const links = Array.isArray(payload.links) ? payload.links : [];',
     ''

@@ -1,164 +1,64 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import feedConfig from '../../config/feed.json';
-
-interface FeedItem {
-  title: string;
-  link: string;
-  summary?: string;
-  description?: string;
-  date: string;
-  timestamp?: string;
-  source_title: string;
-}
-
-const toRecord = (value: unknown): Record<string, unknown> =>
-  value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
-
-const text = (value: unknown): string => typeof value === 'string' ? value : '';
-
-const fetchFeedData = async (url: string): Promise<FeedItem[]> => {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      return [];
-    }
-
-    const data = await response.json();
-    
-    if (data.status === 'success' && data.data) {
-      return data.data.map((item: any) => ({
-        title: item.title || '',
-        link: item.link || '',
-        summary: item.summary || '',
-        date: item.date || '',
-        timestamp: item.timestamp || '',
-        source_title: item.source_title || ''
-      }));
-    } else if (data.success && data.data) {
-      return data.data.map((item: any) => ({
-        title: item.title || '',
-        link: item.link || '',
-        description: item.description || '',
-        date: item.date || '',
-        timestamp: item.timestamp || '',
-        source_title: item.source_title || item.source || ''
-      }));
-    }
-    return [];
-  } catch (error) {
-    if (import.meta.env.DEV) {
-      const host = new URL(url).hostname;
-      console.warn(`[friends] Failed to fetch ${host} feed.`, error);
-    }
-    return [];
-  }
-};
-
-const subscriptions = Array.isArray((feedConfig as Record<string, unknown>).subscriptions)
-  ? (feedConfig as Record<string, unknown>).subscriptions as unknown[]
-  : [];
-
-const feeds: FeedItem[] = subscriptions.flatMap((subscription) => {
-  const sub = toRecord(subscription);
-  const latestItems = Array.isArray(sub.latestItems) ? sub.latestItems : [];
-  return latestItems.map((item) => {
-    const entry = toRecord(item);
-    return {
-      title: text(entry.title),
-      link: text(entry.url) || text(entry.link),
-      summary: text(entry.summary),
-      description: text(entry.description),
-      date: text(entry.date),
-      timestamp: text(entry.timestamp),
-      source_title: text(sub.name) || text(entry.source_title) || text(entry.source)
-    };
-  });
-});
-
-if (feeds.length === 0) {
-  const feedUrls = [
-    'https://lilog.cn/is/index.php?action=get_user_feeds&uid=54008&limit=30&token=2bd4eea157becfd45baf299494394392',
-    'https://jh.3v.hk/api.php?action=get_all_items&uid=16&token=741afb1d210656544af0490d0824ca6e&limit=40'
-  ];
-
-  for (const url of feedUrls) {
-    const items = await fetchFeedData(url);
-    feeds.push(...items);
-  }
-}
-
-feeds.sort((a, b) => {
-  const timestampA = parseInt(a.timestamp ?? '', 10) || Date.parse(a.date) || 0;
-  const timestampB = parseInt(b.timestamp ?? '', 10) || Date.parse(b.date) || 0;
-  return timestampB - timestampA;
-});
-
-const formatDate = (dateStr: string): string => {
-  if (!dateStr) return '';
-  const date = new Date(dateStr);
-  if (isNaN(date.getTime())) {
-    return dateStr;
-  }
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  
-  if (days === 0) return '今天';
-  if (days === 1) return '昨天';
-  if (days < 7) return `${days}天前`;
-  
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  return `${month}月${day}日`;
-};
-
-const stripHtml = (html: string): string => {
-  if (!html) return '';
-  return html.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim();
-};
+import { communitySnapshot } from '../../lib/community-snapshot';
+import { publicCommunity, formatFeedDate, feedSummary } from '../../lib/community';
+const community = publicCommunity(communitySnapshot);
+const feeds = community.latestItems;
 ---
 
 <BaseLayout title="友圈">
-  <main class="friends-page">
+  <main class="friends-page" data-community="feeds">
+    <p class="community-status" data-community-status role="status"></p>
     <div class="friends-header">
       <h1 class="friends-title">友圈</h1>
       <p class="friends-subtitle">朋友们的最新动态</p>
     </div>
-    
+
     <div class="friends-stats">
       <span class="stat-item">
-        <span class="stat-number">{feeds.length}</span>
+        <span class="stat-number" data-feed-count>{feeds.length}</span>
         <span class="stat-label">条动态</span>
       </span>
     </div>
-    
+
     <div class="feed-list">
       {feeds.map((item) => (
         <article class="feed-item">
-          <a href={item.link} target="_blank" rel="noopener noreferrer" class="feed-link">
+          <a href={item.url} target="_blank" rel="noopener noreferrer" class="feed-link">
             <div class="feed-header">
-              <span class="feed-source">{item.source_title}</span>
-              <span class="feed-date">{formatDate(item.date)}</span>
+              <span class="feed-source">{item.source}</span>
+              <span class="feed-date">{formatFeedDate(item.date)}</span>
             </div>
             <h3 class="feed-title">{item.title}</h3>
             <p class="feed-summary">
-              {item.summary || stripHtml(item.description || '').slice(0, 120)}...
+              {feedSummary(item.summary)}
             </p>
           </a>
         </article>
       ))}
     </div>
-    
-    {feeds.length === 0 && (
-      <div class="empty-state">
-        <p>暂无动态数据</p>
-      </div>
-    )}
+
+    <div class="empty-state" data-community-empty hidden={feeds.length > 0}><p>暂无动态数据</p></div>
+    <template data-feed-template>
+      <article class="feed-item">
+        <a target="_blank" rel="noopener noreferrer" class="feed-link">
+          <div class="feed-header"><span class="feed-source"></span><span class="feed-date"></span></div>
+          <h3 class="feed-title"></h3><p class="feed-summary"></p>
+        </a>
+      </article>
+    </template>
   </main>
 </BaseLayout>
 
+<script>
+  import { updateCommunityPage } from '../../lib/community-client';
+  updateCommunityPage();
+  document.addEventListener('astro:page-load', updateCommunityPage);
+</script>
+
 <style>
+  .community-status { color: var(--muted); font-size: 13px; }
+  [hidden] { display: none !important; }
   .friends-page {
     max-width: 800px;
     margin: 0 auto;

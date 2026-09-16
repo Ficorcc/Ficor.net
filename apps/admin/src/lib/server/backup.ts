@@ -6,9 +6,6 @@
 // ============================================================================
 
 import { createRepos } from './db';
-import { ContentStore } from './r2/content';
-import { resolveDeployConfig, triggerDeploy } from './deploy/github';
-import { triggerPagesDeploy } from './deploy/cloudflare';
 import { exportBackup, cleanupOldBackups } from './r2/backup';
 
 interface ScheduledEnv {
@@ -26,7 +23,7 @@ interface ScheduledEnv {
 
 /**
  * 处理 cron 触发的事件。
- * 由 Workers 入口（src/worker.ts 或 hooks）的 scheduled() 调用。
+ * 由 Workers 入口（worker.ts）的 scheduled() 调用。
  */
 export async function handleScheduled(
   controller: ScheduledController,
@@ -37,83 +34,10 @@ export async function handleScheduled(
   const repos = createRepos(env.DB);
 
   if (cron === '*/15 * * * *') {
-    await runScheduleCheck(repos, env);
+    // 到期任务保持待部署，由仪表盘的一键部署统一处理。
+    return;
   } else if (cron === '0 19 * * *') {
     await runBackup(repos, env);
-  }
-}
-
-// ---------------------------------------------------------------------------
-// 定时发布检查
-// ---------------------------------------------------------------------------
-async function runScheduleCheck(
-  repos: ReturnType<typeof createRepos>,
-  env: ScheduledEnv
-): Promise<void> {
-  try {
-    const dueItems = await repos.schedules.findDue();
-    if (dueItems.length === 0) return;
-
-    for (const item of dueItems) {
-      // 原子抢占，防止多个 Worker 实例并发处理同一任务
-      const acquired = await repos.schedules.acquire(item.id);
-      if (!acquired) continue;
-
-      try {
-        // 触发主站部署：优先直接调用 Cloudflare Pages 部署钩子
-        if (env.CLOUDFLARE_DEPLOY_HOOK) {
-          const result = await triggerPagesDeploy(env.CLOUDFLARE_DEPLOY_HOOK);
-
-          if (result.ok) {
-            await repos.schedules.markDone(item.id);
-            await repos.audit.log({
-              sessionId: null,
-              action: 'SCHEDULE_AUTO_PUBLISH',
-              target: `${item.collection}/${item.slug}`,
-              detail: { scheduleId: item.id, via: 'cloudflare-hook' },
-              ip: 'cron'
-            });
-          } else {
-            await repos.schedules.markFailed(item.id, result.message);
-          }
-          continue;
-        }
-
-        // 回退：通过 GitHub Actions workflow_dispatch 间接触发
-        const deployConfig = await repos.config.get<{
-          owner: string;
-          repo: string;
-          workflow: string;
-          ref?: string;
-        }>('deploy');
-
-        const config = resolveDeployConfig(deployConfig, env);
-
-        if (env.GITHUB_TOKEN) {
-          const result = await triggerDeploy(env.GITHUB_TOKEN, config);
-
-          if (result.ok) {
-            await repos.schedules.markDone(item.id);
-            await repos.audit.log({
-              sessionId: null,
-              action: 'SCHEDULE_AUTO_PUBLISH',
-              target: `${item.collection}/${item.slug}`,
-              detail: { scheduleId: item.id },
-              ip: 'cron'
-            });
-          } else {
-            await repos.schedules.markFailed(item.id, result.message);
-          }
-        } else {
-          await repos.schedules.markFailed(item.id, '缺少 GITHUB_TOKEN，无法触发部署');
-        }
-      } catch (e) {
-        const errorMsg = e instanceof Error ? e.message : '未知错误';
-        await repos.schedules.markFailed(item.id, errorMsg);
-      }
-    }
-  } catch (e) {
-    console.error('定时发布检查失败:', e);
   }
 }
 
@@ -125,7 +49,8 @@ async function runBackup(
   env: ScheduledEnv
 ): Promise<void> {
   try {
-    const retentionDays = parseInt(env.BACKUP_RETENTION_DAYS ?? '30', 10);
+    const configuredDays = Number(env.BACKUP_RETENTION_DAYS ?? 30);
+    const retentionDays = Number.isInteger(configuredDays) && configuredDays > 0 ? configuredDays : 30;
 
     // 导出备份
     const backupResult = await exportBackup(env.DB, env.R2);
@@ -151,5 +76,6 @@ async function runBackup(
         ip: 'cron'
       })
       .catch(() => {});
+    throw e; // Let Workers report a failed scheduled invocation instead of a false success.
   }
 }

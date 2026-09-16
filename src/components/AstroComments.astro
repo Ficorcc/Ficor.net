@@ -1,0 +1,319 @@
+---
+interface Props {
+  pageId?: string;
+  pageTitle?: string;
+  apiBase?: string;
+  heading?: string;
+}
+
+const {
+  pageId = Astro.url.pathname,
+  pageTitle = typeof Astro.props.pageTitle === "string" ? Astro.props.pageTitle : "",
+  apiBase = "/admin/api/comments/",
+  heading = "评论",
+} = Astro.props;
+---
+
+<section
+  class="ac-comments"
+  data-astro-comments
+  data-page-id={pageId}
+  data-page-title={pageTitle}
+  data-api-base={apiBase}
+>
+  <header class="ac-header">
+    <h2>{heading}</h2>
+    <p data-count>正在载入评论...</p>
+  </header>
+
+  <ol class="ac-list" data-list></ol>
+
+  <form class="ac-form" data-form>
+    <div class="ac-grid">
+      <label>
+        <span>昵称</span>
+        <input name="authorName" autocomplete="name" maxlength="80" required />
+      </label>
+      <label>
+        <span>邮箱</span>
+        <input name="authorEmail" type="email" autocomplete="email" required />
+      </label>
+    </div>
+    <label>
+      <span>网站</span>
+      <input name="authorUrl" type="url" autocomplete="url" placeholder="https://example.com" />
+    </label>
+    <label class="ac-honeypot" aria-hidden="true">
+      <span>Website</span>
+      <input name="website" tabindex="-1" autocomplete="off" />
+    </label>
+    <label>
+      <span>评论</span>
+      <textarea name="content" rows="5" minlength="2" maxlength="4000" required></textarea>
+    </label>
+    <button type="submit">提交评论</button>
+    <p class="ac-message" data-message role="status"></p>
+  </form>
+</section>
+
+<script>
+  // @ts-nocheck
+  const escapeHtml = (value) =>
+    String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  const formatDate = (value) =>
+    new Intl.DateTimeFormat(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(value));
+
+  function renderComment(comment) {
+    const safeUrl = /^https?:\/\//i.test(comment.authorUrl || "") ? comment.authorUrl : "";
+    const author = safeUrl
+      ? `<a href="${escapeHtml(safeUrl)}" rel="nofollow noopener" target="_blank">${escapeHtml(comment.authorName)}</a>`
+      : escapeHtml(comment.authorName);
+
+    return `
+      <li class="ac-item" data-comment-id="${escapeHtml(comment.id)}">
+        <div class="ac-meta">
+          <strong>${author}</strong>
+          <span>${escapeHtml(comment.level.label)} · ${formatDate(comment.createdAt)}</span>
+        </div>
+        <p>${escapeHtml(comment.content).replaceAll("\n", "<br>")}</p>
+      </li>
+    `;
+  }
+
+  async function mountComments(root) {
+    if (!(root instanceof HTMLElement) || root.dataset.mounted) return;
+    root.dataset.mounted = "true";
+
+    const list = root.querySelector<HTMLOListElement>("[data-list]");
+    const count = root.querySelector<HTMLElement>("[data-count]");
+    const form = root.querySelector<HTMLFormElement>("[data-form]");
+    const message = root.querySelector<HTMLElement>("[data-message]");
+    if (
+      !(list instanceof HTMLElement) ||
+      !(count instanceof HTMLElement) ||
+      !(form instanceof HTMLFormElement) ||
+      !(message instanceof HTMLElement)
+    ) {
+      return;
+    }
+
+    const pageId = root.dataset.pageId || window.location.pathname;
+    const pageTitle = root.dataset.pageTitle || document.title;
+    const apiBase = root.dataset.apiBase || "/admin/api/comments/";
+    const websiteLabel = root.querySelector('label:has(input[name="authorUrl"])');
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    function applySettings(settings) {
+      if (!settings) return;
+      const heading = root.querySelector("h2");
+      if (heading && settings.commentHeading) heading.textContent = settings.commentHeading;
+      if (submitButton && settings.submitLabel) submitButton.textContent = settings.submitLabel;
+      if (websiteLabel instanceof HTMLElement) {
+        websiteLabel.hidden = settings.allowAuthorUrl === false;
+      }
+      form.hidden = settings.commentsEnabled === false;
+      if (settings.commentsEnabled === false) {
+        message.textContent = "评论已关闭。";
+      }
+    }
+
+    async function load() {
+      const response = await fetch(`${apiBase}?pageId=${encodeURIComponent(pageId)}`);
+      if (!response.ok) throw new Error("Failed to load comments.");
+      const data = await response.json();
+      applySettings(data.settings);
+      const comments = Array.isArray(data.comments) ? data.comments : [];
+      list.innerHTML = comments.length
+        ? comments.map(renderComment).join("")
+        : `<li class="ac-empty">${escapeHtml(data.settings?.emptyText || "还没有评论。")}</li>`;
+      count.textContent = `${comments.length} 条已审核评论`;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      message.textContent = "正在提交...";
+
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+      payload.pageId = pageId;
+      payload.pageTitle = pageTitle;
+
+      if (submitButton) submitButton.disabled = true;
+      try {
+      const response = await fetch(apiBase, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        message.textContent = data.error || "提交失败，请稍后再试。";
+        return;
+      }
+
+      form.reset();
+      message.textContent = data.message || "评论已提交。";
+      if (data.comment) await load();
+      } catch { message.textContent = "网络错误，请稍后再试。"; }
+      finally { if (submitButton) submitButton.disabled = false; }
+    });
+
+    try {
+      await load();
+    } catch {
+      count.textContent = "评论暂时无法载入";
+    }
+  }
+
+  const mountAll = () => document.querySelectorAll("[data-astro-comments]").forEach(mountComments);
+  mountAll();
+  document.addEventListener("astro:page-load", mountAll);
+</script>
+
+<style>
+  .ac-comments {
+    --ac-text: var(--text);
+    --ac-muted: var(--muted);
+    --ac-border: var(--border);
+    color: var(--ac-text, #172026);
+    font-family: var(--ac-font, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+    margin: 48px auto 0;
+    max-width: var(--ac-width, 760px);
+  }
+
+  .ac-header {
+    align-items: baseline;
+    border-bottom: 1px solid var(--ac-border, #d9e1e7);
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+  }
+
+  .ac-header h2 {
+    font-size: 1.35rem;
+    margin: 0;
+  }
+
+  .ac-header p,
+  .ac-message {
+    color: var(--ac-muted, #66737f);
+    font-size: 0.92rem;
+    margin: 0;
+  }
+
+  .ac-list {
+    display: grid;
+    gap: 14px;
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
+  }
+
+  .ac-item {
+    border: 1px solid var(--ac-border, #d9e1e7);
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .ac-meta {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .ac-meta a {
+    color: inherit;
+  }
+
+  .ac-meta span,
+  .ac-empty {
+    color: var(--ac-muted, #66737f);
+    font-size: 0.88rem;
+  }
+
+  .ac-item p {
+    line-height: 1.7;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ac-form {
+    display: grid;
+    gap: 14px;
+  }
+
+  .ac-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ac-form label {
+    display: grid;
+    gap: 7px;
+  }
+
+  .ac-form span {
+    color: var(--ac-muted, #66737f);
+    font-size: 0.9rem;
+  }
+
+  .ac-form input,
+  .ac-form textarea {
+    background: var(--ac-field, #ffffff);
+    border: 1px solid var(--ac-border, #d9e1e7);
+    border-radius: 8px;
+    color: inherit;
+    font: inherit;
+    padding: 10px 12px;
+  }
+
+  .ac-form textarea {
+    resize: vertical;
+  }
+
+  .ac-form button {
+    background: var(--ac-button, #1f6feb);
+    border: 0;
+    border-radius: 8px;
+    color: #ffffff;
+    cursor: pointer;
+    font: inherit;
+    justify-self: start;
+    padding: 10px 16px;
+  }
+
+  .ac-honeypot {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .ac-header,
+    .ac-meta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .ac-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

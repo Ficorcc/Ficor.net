@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - "apps/admin/**"
+      - "src/lib/community*.ts"
+      - "src/data/links.ts"
+      - "src/config/feed.json"
       - ".github/workflows/deploy-admin.yml"
   workflow_dispatch:
 

@@ -44,8 +44,10 @@
       url,
       description: text(link.description).trim(),
       avatar: text(link.avatar).trim(),
-      feed: text(link.feed).trim() || undefined,
+      feed: text(link.feed ?? link.feedUrl).trim(),
       is_active: link.is_active !== false,
+      show_in_links: link.show_in_links !== false,
+      feed_enabled: typeof link.feed_enabled === 'boolean' ? link.feed_enabled : link.is_active !== false,
       status: text(link.status) || 'unknown'
     };
   }
@@ -108,15 +110,6 @@
     closeEditor();
   }
 
-  function deployToast(result: { deploy?: { ok?: boolean; message?: string } } | undefined) {
-    const deployResult = result?.deploy;
-    if (deployResult?.ok === false) {
-      toast.warn(`已保存，但部署未触发：${deployResult.message ?? '部署配置不完整'}`);
-    } else {
-      toast.ok('友链已保存并触发提交部署');
-    }
-  }
-
   async function saveLinks() {
     const nextLinks = normalizedLinks();
     if (nextLinks.some((link) => !text(link.name) || !text(link.url))) {
@@ -131,15 +124,14 @@
     };
 
     saving = true;
-    const result = await api<{ deploy?: { ok?: boolean; message?: string } }>('DATA_SAVE', {
+    const result = await api('DATA_SAVE', {
       key: 'links',
-      value,
-      deploy: true
+      value
     });
     if (result.ok) {
       sourceValue = value;
       links = nextLinks;
-      deployToast(result.data);
+      toast.ok('已保存到记录，等待一键部署后更新前台');
     } else {
       toast.error(result.error ?? '保存失败');
     }
@@ -147,7 +139,7 @@
   }
 
   function sourceLabel() {
-    return (data as Record<string, unknown>).source === 'source' ? '主站仓库' : '后台存储';
+    return (data as Record<string, unknown>).source === 'snapshot' ? '站点初始数据' : '前后台共享数据';
   }
 </script>
 
@@ -159,14 +151,14 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="page-header__title">友链管理</h1>
-      <p class="page-header__sub">{links.length} 个友链 · 数据源：{sourceLabel()}</p>
+      <p class="page-header__sub">{links.length} 个站点 · 数据源：{sourceLabel()}</p>
     </div>
     <div class="header-actions">
       <button class="btn btn--ghost" onclick={addLink}>
         <Icon name="plus" size={16} /> 新增
       </button>
-      <button class="btn btn--primary" onclick={saveLinks} disabled={saving}>
-        <Icon name="save" size={16} /> {saving ? '保存中...' : '保存并部署'}
+      <button class="btn btn--primary" onclick={saveLinks} disabled={saving || !!data.error || !!draft}>
+        <Icon name="save" size={16} /> {saving ? '保存中...' : '保存'}
       </button>
     </div>
   </div>
@@ -176,6 +168,10 @@
   <div class="panel link-editor-panel">
     <div class="panel__legend">
       {editingIndex === null ? '新增友链' : '编辑友链'} <span class="panel__legend-en">EDIT</span>
+    </div>
+    <div class="flex gap-4 mb-4">
+      <label><input type="checkbox" checked={draft.show_in_links !== false} onchange={(e) => updateDraft('show_in_links', e.currentTarget.checked)} /> 显示在友链页</label>
+      <label><input type="checkbox" checked={draft.feed_enabled !== false} onchange={(e) => updateDraft('feed_enabled', e.currentTarget.checked)} /> 启用 RSS 订阅</label>
     </div>
     <div class="link-form">
       <div class="field">
@@ -198,6 +194,9 @@
         <label class="field__label" for="link-description">描述</label>
         <textarea id="link-description" rows="3" value={text(draft.description)} placeholder="一句话介绍" oninput={(e) => updateDraft('description', e.currentTarget.value)}></textarea>
       </div>
+      <label class="field field--full">
+        <span><input type="checkbox" checked={draft.is_active !== false} onchange={(e) => updateDraft('is_active', e.currentTarget.checked)} /> 在友链和友圈中显示</span>
+      </label>
       <div class="link-form__actions">
         <button class="btn btn--ghost btn--sm" onclick={closeEditor}>取消</button>
         {#if editingIndex !== null}
@@ -229,7 +228,7 @@
     </div>
   {:else}
     <div class="link-card-list">
-      {#each links.slice(0, 80) as item, index (text((item as LinkRecord).url) || text((item as LinkRecord).id) || index)}
+      {#each links as item, index (text((item as LinkRecord).url) || text((item as LinkRecord).id) || index)}
         {@const link = item as LinkRecord}
         <button type="button" class="link-card" class:is-muted={link.is_active === false} onclick={() => editLink(index)}>
           <span class="link-card__head">

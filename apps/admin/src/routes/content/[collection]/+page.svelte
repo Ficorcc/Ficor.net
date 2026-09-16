@@ -6,6 +6,7 @@
   import { goto, invalidateAll } from '$app/navigation';
   import Segmented from '$lib/components/ui/Segmented.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
+  import Modal from '$lib/components/ui/Modal.svelte';
   import { formatDate } from '$lib/utils/date';
   import { api } from '$lib/utils/api';
   import { toast } from '$lib/stores/toast';
@@ -34,11 +35,18 @@
     { label: '絮语', value: 'bits' },
     { label: '小记', value: 'memo' }
   ];
+  const markdownImportBatchSize = 50;
 
   let searchKeyword = $state(data.keyword ?? '');
   let pullingSource = $state(false);
+  let importingMarkdown = $state(false);
+  let importProgress = $state('');
+  let duplicateImportOpen = $state(false);
+  let pendingMarkdownFiles = $state<File[]>([]);
+  let duplicateMarkdownNames = $state<string[]>([]);
   let pullProgress = $state('');
   let deletingSlug = $state('');
+  let markdownInput: HTMLInputElement | null = null;
 
   interface PullSourcePayload {
     count?: number;
@@ -48,6 +56,13 @@
     source?: string;
     ref?: string;
   }
+  interface ImportMarkdownPayload {
+    count?: number;
+    skippedCount?: number;
+    failedCount?: number;
+    failed?: Array<{ name?: string; error?: string }>;
+  }
+  type ApiResult<T> = { ok: boolean; error?: string; data?: T };
 
   function handleCollectionChange(value: string) {
     goto(`${base}/content/${value}`);
@@ -69,7 +84,7 @@
 
     try {
       while (cursor !== undefined) {
-        const result = await api<PullSourcePayload>('CONTENT_PULL_SOURCE', {
+        const result: ApiResult<PullSourcePayload> = await api<PullSourcePayload>('CONTENT_PULL_SOURCE', {
           collection: data.collection,
           cursor
         });
@@ -94,6 +109,103 @@
       pullingSource = false;
       pullProgress = '';
     }
+  }
+
+  function openMarkdownImport() {
+    markdownInput?.click();
+  }
+
+  function slugFromMarkdownFilename(name: string): string {
+    return name.replace(/\\/g, '/').split('/').pop()?.replace(/\.md$/i, '').trim() ?? '';
+  }
+
+  async function handleMarkdownImport(event: Event) {
+    const input = event.currentTarget as HTMLInputElement;
+    const files = Array.from(input.files ?? []).filter((file) => /\.md$/i.test(file.name));
+    input.value = '';
+    if (!files.length) {
+      toast.error('请选择 .md 文件');
+      return;
+    }
+
+    const existing = await api<{ items?: Array<{ slug?: string }> }>('CONTENT_LIST', {
+      collection: data.collection
+    });
+    if (!existing.ok) {
+      toast.error(existing.error ?? '无法检查重复文章');
+      return;
+    }
+
+    const existingSlugs = new Set((existing.data?.items ?? []).map((item) => item.slug).filter(Boolean));
+    const duplicateNames = files
+      .filter((file) => existingSlugs.has(slugFromMarkdownFilename(file.name)))
+      .map((file) => file.name);
+    if (duplicateNames.length) {
+      pendingMarkdownFiles = files;
+      duplicateMarkdownNames = duplicateNames;
+      duplicateImportOpen = true;
+      return;
+    }
+
+    await importMarkdownFiles(files);
+  }
+
+  async function importMarkdownFiles(files: File[], overwrite = false) {
+    importingMarkdown = true;
+    try {
+      let count = 0;
+      let skippedCount = 0;
+      let failedCount = 0;
+
+      for (let start = 0; start < files.length; start += markdownImportBatchSize) {
+        const batch = files.slice(start, start + markdownImportBatchSize);
+        const payloadFiles = await Promise.all(
+          batch.map(async (file) => ({
+            name: file.name,
+            markdown: await file.text(),
+            lastModified: file.lastModified
+          }))
+        );
+        const result: ApiResult<ImportMarkdownPayload> = await api<ImportMarkdownPayload>('CONTENT_IMPORT_MARKDOWN', {
+          collection: data.collection,
+          overwrite,
+          files: payloadFiles
+        });
+
+        if (!result.ok) {
+          const batchNumber = Math.floor(start / markdownImportBatchSize) + 1;
+          toast.error(`第 ${batchNumber} 批导入失败：${result.error ?? '导入失败'}`);
+          return;
+        }
+
+        count += result.data?.count ?? payloadFiles.length;
+        skippedCount += result.data?.skippedCount ?? 0;
+        failedCount += result.data?.failedCount ?? 0;
+        importProgress = `${Math.min(start + batch.length, files.length)}/${files.length}`;
+      }
+
+      if (failedCount > 0) {
+        toast.error(`已导入 ${count} 个文件，跳过 ${skippedCount} 个重复项，${failedCount} 个失败`);
+      } else if (count === 0 && skippedCount > 0) {
+        toast.ok(`没有新增文章，已跳过 ${skippedCount} 个重复项`);
+      } else if (skippedCount > 0) {
+        toast.ok(`已导入 ${count} 个 Markdown 文件，跳过 ${skippedCount} 个重复项`);
+      } else {
+        toast.ok(`已导入 ${count} 个 Markdown 文件，等待一键部署`);
+      }
+      await invalidateAll();
+    } finally {
+      importingMarkdown = false;
+      importProgress = '';
+    }
+  }
+
+  async function resolveDuplicateImport() {
+    const files = pendingMarkdownFiles;
+    duplicateImportOpen = false;
+    pendingMarkdownFiles = [];
+    duplicateMarkdownNames = [];
+    await importMarkdownFiles(files);
   }
 
   async function deleteItem(slug: string, title: unknown) {
@@ -130,6 +242,17 @@
       <p class="page-header__sub">{collectionLabels[data.collection]} · {data.items.length} 篇</p>
     </div>
     <div class="page-actions">
+      <input
+        bind:this={markdownInput}
+        class="visually-hidden"
+        type="file"
+        accept=".md,text/markdown,text/plain"
+        multiple
+        onchange={handleMarkdownImport}
+      />
+      <button class="btn btn--ghost" onclick={openMarkdownImport} disabled={importingMarkdown}>
+        <Icon name="upload" size={16} /> {importingMarkdown ? `导入中${importProgress ? ` ${importProgress}` : '...'}` : '导入 .md'}
+      </button>
       <button class="btn btn--ghost" onclick={pullSourceContent} disabled={pullingSource}>
         <Icon name="download" size={16} /> {pullingSource ? `抓取中${pullProgress ? ` ${pullProgress}` : '...'}` : '从主站抓取'}
       </button>
@@ -139,6 +262,30 @@
     </div>
   </div>
 </div>
+
+<Modal
+  bind:open={duplicateImportOpen}
+  title="发现重复文章"
+  confirmText="跳过重复项并导入"
+  cancelText="取消"
+  onConfirm={resolveDuplicateImport}
+  onCancel={() => {
+    pendingMarkdownFiles = [];
+    duplicateMarkdownNames = [];
+  }}
+>
+  <p>已存在 {duplicateMarkdownNames.length} 篇同名文章。跳过会保留已有文章，覆盖会替换它们的正文和 frontmatter。</p>
+  <div class="duplicate-import__names">{duplicateMarkdownNames.slice(0, 8).join('、')}{duplicateMarkdownNames.length > 8 ? ' 等' : ''}</div>
+  <button class="btn btn--danger mt-4" onclick={async () => {
+    const files = pendingMarkdownFiles;
+    duplicateImportOpen = false;
+    pendingMarkdownFiles = [];
+    duplicateMarkdownNames = [];
+    await importMarkdownFiles(files, true);
+  }}>
+    覆盖已有文章并导入
+  </button>
+</Modal>
 
 <!-- 集合切换 + 搜索 -->
 <div class="content-toolbar">
@@ -233,12 +380,29 @@
     margin-bottom: 20px;
     flex-wrap: wrap;
   }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
   .page-actions {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
     justify-content: flex-end;
+  }
+  .duplicate-import__names {
+    margin-top: 10px;
+    color: var(--color-text-muted);
+    font-size: 13px;
+    line-height: 1.7;
   }
   .content-search {
     display: flex;

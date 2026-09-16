@@ -18,6 +18,10 @@ export interface ContentMeta {
   excerpt: string;
 }
 
+export interface ContentPreviewItem extends ContentMeta {
+  body: string;
+}
+
 type R2ObjectWithMetadata = R2Object & { customMetadata?: Record<string, string> };
 
 interface ListOptions {
@@ -92,6 +96,18 @@ export class ContentStore {
     return `content/${collection}/${slug}.md`;
   }
 
+  tombstoneKey(collection: string, slug: string): string {
+    this.validateContentPath(collection, slug);
+    return `deleted/content/${collection}/${slug}.json`;
+  }
+
+  private validateContentPath(collection: string, slug: string): void {
+    if (!['essay', 'bits', 'memo'].includes(collection)) throw new Error('无效的内容类型');
+    if (!slug || slug.includes('/') || slug.includes('\\') || slug.includes('\0') || slug === '..' || slug.includes('..')) {
+      throw new Error('无效的文章 Slug');
+    }
+  }
+
   /** 读取一篇文章 */
   async read(collection: string, slug: string): Promise<{ frontmatter: Record<string, unknown>; body: string } | null> {
     const obj = await this.r2.get(this.key(collection, slug));
@@ -107,14 +123,17 @@ export class ContentStore {
     frontmatter: Record<string, unknown>,
     body: string
   ): Promise<void> {
+    this.validateContentPath(collection, slug);
     const md = serializeMarkdown(frontmatter, body);
     await this.r2.put(this.key(collection, slug), md, {
       customMetadata: writeMetadata(collection, slug, frontmatter, body)
     });
+    await this.r2.delete(this.tombstoneKey(collection, slug));
   }
 
   /** 写入 Markdown 原文，用于从主站仓库同步时尽量保留原始 frontmatter 格式 */
   async writeRaw(collection: string, slug: string, markdown: string): Promise<void> {
+    this.validateContentPath(collection, slug);
     const parsed = parseMarkdown(markdown);
     await this.r2.put(this.key(collection, slug), markdown, {
       customMetadata: {
@@ -122,10 +141,18 @@ export class ContentStore {
         source: 'main-site'
       }
     });
+    await this.r2.delete(this.tombstoneKey(collection, slug));
   }
 
   /** 删除文章 */
   async delete(collection: string, slug: string): Promise<void> {
+    await this.r2.put(this.tombstoneKey(collection, slug), JSON.stringify({
+      collection,
+      slug,
+      deletedAt: new Date().toISOString()
+    }), {
+      httpMetadata: { contentType: 'application/json; charset=utf-8' }
+    });
     await this.r2.delete(this.key(collection, slug));
   }
 
@@ -191,6 +218,33 @@ export class ContentStore {
     });
 
     return options.limit ? sorted.slice(0, options.limit) : sorted;
+  }
+
+  async listPreview(collection: string): Promise<ContentPreviewItem[]> {
+    const items = await this.list(collection);
+    return (await mapConcurrent(items, LIST_CONCURRENCY, async (item) => {
+      const content = await this.read(collection, item.slug);
+      if (!content) return null;
+      return { ...item, frontmatter: content.frontmatter, body: content.body };
+    })).filter((item): item is ContentPreviewItem => Boolean(item));
+  }
+
+  async listDeletedSlugs(collection: string): Promise<string[]> {
+    const prefix = `deleted/content/${collection}/`;
+    const slugs: string[] = [];
+    let cursor: string | undefined;
+
+    do {
+      const result = await this.r2.list({ prefix, cursor, limit: 1000 });
+      for (const obj of result.objects) {
+        if (!obj.key.endsWith('.json')) continue;
+        const slug = obj.key.slice(prefix.length, -'.json'.length);
+        if (slug && !slug.includes('/') && !slug.includes('\\') && !slug.includes('..')) slugs.push(slug);
+      }
+      cursor = result.truncated ? result.cursor : undefined;
+    } while (cursor);
+
+    return slugs;
   }
 
   /** 全文搜索 */

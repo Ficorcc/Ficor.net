@@ -63,7 +63,7 @@ export class SchedulesRepo {
   async findDue(): Promise<ScheduleRow[]> {
     return this.db.all<ScheduleRow>(
       `SELECT * FROM schedules
-       WHERE status = 'pending' AND scheduled_at <= datetime('now')
+       WHERE status = 'pending' AND julianday(scheduled_at) <= julianday('now')
        ORDER BY scheduled_at ASC`
     );
   }

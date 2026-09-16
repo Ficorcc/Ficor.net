@@ -1,10 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { siteInfo, links } from '../../data/links';
+import { communitySnapshot } from '../../lib/community-snapshot';
+import { publicCommunity } from '../../lib/community';
+const { siteInfo, links } = publicCommunity(communitySnapshot);
 ---
 
 <BaseLayout title="友情链接">
-  <main class="page-content">
+  <main class="page-content" data-community="links">
+    <p class="community-status" data-community-status role="status"></p>
     <div class="container">
       <h1 class="page-title">友情链接</h1>
       
@@ -13,33 +16,33 @@ import { siteInfo, links } from '../../data/links';
         <div class="info-card">
           <div class="site-header">
             <div class="site-avatar">
-              <img src={siteInfo.avatar} alt={siteInfo.title} width="80" height="80">
+              <img data-site-avatar src={siteInfo.avatar} alt={siteInfo.title} width="80" height="80">
             </div>
             <div class="site-title-section">
-              <h3>{siteInfo.title}</h3>
-              <p class="site-url"><a href={siteInfo.url} target="_blank" rel="noopener noreferrer">{siteInfo.url}</a></p>
+              <h3 data-site-title>{siteInfo.title}</h3>
+              <p class="site-url"><a data-site-url href={siteInfo.url} target="_blank" rel="noopener noreferrer">{siteInfo.url}</a></p>
             </div>
           </div>
           <div class="site-meta">
             <div class="meta-row">
               <span class="meta-label">网站标题：</span>
-              <span class="meta-value">{siteInfo.title}</span>
-              <button class="copy-btn" data-text={siteInfo.title}>复制</button>
+              <span class="meta-value" data-site-field="title">{siteInfo.title}</span>
+              <button class="copy-btn" data-site-copy="title" data-text={siteInfo.title}>复制</button>
             </div>
             <div class="meta-row">
               <span class="meta-label">网站网址：</span>
-              <span class="meta-value">{siteInfo.url}</span>
-              <button class="copy-btn" data-text={siteInfo.url}>复制</button>
+              <span class="meta-value" data-site-field="url">{siteInfo.url}</span>
+              <button class="copy-btn" data-site-copy="url" data-text={siteInfo.url}>复制</button>
             </div>
             <div class="meta-row">
               <span class="meta-label">网站描述：</span>
-              <span class="meta-value">{siteInfo.description}</span>
-              <button class="copy-btn" data-text={siteInfo.description}>复制</button>
+              <span class="meta-value" data-site-field="description">{siteInfo.description}</span>
+              <button class="copy-btn" data-site-copy="description" data-text={siteInfo.description}>复制</button>
             </div>
             <div class="meta-row">
               <span class="meta-label">头像地址：</span>
-              <span class="meta-value">{siteInfo.avatar}</span>
-              <button class="copy-btn" data-text={siteInfo.avatar}>复制</button>
+              <span class="meta-value" data-site-field="avatar">{siteInfo.avatar}</span>
+              <button class="copy-btn" data-site-copy="avatar" data-text={siteInfo.avatar}>复制</button>
             </div>
           </div>
         </div>
@@ -65,10 +68,25 @@ import { siteInfo, links } from '../../data/links';
         </div>
       </div>
     </div>
+    <div class="empty-state" data-community-empty hidden={links.length > 0}>暂无友链</div>
+    <template data-link-template>
+      <div class="link-item"><a target="_blank" rel="noopener noreferrer">
+        <div class="link-avatar"><img width="48" height="48" loading="lazy" alt="" /></div>
+        <div class="link-content"><h3></h3><p></p></div>
+      </a></div>
+    </template>
   </main>
 </BaseLayout>
 
+<script>
+  import { updateCommunityPage } from '../../lib/community-client';
+  updateCommunityPage();
+  document.addEventListener('astro:page-load', updateCommunityPage);
+</script>
+
 <style>
+  .community-status { color: var(--muted); font-size: 13px; text-align: center; }
+  [hidden] { display: none !important; }
   .page-content {
     padding: 2rem 0;
   }

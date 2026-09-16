@@ -19,6 +19,8 @@ export interface SiteInfo {
   avatar: string;
 }
 
+export const communitySchemaVersion = 1;
+
 export const siteInfo: SiteInfo = {
   "title": "柒色墨笺",
   "url": "https://vii.ink",

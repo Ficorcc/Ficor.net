@@ -11,7 +11,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "db:migrate": "wrangler d1 migrations apply admin-db --local",
     "db:migrate:prod": "wrangler d1 migrations apply admin-db --remote",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && npm run db:migrate:prod && wrangler deploy"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241205.0",
@@ -26,6 +26,8 @@
     "wrangler": "^3.84.0"
   },
   "dependencies": {
+    "@cf-wasm/photon": "0.4.0",
+    "fast-xml-parser": "5.5.7",
     "yaml": "^2.6.0",
     "zod": "^3.23.0"
   }

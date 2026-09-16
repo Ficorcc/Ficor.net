@@ -148,7 +148,7 @@
             alt={fileName(img.key)}
             loading="lazy"
             onerror={(e) => {
-              e.currentTarget.style.display = 'none';
+              (e.currentTarget as HTMLImageElement).style.display = 'none';
             }}
           />
           <div class="image-card__placeholder">

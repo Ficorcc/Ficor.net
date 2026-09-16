@@ -8,7 +8,8 @@ import { createRepos } from '$lib/server/db';
 import { ContentStore } from '$lib/server/r2/content';
 import { validateEvent } from './schemas';
 import { isValidEvent, MUTATION_EVENTS, PUBLIC_EVENTS, Event } from './events';
-import { validateFrontmatter } from '$lib/utils/content-schema';
+import { ESSAY_PUBLIC_SLUG_RE, validateFrontmatter } from '$lib/utils/content-schema';
+import { parseMarkdown, serializeMarkdown } from '$lib/utils/frontmatter';
 import { resolveDeployConfig, triggerDeploy } from '$lib/server/deploy/github';
 import { triggerPagesDeploy } from '$lib/server/deploy/cloudflare';
 import { handleAiPolish, handleAiMetadata, handleAiModerate } from '$lib/server/ai/handlers';
@@ -16,13 +17,11 @@ import { listImages, deleteImage } from '$lib/server/r2/images';
 import { writeThemeSettings } from '$lib/server/r2/theme-settings';
 import { fetchSourceMarkdownFiles, type SourceRepoConfig } from '$lib/server/github/content-source';
 import { fetchMemos } from '$lib/server/memos/client';
+import { refreshCommunityFeeds } from '$lib/server/community-feeds';
+import { prepareCommunityPublication, publishCommunity } from '$lib/server/community';
+import { saveCommunityLinks } from '$lib/server/community';
 import { isSiteDataKey, writeJsonData } from '$lib/server/r2/site-data';
-import {
-  deleteWalineComment,
-  listWalineComments,
-  resolveWalineConfig,
-  updateWalineCommentStatus
-} from '$lib/server/waline/client';
+import { listComments, moderateComment, countComments } from '$lib/server/fiscus/admin';
 
 export interface ApiContext {
   request: Request;
@@ -84,6 +83,13 @@ export async function dispatch(event: string, ctx: ApiContext): Promise<Response
       return handleContentPublish(ctx);
     case Event.CONTENT_PULL_SOURCE:
       return handleContentPullSource(ctx);
+    case Event.CONTENT_IMPORT_MARKDOWN:
+      return handleContentImportMarkdown(ctx);
+    case Event.FEEDS_REFRESH: {
+      const result = await refreshCommunityFeeds(ctx.env.R2, Number(ctx.body.cursor ?? 0));
+      await ctx.repos.audit.log({ sessionId: ctx.locals.session!.id, action: 'FEEDS_REFRESH', detail: result, ip: ctx.locals.ip });
+      return json({ ok: true, ...result });
+    }
     case Event.DATA_SAVE:
       return handleDataSave(ctx);
     case Event.MEMOS_SYNC:
@@ -134,40 +140,18 @@ async function handleCsrfIssue(ctx: ApiContext) {
   return json({ ok: true, csrfToken: sessionRow.csrf_token });
 }
 
-async function handleCommentSubmit(ctx: ApiContext) {
-  const id = crypto.randomUUID();
-  await ctx.repos.comments.create({
-    id,
-    post_id: ctx.body.postId as string | undefined,
-    post_title: ctx.body.postTitle as string | undefined,
-    author: ctx.body.author as string,
-    email: ctx.body.email as string | undefined,
-    link: ctx.body.link as string | undefined,
-    content: ctx.body.content as string
-  });
-  return json({ ok: true, id });
+async function handleCommentSubmit(_ctx: ApiContext): Promise<Response> {
+  throw error(410, '请使用 /admin/api/comments 提交评论');
 }
 
 async function handleCommentList(ctx: ApiContext) {
-  const status = ctx.body.status as string | undefined;
-  const page = (ctx.body.page as number) ?? 1;
-  const pageSize = (ctx.body.pageSize as number) ?? 20;
-  const result = await listWalineComments({
-    ...resolveWalineConfig(ctx.env),
-    status: status as 'pending' | 'approved' | 'spam' | undefined,
-    page,
-    pageSize
-  });
+  const result = await listComments(ctx.env, ctx.body.status as string | undefined, ctx.body.page as number | undefined, ctx.body.pageSize as number | undefined);
   return json({ ok: true, ...result });
 }
 
 async function handleCommentModerate(ctx: ApiContext) {
   const { id, status } = ctx.body as { id: string; status: string };
-  await updateWalineCommentStatus({
-    ...resolveWalineConfig(ctx.env),
-    id,
-    status: status as 'approved' | 'pending' | 'spam' | 'deleted'
-  });
+  await moderateComment(ctx.env, id, status);
   await ctx.repos.audit.log({
     sessionId: ctx.locals.session!.id,
     action: 'COMMENT_MODERATE',
@@ -180,7 +164,7 @@ async function handleCommentModerate(ctx: ApiContext) {
 
 async function handleCommentDelete(ctx: ApiContext) {
   const { id } = ctx.body as { id: string };
-  await deleteWalineComment({ ...resolveWalineConfig(ctx.env), id });
+  await moderateComment(ctx.env, id, 'deleted');
   await ctx.repos.audit.log({
     sessionId: ctx.locals.session!.id,
     action: 'COMMENT_DELETE',
@@ -204,12 +188,11 @@ async function handleContentGet(ctx: ApiContext) {
 }
 
 async function handleContentSave(ctx: ApiContext) {
-  const { collection, slug, frontmatter, body, deploy } = ctx.body as {
+  const { collection, slug, frontmatter, body } = ctx.body as {
     collection: string;
     slug: string;
     frontmatter: Record<string, unknown>;
     body: string;
-    deploy?: boolean;
   };
 
   const fmValidation = validateFrontmatter(collection, frontmatter);
@@ -226,10 +209,6 @@ async function handleContentSave(ctx: ApiContext) {
     ip: ctx.locals.ip
   });
 
-  if (deploy) {
-    const deployResult = await triggerDeployIfNeeded(ctx);
-    return json({ ok: true, deploy: deployResult });
-  }
   return json({ ok: true });
 }
 
@@ -252,7 +231,20 @@ async function handleContentSearch(ctx: ApiContext) {
 }
 
 async function handleContentPublish(ctx: ApiContext) {
+  // Only this explicit action may trigger a build. Capture saved community data first.
+  const publication = await prepareCommunityPublication(ctx.env.R2);
+  const dueSchedules = await ctx.repos.schedules.findDue();
   const result = await triggerDeployIfNeeded(ctx);
+  if (result.ok) {
+    try {
+      await publishCommunity(ctx.env.R2, publication);
+      for (const schedule of dueSchedules) await ctx.repos.schedules.markDone(schedule.id);
+    } catch {
+      // The build was already accepted: do not encourage retrying it as a failed trigger.
+      result.message += '；部署已受理，但共享数据发布记录未完成，请检查后台日志后处理';
+      await ctx.repos.audit.log({ sessionId: ctx.locals.session!.id, action: 'PUBLICATION_RECORD_FAILED', ip: ctx.locals.ip });
+    }
+  }
   await ctx.repos.audit.log({
     sessionId: ctx.locals.session!.id,
     action: 'CONTENT_PUBLISH',
@@ -310,13 +302,187 @@ async function handleContentPullSource(ctx: ApiContext) {
   });
 }
 
+function slugFromMarkdownFilename(name: string): string {
+  const filename = name
+    .replace(/\\/g, '/')
+    .split('/')
+    .filter(Boolean)
+    .pop()
+    ?.trim() ?? '';
+  if (!/\.md$/i.test(filename)) {
+    throw new Error(`不是 Markdown 文件：${name}`);
+  }
+  const slug = filename.replace(/\.md$/i, '').trim();
+  if (!slug) throw new Error(`文件名缺少 slug：${name}`);
+  return slug;
+}
+
+function importFallbackDate(lastModified?: number): string {
+  const date = lastModified && Number.isFinite(lastModified) ? new Date(lastModified) : new Date();
+  return date.toISOString().slice(0, 10);
+}
+
+function normalizeImportDate(value: unknown): string | undefined {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(0, 10);
+  }
+
+  const text = typeof value === 'number' ? String(value) : typeof value === 'string' ? value.trim() : '';
+  const match = text.match(/^(\d{4})[-/.年]?(\d{1,2})[-/.月]?(\d{1,2})/);
+  if (!match) return undefined;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
+    return undefined;
+  }
+  return `${match[1]}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+function importTitleFromMarkdown(name: string, body: string): string {
+  const heading = body.match(/^\s*#\s+(.+?)\s*#*\s*$/m)?.[1]?.trim();
+  if (heading) return heading.replace(/[*_`]/g, '').trim() || heading;
+  return name.replace(/\\/g, '/').split('/').pop()?.replace(/\.md$/i, '').trim() || '未命名文章';
+}
+
+function normalizeImportedFrontmatter(
+  collection: 'essay' | 'bits' | 'memo',
+  name: string,
+  body: string,
+  frontmatter: Record<string, unknown>,
+  lastModified?: number
+): Record<string, unknown> {
+  const normalized = Object.fromEntries(
+    Object.entries(frontmatter).filter(([, value]) => value !== null)
+  ) as Record<string, unknown>;
+
+  if ((collection === 'essay' || collection === 'memo') && typeof normalized.title !== 'string') {
+    normalized.title = importTitleFromMarkdown(name, body);
+  }
+  if (typeof normalized.title === 'string' && !normalized.title.trim() && collection !== 'bits') {
+    normalized.title = importTitleFromMarkdown(name, body);
+  }
+
+  if (normalized.description !== undefined && typeof normalized.description !== 'string') {
+    delete normalized.description;
+  }
+
+  const date = normalizeImportDate(normalized.date);
+  if (date) {
+    normalized.date = date;
+  } else if (collection === 'essay' || collection === 'bits') {
+    normalized.date = importFallbackDate(lastModified);
+  } else {
+    delete normalized.date;
+  }
+
+  if (normalized.tags !== undefined) {
+    if (Array.isArray(normalized.tags)) {
+      normalized.tags = normalized.tags.map((tag) => String(tag).trim()).filter(Boolean);
+    } else if (typeof normalized.tags === 'string') {
+      normalized.tags = normalized.tags.split(/[,，、\s]+/).map((tag) => tag.trim()).filter(Boolean);
+    } else {
+      delete normalized.tags;
+    }
+  }
+
+  for (const key of ['draft', 'archive', 'comment']) {
+    const value = normalized[key];
+    if (typeof value === 'string' && /^(true|false)$/i.test(value.trim())) {
+      normalized[key] = value.trim().toLowerCase() === 'true';
+    } else if (value !== undefined && typeof value !== 'boolean') {
+      delete normalized[key];
+    }
+  }
+
+  if (normalized.slug !== undefined && (typeof normalized.slug !== 'string' || !ESSAY_PUBLIC_SLUG_RE.test(normalized.slug))) {
+    delete normalized.slug;
+  }
+
+  return normalized;
+}
+
+async function handleContentImportMarkdown(ctx: ApiContext) {
+  const { collection, files, overwrite = false } = ctx.body as {
+    collection: 'essay' | 'bits' | 'memo';
+    overwrite?: boolean;
+    files: Array<{ name: string; markdown: string; lastModified?: number }>;
+  };
+  const existingSlugs = new Set((await ctx.content.list(collection)).map((item) => item.slug));
+  const imported: Array<{ name: string; slug: string }> = [];
+  const skipped: Array<{ name: string; slug: string }> = [];
+  const failed: Array<{ name: string; error: string }> = [];
+
+  for (const file of files) {
+    try {
+      const slug = slugFromMarkdownFilename(file.name);
+      if (existingSlugs.has(slug) && !overwrite) {
+        skipped.push({ name: file.name, slug });
+        continue;
+      }
+      const parsed = parseMarkdown(file.markdown);
+      const frontmatter = normalizeImportedFrontmatter(
+        collection,
+        file.name,
+        parsed.body,
+        parsed.frontmatter,
+        file.lastModified
+      );
+      const fmValidation = validateFrontmatter(collection, frontmatter);
+      if (!fmValidation.success) {
+        throw new Error(`frontmatter 校验失败: ${fmValidation.errors.join('; ')}`);
+      }
+      await ctx.content.writeRaw(collection, slug, serializeMarkdown(frontmatter, parsed.body));
+      imported.push({ name: file.name, slug });
+      existingSlugs.add(slug);
+    } catch (e) {
+      failed.push({ name: file.name, error: e instanceof Error ? e.message : '导入失败' });
+    }
+  }
+
+  if (imported.length === 0 && skipped.length === 0) {
+    const detail = failed.map((item) => `${item.name}: ${item.error}`).join('；');
+    throw error(400, detail || '没有可导入的 Markdown 文件');
+  }
+
+  await ctx.repos.audit.log({
+    sessionId: ctx.locals.session!.id,
+    action: 'CONTENT_IMPORT_MARKDOWN',
+    target: collection,
+    detail: {
+      imported: imported.length,
+      skipped: skipped.length,
+      failed: failed.length,
+      slugs: imported.map((item) => item.slug)
+    },
+    ip: ctx.locals.ip
+  });
+
+  return json({
+    ok: true,
+    imported,
+    skipped,
+    failed,
+    count: imported.length,
+    skippedCount: skipped.length,
+    failedCount: failed.length
+  });
+}
+
 async function handleDataSave(ctx: ApiContext) {
   const key = String(ctx.body.key ?? '');
   if (!isSiteDataKey(key)) {
     throw error(400, '未知的数据类型');
   }
 
-  await writeJsonData(ctx.env.R2, key, ctx.body.value);
+  if (key === 'links') {
+    try { await saveCommunityLinks(ctx.env.R2, ctx.body.value); }
+    catch (e) { throw error(400, e instanceof Error ? e.message : '友链保存失败'); }
+  } else {
+    await writeJsonData(ctx.env.R2, key, ctx.body.value);
+  }
 
   await ctx.repos.audit.log({
     sessionId: ctx.locals.session!.id,
@@ -325,16 +491,18 @@ async function handleDataSave(ctx: ApiContext) {
     ip: ctx.locals.ip
   });
 
-  if (ctx.body.deploy) {
-    const deployResult = await triggerDeployIfNeeded(ctx);
-    return json({ ok: true, key, deploy: deployResult });
-  }
 
   return json({ ok: true, key });
 }
 
 async function handleMemosSync(ctx: ApiContext) {
-  const items = await fetchMemos(ctx.env);
+  let items;
+  try {
+    items = await fetchMemos(ctx.env);
+  } catch (e) {
+    throw error(400, e instanceof Error ? e.message : 'Memos 同步失败');
+  }
+
   await writeJsonData(ctx.env.R2, 'memos', items);
 
   await ctx.repos.audit.log({
@@ -345,10 +513,6 @@ async function handleMemosSync(ctx: ApiContext) {
     ip: ctx.locals.ip
   });
 
-  if (ctx.body.deploy) {
-    const deployResult = await triggerDeployIfNeeded(ctx);
-    return json({ ok: true, items, count: items.length, deploy: deployResult });
-  }
 
   return json({ ok: true, items, count: items.length });
 }
@@ -417,9 +581,8 @@ async function handleConfigUpdate(ctx: ApiContext) {
 }
 
 async function handleThemeSettingsSave(ctx: ApiContext) {
-  const { settings, deploy } = ctx.body as {
+  const { settings } = ctx.body as {
     settings: Record<string, unknown>;
-    deploy?: boolean;
   };
 
   const saved = await writeThemeSettings(ctx.env.R2, settings);
@@ -430,10 +593,6 @@ async function handleThemeSettingsSave(ctx: ApiContext) {
     ip: ctx.locals.ip
   });
 
-  if (deploy) {
-    const deployResult = await triggerDeployIfNeeded(ctx);
-    return json({ ok: true, settings: saved, deploy: deployResult });
-  }
 
   return json({ ok: true, settings: saved });
 }
@@ -486,7 +645,7 @@ async function handleHealthCheck(ctx: ApiContext) {
   }
 
   // 统计
-  const commentCounts = await ctx.repos.comments.countByStatus().catch(() => ({}));
+  const commentCounts = await countComments(ctx.env).catch(() => ({}));
   const essayCount = (await ctx.content.list('essay')).length;
   const bitsCount = (await ctx.content.list('bits')).length;
 

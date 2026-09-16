@@ -1,3 +1,4 @@
+import { countComments } from '$lib/server/fiscus/admin';
 // 仪表盘：拉取统计数据
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
@@ -16,7 +17,7 @@ export const load: PageServerLoad = async ({ platform }) => {
 
   try {
     const [commentCounts, essayCount, recentEssays, bits, schedules, storage] = await Promise.all([
-      repos.comments.countByStatus(),
+      countComments(platform.env),
       content.count('essay').catch(() => 0),
       content.list('essay', { limit: 5, quick: true }).catch(() => []),
       content.count('bits').catch(() => 0),

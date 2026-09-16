@@ -12,10 +12,10 @@ ADMIN_PASSWORD=change-me-to-a-strong-password
 # 生成地址：https://github.com/settings/tokens
 GITHUB_TOKEN=ghp_your_github_token_here
 
-# Waline 评论系统的管理 token（用于评论管理）
-# 在 Waline 服务端管理后台生成
-WALINE_API_URL=https://waline.ficor.cc
-WALINE_TOKEN=
+# 自写评论系统（Fiscus）
+COMMENT_SITE_NAME=柒色墨笺
+COMMENT_SITE_URL=https://vii.ink
+COMMENT_IP_SALT=change-me-to-a-random-secret
 
 # Memos 数据源（用于后台「说说」同步）
 # 示例：MEMOS_API_URL=https://memos.example.com

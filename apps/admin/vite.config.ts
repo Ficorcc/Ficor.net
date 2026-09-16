@@ -8,7 +8,7 @@ export default defineConfig({
     fs: { strict: false }
   },
   optimizeDeps: {
-    exclude: ['photon-rs']
+    exclude: ['@cf-wasm/photon']
   },
   worker: {
     format: 'es'

@@ -13,8 +13,8 @@
   let saving = $state(false);
   let syncing = $state(false);
   let creating = $state(false);
-  let items = $state<MemoRecord[]>([...((Array.isArray(data.items) ? data.items : []) as MemoRecord[])]);
-  let value = $state<MemoRecord[]>([...((Array.isArray(data.value) ? data.value : []) as MemoRecord[])]);
+  let items = $state<MemoRecord[]>([...(Array.isArray(data.items) ? data.items.map((item) => ({ ...item })) : [])]);
+  let value = $state<MemoRecord[]>([...(Array.isArray(data.value) ? data.value.map((item) => ({ ...item })) : [])]);
   let newContent = $state('');
   let newCreatedAt = $state(new Date().toISOString().slice(0, 16));
 
@@ -32,17 +32,8 @@
 
   function sourceLabel() {
     if (data.source === 'memos') return `Memos 实时数据 · ${data.memosUrl ?? 'memos.ficor.net'}`;
-    if (data.source === 'r2') return 'R2 缓存数据';
+    if (data.source === 'r2') return '后台保存记录';
     return 'Memos 数据源';
-  }
-
-  function deployToast(result: { deploy?: { ok?: boolean; message?: string } } | undefined, okText: string) {
-    const deployResult = result?.deploy;
-    if (deployResult?.ok === false) {
-      toast.warn(`已保存，但部署未触发：${deployResult.message ?? '部署配置不完整'}`);
-    } else {
-      toast.ok(okText);
-    }
   }
 
   function resetForm() {
@@ -75,15 +66,14 @@
     const nextValue = [item, ...value];
 
     saving = true;
-    const result = await api<{ deploy?: { ok?: boolean; message?: string } }>('DATA_SAVE', {
+    const result = await api('DATA_SAVE', {
       key: 'memos',
-      value: nextValue,
-      deploy: true
+      value: nextValue
     });
     if (result.ok) {
       value = nextValue;
       items = [item, ...items];
-      deployToast(result.data, '说说已新建并触发提交部署');
+      toast.ok('说说已保存到记录，等待一键部署');
       resetForm();
       creating = false;
     } else {
@@ -99,7 +89,7 @@
       const nextItems = Array.isArray(result.data?.items) ? (result.data.items as MemoRecord[]) : [];
       items = nextItems;
       value = nextItems;
-      toast.ok(`已同步 ${result.data?.count ?? 0} 条说说`);
+      toast.ok(`已同步 ${result.data?.count ?? 0} 条说说，等待一键部署`);
     } else {
       toast.error(result.error ?? '同步失败');
     }
@@ -157,7 +147,7 @@
       <div class="form-actions">
         <button class="btn btn--ghost btn--sm" onclick={() => (creating = false)} disabled={saving}>取消</button>
         <button class="btn btn--primary btn--sm" onclick={saveNewMemo} disabled={saving}>
-          <Icon name="save" size={14} /> {saving ? '保存中...' : '保存并部署'}
+          <Icon name="save" size={14} /> {saving ? '保存中...' : '保存'}
         </button>
       </div>
     </div>

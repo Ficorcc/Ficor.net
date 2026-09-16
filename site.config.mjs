@@ -31,24 +31,8 @@ export const adminConsole = {
 
 // 评论系统配置
 export const comment = {
-  // 可选值: 'artalk', 'waline', 'twikoo', 'none'
-  system: 'waline',
-  // Artalk 配置
-  artalk: {
-    server: '', // Artalk 服务端地址
-    site: '', // 站点名称
-    // 其他 Artalk 配置选项
-  },
-  // Waline 配置
-  waline: {
-    serverURL: 'https://waline.ficor.cc',  // Waline 服务端地址
-    // 其他 Waline 配置选项
-  },
-  // Twikoo 配置
-  twikoo: {
-    envId: '', // Twikoo 环境 ID
-    // 其他 Twikoo 配置选项
-  }
+  // Fiscus 自写评论系统；设为 none 可关闭。
+  system: 'fiscus'
 };
 
 export const PAGE_SIZE_ARCHIVE = 12;

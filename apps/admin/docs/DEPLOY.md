@@ -18,7 +18,7 @@ npm run db:migrate:prod
 npx wrangler secret put ADMIN_PASSWORD
 npx wrangler secret put GITHUB_TOKEN
 # 如果启用评论管理：
-npx wrangler secret put WALINE_TOKEN
+npx wrangler secret put COMMENT_IP_SALT
 ```
 
 ### 4. 构建并部署
