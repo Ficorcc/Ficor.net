@@ -89,7 +89,7 @@
         oninput={(e) => (frontmatter.slug = e.currentTarget.value)}
         placeholder="url-slug（留空自动生成）"
       />
-      <div class="field__hint">小写 kebab-case，与主站路由冲突的词会被拒绝</div>
+      <div class="field__hint">支持小写字母、数字、中文和连字符；与主站路由冲突的词会被拒绝</div>
     </div>
 
   {:else if collection === 'bits'}

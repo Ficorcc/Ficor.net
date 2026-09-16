@@ -6,10 +6,10 @@
 import { z } from 'zod';
 import { ESSAY_PUBLIC_SLUG_RE } from './slug';
 
-/** slug 校验：小写 kebab-case */
+/** slug 校验：小写 kebab-case，允许中文段 */
 const slugRule = z
   .string()
-  .regex(ESSAY_PUBLIC_SLUG_RE, 'slug 必须是小写 kebab-case');
+  .regex(ESSAY_PUBLIC_SLUG_RE, 'slug 只能包含小写字母、数字、中文和连字符');
 
 /** 日期字符串（YYYY-MM-DD 或 ISO8601） */
 const dateString = z

@@ -8,7 +8,7 @@ import { getBitsAvatarLocalFilePath, normalizeBitsAvatarPath } from './utils/for
 
 const slugRule = z
   .string()
-  .regex(ESSAY_PUBLIC_SLUG_RE, 'slug must be lowercase kebab-case');
+  .regex(ESSAY_PUBLIC_SLUG_RE, 'slug must contain lowercase letters, numbers, Han characters, and hyphens only');
 
 const baseFields = {
   title: z.string(),

@@ -6,8 +6,12 @@
  * contract is defined in exactly one place.
  */
 
-/** A valid public slug must be lowercase kebab-case. */
-export const ESSAY_PUBLIC_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+/**
+ * A valid public slug is a single kebab-case segment. ASCII is lowercase and
+ * Han characters are accepted so legacy Chinese article filenames keep their
+ * established public URLs.
+ */
+export const ESSAY_PUBLIC_SLUG_RE = /^[a-z0-9\p{Script=Han}]+(?:-[a-z0-9\p{Script=Han}]+)*$/u;
 
 /**
  * Slug values that collide with sibling static routes. Since essay slugs are
