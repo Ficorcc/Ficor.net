@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const suggestions = [
+  { href: '/', label: '首页', hint: '回到起点' },
+  { href: '/essay/', label: '文章', hint: '翻翻随笔' },
+  { href: '/archive/', label: '归档', hint: '按时间浏览' },
+  { href: '/friends/', label: '友圈', hint: '看看友邻在写什么' }
+];
+---
+
+<BaseLayout title="页面不存在" bodyClass="not-found-page">
+  <main class="not-found">
+    <p class="not-found-code" aria-hidden="true">404</p>
+    <h1 class="not-found-title">这里什么都没有</h1>
+    <p class="not-found-text">
+      你要找的页面可能已经被移动、改名，或者从来就不存在。
+    </p>
+    <nav class="not-found-links" aria-label="建议前往的页面">
+      {suggestions.map((item) => (
+        <a class="not-found-link" href={item.href}>
+          <span class="not-found-link-label">{item.label}</span>
+          <span class="not-found-link-hint">{item.hint}</span>
+        </a>
+      ))}
+    </nav>
+  </main>
+</BaseLayout>
+
+<style>
+  .not-found {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 5rem 1rem 6rem;
+    text-align: center;
+  }
+
+  .not-found-code {
+    margin: 0;
+    font-size: clamp(4.5rem, 18vw, 8rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    opacity: 0.18;
+    user-select: none;
+  }
+
+  .not-found-title {
+    margin: -1.25rem 0 0.75rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .not-found-text {
+    margin: 0 auto 2.5rem;
+    max-width: 26rem;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .not-found-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .not-found-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background-color: var(--bg);
+    text-decoration: none;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .not-found-link:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .not-found-link-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .not-found-link-hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  :root[data-theme="dark"] .not-found-link:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .not-found-link {
+      transition: none;
+    }
+
+    .not-found-link:hover {
+      transform: none;
+    }
+  }
+</style>
