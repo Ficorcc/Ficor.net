@@ -13,7 +13,8 @@ const {
   ogType = 'website',
   bodyClass,
   deferGlobalStyles = false,
-  activeNavId
+  activeNavId,
+  noindex = false
 } = Astro.props as {
   title?: string;
   description?: string;
@@ -22,6 +23,7 @@ const {
   bodyClass?: string;
   deferGlobalStyles?: boolean;
   activeNavId?: SidebarNavId;
+  noindex?: boolean;
 };
 
 const { settings } = getThemeSettings();
@@ -35,7 +37,10 @@ const footerShowCurrentYear = settings.site.footer.showCurrentYear;
 const footerCopyright = settings.site.footer.copyright;
 const showCodeLineNumbers = settings.ui.codeBlock.showLineNumbers;
 const sidebarDividerVariant = settings.ui.layout.sidebarDivider;
-const canonical = (hasSiteUrl && Astro.site)
+// noindex 页面（如 404）不输出 canonical / og:url：这类页面在构建期的
+// Astro.url.pathname 是内部路由名（404 页会算成 /404/），指向的地址并不存在，
+// 输出出去等于让搜索引擎去收录一个 404 路径。
+const canonical = (!noindex && hasSiteUrl && Astro.site)
   ? new URL(Astro.url.pathname, Astro.site).toString()
   : null;
 const ogImage = image
@@ -69,6 +74,7 @@ const withBase = createWithBase(base);
     <link rel="apple-touch-icon" sizes="180x180" href={withBase('apple-touch-icon.png')} />
     <title>{fullTitle}</title>
     {metaDescription && <meta name="description" content={metaDescription} />}
+    {noindex && <meta name="robots" content="noindex, follow" />}
     {canonical && <link rel="canonical" href={canonical} />}
     <meta property="og:site_name" content={siteTitle} />
     <meta property="og:title" content={fullTitle} />
