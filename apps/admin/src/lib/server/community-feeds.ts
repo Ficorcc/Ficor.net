@@ -56,7 +56,10 @@ function feedFetchUrl(raw: string) {
 
 async function fetchItems(raw: string) {
   let url = feedFetchUrl(raw);
-  const signal = AbortSignal.timeout(8000);
+  // 8 秒对慢源太紧：实测 pewae.com 的 Atom 订阅只有 172 KB 却要 10～14 秒才下完
+  // （对比 iliu.org 的 837 KB 只要 5 秒），8 秒会让它每轮都超时被整源丢弃。
+  // 每轮最多 5 个源并行，20 秒的上限不会把整体墙钟时间拉长太多。
+  const signal = AbortSignal.timeout(20000);
   for (let redirects = 0; redirects <= 3; redirects++) {
     const response = await fetch(url, { signal, redirect: 'manual', headers: { Accept: 'application/rss+xml, application/atom+xml, application/feed+json, application/xml, text/xml', 'User-Agent': 'vii-ink-feed-reader' } });
     if ([301, 302, 303, 307, 308].includes(response.status)) {

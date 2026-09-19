@@ -325,7 +325,7 @@
       "url": "https://pewae.com/",
       "description": "一个脱离不了低级趣味的人",
       "avatar": "https://pewae.com/wp-content/uploads/cropped-logo-20251231-1-270x270.png",
-      "feed": "https://pewae.com/feed",
+      "feed": "https://pewae.com/feed/atom",
       "is_active": true,
       "status": "online",
       "statusCode": 200,
