@@ -16,7 +16,18 @@ export function parseFeed(body: string, base: string) {
     })).slice(0, 10);
   }
   if (/<!DOCTYPE|<!ENTITY/i.test(body)) throw new Error('不支持包含 DTD 的订阅');
-  const parsed = new XMLParser({ ignoreAttributes: false, parseTagValue: false, removeNSPrefix: true }).parse(body, true);
+  // fast-xml-parser 5.x 的 processEntities.maxTotalExpansions 默认只有 1000，而它统计的是
+  // 整篇文档里 &lt; &gt; &quot; &apos; 这四种实体的**出现次数**（&amp; 和 &#xD; 这类
+  // 字符引用走另外的分支，不计数）。长文 RSS 里光是转义过的尖括号就轻松破千，
+  // 实测有 5 个正常源只超出 5～110 次就被误判成「Entity expansion limit exceeded」而整源丢弃。
+  // 注意：这个上限必须写在 processEntities 对象里，写成顶层 maxTotalExpansions 会被忽略。
+  // 真正的 XXE 防线是上一行的 DTD 拒绝 —— 没有 DTD 就没有自定义实体，预定义实体无法指数展开，
+  // 这个计数只剩 CPU 兜底的作用。正文本身已有 2 MB 上限（见 fetchItems），
+  // 2 MB 里最多塞下约 50 万个 &lt;，故取 100 万作为硬顶，确保正常内容永不触发。
+  const parsed = new XMLParser({
+    ignoreAttributes: false, parseTagValue: false, removeNSPrefix: true,
+    processEntities: { enabled: true, maxTotalExpansions: 1_000_000 }
+  }).parse(body, true);
   const rss = record(record(parsed).rss);
   const atom = record(record(parsed).feed);
   const rdf = record(record(parsed).RDF);

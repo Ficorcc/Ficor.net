@@ -79,6 +79,23 @@ describe('RSS refresh', () => {
     expect(() => parseFeed('<html>error</html>', link.feed)).toThrow();
     expect(() => parseFeed('<!DOCTYPE rss><rss/>', link.feed)).toThrow();
   });
+  it('parses long feeds whose entity references exceed the library default', () => {
+    // 实测有几个正常源（Yang's Blog / 老刘博客 / Counting Stars 等）里被转义的尖括号
+    // 累计超过 1000 次。fast-xml-parser 5.x 默认 processEntities.maxTotalExpansions=1000
+    // 会直接抛「Entity expansion limit exceeded」把整个源丢掉，这里锁住放宽后的行为。
+    // 注意 &amp; 和 &#xD; 走的是别的分支、不参与计数，所以用 &lt; 来构造超限正文。
+    const noisy = '<item><title>标题 &amp; &lt;标签&gt;</title><link>https://a.test/p</link>'
+      + `<description>${'&lt;'.repeat(3000)}</description></item>`;
+    const parsed = parseFeed(`<rss><channel>${noisy}</channel></rss>`, link.feed);
+    expect(parsed).toHaveLength(1);
+    expect(parsed[0]?.title).toBe('标题 & <标签>');
+  });
+  it('rejects entity-expansion bombs by refusing DTD outright', () => {
+    // 放宽 maxTotalExpansions 的前提：自定义实体只能来自 DTD，而 DTD 在解析前就被拒绝。
+    const bomb = '<!DOCTYPE rss [<!ENTITY a "x"><!ENTITY b "&a;&a;&a;&a;&a;&a;&a;&a;">]>'
+      + '<rss><channel><item><title>&b;</title></item></channel></rss>';
+    expect(() => parseFeed(bomb, link.feed)).toThrow('不支持包含 DTD 的订阅');
+  });
   it('persists refreshed articles for admin and public views', async () => {
     const r2 = asR2(bucket({ 'data/links.json': { links: [link] }, 'data/feed.json': feed }));
     vi.stubGlobal('fetch', vi.fn(async () => new Response('<rss><channel><item><title>新文章</title><link>https://a.test/new-post</link></item></channel></rss>')));

@@ -93,18 +93,43 @@ https://vii.ink/admin
 
 `GITHUB_TOKEN` 至少需要读取主站仓库 contents，并允许触发 Actions workflow。
 
-主站构建环境需要配置：
+主站由 **Cloudflare Pages** 的 Git 集成构建，构建命令是 `npm run build`：
+
+```
+sync-admin-r2-content.mjs  →  commit-admin-content.mjs  →  astro build
+     R2 内容拉进仓库              把差异提交并推回 main        生成静态站
+```
+
+因此在 **Cloudflare Pages 的环境变量**里需要配置（完整清单见仓库根目录 `.env.example`，
+机制说明见 [CONTENT-SYNC.md](./CONTENT-SYNC.md)）：
 
 ```bash
+# 必需：让构建能读到后台写入的 R2 内容。缺任何一个都会静默跳过同步。
 ADMIN_R2_ACCOUNT_ID=Cloudflare Account ID
 ADMIN_R2_ACCESS_KEY_ID=R2 S3 Access Key
 ADMIN_R2_SECRET_ACCESS_KEY=R2 S3 Secret
 ADMIN_R2_BUCKET=admin-r2
-ADMIN_R2_SYNC_PRUNE=1
-# 可选：默认 settings/
+
+# 必需：让构建把同步下来的内容提交回仓库，否则后台改动只在本次构建可见。
+GITHUB_CONTENT_PUSH_TOKEN=GitHub fine-grained PAT（Contents: Read and write）
+
+# 可选：前缀，默认值如下
 ADMIN_R2_SETTINGS_PREFIX=settings/
-# 可选：默认 data/
 ADMIN_R2_DATA_PREFIX=data/
+```
+
+> ⚠️ **不要在生产单独打开 `ADMIN_R2_SYNC_PRUNE=1`。**
+> 打开后，仓库里存在、R2 里没有的文章（例如直接以 Markdown 提交进仓库的）
+> 会被构建删除**并提交回 main**。而本地默认关闭 —— 两端行为就此分叉，
+> 与「本地和部署后同一套逻辑」的目标相冲突。需要清理时用后台删除文章
+> （会写墓碑，本地与生产都会生效），而不是靠 prune。
+
+`commit-admin-content.mjs` 未配置 `GITHUB_CONTENT_PUSH_TOKEN` 时静默跳过，
+所以「构建成功」并不代表内容回写生效了。可用下面的方式确认：
+
+```bash
+git log --format='%an | %s' | grep -i "vii-ink-bot"
+# 有输出 → 回写通道在跑；一直为空 → 凭据没配或同步结果无变化
 ```
 
 如果后台地址不是默认值，在主站构建环境设置：

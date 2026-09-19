@@ -33,8 +33,14 @@ Thumbs.db
 # Misc
 *.tsbuildinfo
 
+# Vite 打包配置文件时留下的临时产物（svelte-check / vite build 中断时常见）
+vite.config.ts.timestamp-*.mjs
+
 # ZCode agent workspace (local only)
 .zcode/
+
+# WorkBuddy agent workspace (local only)
+.workbuddy-ai/
 
 # Font sources (local only)
 tools/fonts-src/

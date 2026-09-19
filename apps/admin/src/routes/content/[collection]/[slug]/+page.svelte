@@ -40,13 +40,25 @@
     });
   });
 
-  // 计算实际 slug
-  const effectiveSlug = $derived(
-    (frontmatter.slug as string) ||
-      (data.collection === 'bits' ? data.slug || generatedBitsSlug : slugify((frontmatter.title as string) || '')) ||
-      data.slug ||
-      'untitled'
+  // 新建文章的存储文件名：bits 用时间戳，其余由标题生成（保留中文）
+  const generatedSlug = $derived(
+    data.collection === 'bits'
+      ? generatedBitsSlug
+      : slugify((frontmatter.title as string) || '') || 'untitled'
   );
+
+  /**
+   * 存储身份 = R2 里的文件名，也是编辑器的路由段。
+   *
+   * 已有文章必须沿用原文件名：后台按文件名组织对象（`content/<集合>/<文件名>.md`），
+   * 而 `frontmatter.slug` 只决定前台 URL。历史文章里两者普遍不同
+   * （例如 `出发.md` ↔ `slug: chu-fa`），若拿 `frontmatter.slug` 当写入路径，
+   * 保存会另起一个新 key，把同一篇文章变成两份。
+   */
+  const storageSlug = $derived(data.isNew ? generatedSlug : data.slug);
+
+  /** 前台 URL 段：与主站一致 —— `frontmatter.slug` 优先，缺省回退文件名。 */
+  const publicSlug = $derived((frontmatter.slug as string) || storageSlug);
 
   // 保存
   async function handleSave() {
@@ -56,7 +68,8 @@
       return;
     }
 
-    const slugCheck = isValidSlug(effectiveSlug);
+    // 校验的是「前台 URL 段」；文件名只做路径安全校验（由服务端负责）
+    const slugCheck = isValidSlug(publicSlug);
     if (!slugCheck.ok) {
       toast.error(slugCheck.reason ?? 'slug 无效');
       return;
@@ -66,7 +79,7 @@
     try {
       const result = await api('CONTENT_SAVE', {
         collection: data.collection,
-        slug: effectiveSlug,
+        slug: storageSlug,
         frontmatter,
         body
       });
@@ -74,7 +87,7 @@
       if (result.ok) {
         toast.ok('已保存到记录，请在仪表盘点击一键部署后发布');
         if (data.isNew) {
-          await goto(`${base}/content/${data.collection}/${effectiveSlug}`);
+          await goto(`${base}/content/${data.collection}/${storageSlug}`);
         }
       } else {
         toast.error(result.error ?? '保存失败');
@@ -175,7 +188,7 @@
       ← 返回列表
     </a>
     <span class="editor-slug text-xs text-faint font-mono">
-      {data.collection}/{effectiveSlug}.md
+      {data.collection}/{storageSlug}.md{#if publicSlug !== storageSlug}&ensp;·&ensp;/{publicSlug}/{/if}
     </span>
   </div>
   <div class="editor-actions__right">

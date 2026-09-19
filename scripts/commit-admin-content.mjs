@@ -13,6 +13,10 @@
 // ============================================================================
 
 import { execFileSync } from 'node:child_process';
+import { loadEnvFile } from './lib/load-env.mjs';
+
+// 本地若放了 .env 也生效；Pages 构建环境没有该文件，已注入的变量优先。
+loadEnvFile();
 
 const env = process.env;
 const token = env.GITHUB_CONTENT_PUSH_TOKEN ?? '';

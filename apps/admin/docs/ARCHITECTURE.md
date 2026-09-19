@@ -101,6 +101,9 @@ POST /admin/api/CONTENT_SAVE
 
 ## 内容存储（R2）
 
+> 后台写入 R2 之后，主站如何拿到这些内容、本地开发与生产构建如何保持一致，
+> 见 [`CONTENT-SYNC.md`](./CONTENT-SYNC.md)。
+
 ```
 R2 bucket
 ├── content/

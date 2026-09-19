@@ -87,9 +87,9 @@
         type="text"
         value={str(frontmatter.slug)}
         oninput={(e) => (frontmatter.slug = e.currentTarget.value)}
-        placeholder="url-slug（留空自动生成）"
+        placeholder="url-slug（留空则沿用文件名）"
       />
-      <div class="field__hint">支持小写字母、数字、中文和连字符；与主站路由冲突的词会被拒绝</div>
+      <div class="field__hint">决定前台 URL；支持小写字母、数字、中文和连字符，与主站路由冲突的词会被拒绝。留空时前台按文件名生成。</div>
     </div>
 
   {:else if collection === 'bits'}
