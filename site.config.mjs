@@ -11,7 +11,9 @@ const adminConsoleUrl = rawAdminConsoleUrl ? rawAdminConsoleUrl.replace(/\/+$/, 
 
 if (!hasSiteUrl && process.env.NODE_ENV === 'production') {
   console.warn(
-    '[astro-whono] SITE_URL is not set. RSS will use example.invalid; canonical/og will be omitted; sitemap will not be generated and robots will not include Sitemap.'
+    '[astro-whono] SITE_URL is not set. canonical / og:url 会被省略，sitemap 不会生成，' +
+    'robots.txt 也不会带 Sitemap 行。' +
+    `（RSS 与 og 标题不受影响：site.url 会回退到硬编码的 ${fallbackSiteUrl}。）`
   );
 }
 
