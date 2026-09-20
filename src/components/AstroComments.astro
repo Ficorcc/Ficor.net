@@ -47,6 +47,17 @@ const {
           required
         />
       </label>
+      {/* 网址选填：后端 normalizeUrl 会做校验，空值落 null */}
+      <label class="ac-field">
+        <span class="ac-label">网址</span>
+        <input
+          name="authorUrl"
+          type="url"
+          autocomplete="url"
+          maxlength="200"
+          placeholder="https://example.com"
+        />
+      </label>
     </div>
 
     {/* 反垃圾蜜罐：视觉隐藏（CSS display:none），正常人不会填；
@@ -222,7 +233,7 @@ const {
   .ac-row {
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .ac-field {
@@ -374,11 +385,14 @@ const {
     display: none;
   }
 
-  @media (max-width: 640px) {
+  /* 三列排不下时改成单列堆叠 */
+  @media (max-width: 700px) {
     .ac-row {
       grid-template-columns: 1fr;
     }
+  }
 
+  @media (max-width: 640px) {
     .ac-meta {
       align-items: flex-start;
       flex-direction: column;
