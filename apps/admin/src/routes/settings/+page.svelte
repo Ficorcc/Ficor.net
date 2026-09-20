@@ -39,6 +39,70 @@
 
   let saving = $state<string | null>(null);
 
+  // --- 评论设置 ---
+  // 等级表在服务端是 JSON 字符串存的（见 fiscus/levels.ts），这里解析成可编辑的数组。
+  type CommentLevel = { min: number; label: string };
+
+  function parseCommentLevels(raw: unknown): CommentLevel[] {
+    let list: unknown = raw;
+    if (typeof raw === 'string' && raw.trim()) {
+      try {
+        list = JSON.parse(raw);
+      } catch {
+        list = [];
+      }
+    }
+    if (!Array.isArray(list)) return [];
+    return list
+      .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
+      .map((item) => ({
+        min: Math.max(0, Math.trunc(Number(item.min) || 0)),
+        label: String(item.label ?? '')
+      }))
+      .sort((a, b) => b.min - a.min);
+  }
+
+  let commentSettings = $state<Record<string, unknown>>(
+    structuredClone((data.commentSettings ?? {}) as Record<string, unknown>)
+  );
+  let commentLevels = $state<CommentLevel[]>(
+    parseCommentLevels((data.commentSettings as Record<string, unknown> | undefined)?.commentLevels)
+  );
+  let commentSaving = $state(false);
+
+  function addLevel() {
+    const lowest = commentLevels.length ? Math.min(...commentLevels.map((level) => level.min)) : 0;
+    commentLevels = [...commentLevels, { min: lowest + 1, label: '新等级' }].sort((a, b) => b.min - a.min);
+  }
+
+  function removeLevel(index: number) {
+    commentLevels = commentLevels.filter((_, i) => i !== index);
+  }
+
+  async function saveCommentSettings() {
+    commentSaving = true;
+    // 只提交表单里出现的键；服务端 updateCommentSettings 会忽略未知键
+    const payload: Record<string, unknown> = {
+      ...commentSettings,
+      commentLevels: commentLevels
+        .map((level) => ({ min: Math.max(0, Math.trunc(Number(level.min) || 0)), label: String(level.label ?? '').trim() }))
+        .filter((level) => level.label)
+    };
+
+    const result = await api('COMMENT_SETTINGS_SAVE', { settings: payload });
+    if (result.ok) {
+      const returned = result.data as { settings?: Record<string, unknown>; recomputed?: boolean } | undefined;
+      if (returned?.settings) {
+        commentSettings = structuredClone(returned.settings);
+        commentLevels = parseCommentLevels(returned.settings.commentLevels);
+      }
+      toast.ok(returned?.recomputed ? '评论设置已保存，历史评论等级已重算' : '评论设置已保存');
+    } else {
+      toast.error(result.error ?? '保存失败');
+    }
+    commentSaving = false;
+  }
+
   const themeTabs = [
     { label: '站点', value: 'site' },
     { label: '侧栏', value: 'shell' },
@@ -479,6 +543,92 @@
         {saving === 'deploy' ? '保存中...' : '保存'}
       </button>
     </div>
+
+    <!-- 评论设置 -->
+    <div class="panel panel--wide">
+      <div class="panel__legend">
+        评论设置 <span class="panel__legend-en">COMMENTS</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="field field--full">
+          <label class="fm-toggle">
+            <input
+              type="checkbox"
+              checked={commentSettings.commentsEnabled !== false}
+              onchange={(e) => (commentSettings.commentsEnabled = e.currentTarget.checked)}
+            />
+            <span>开放评论</span>
+          </label>
+        </div>
+        <div class="field">
+          <span class="field__label">提交按钮文案</span>
+          <input type="text" value={str(commentSettings.submitLabel)} oninput={(e) => (commentSettings.submitLabel = e.currentTarget.value)} />
+        </div>
+        <div class="field">
+          <span class="field__label">空状态文案</span>
+          <input type="text" value={str(commentSettings.emptyText)} oninput={(e) => (commentSettings.emptyText = e.currentTarget.value)} />
+        </div>
+        <div class="field">
+          <span class="field__label">待审核提示</span>
+          <input type="text" value={str(commentSettings.pendingMessage)} oninput={(e) => (commentSettings.pendingMessage = e.currentTarget.value)} />
+        </div>
+        <div class="field">
+          <span class="field__label">已发布提示</span>
+          <input type="text" value={str(commentSettings.approvedMessage)} oninput={(e) => (commentSettings.approvedMessage = e.currentTarget.value)} />
+        </div>
+      </div>
+
+      <div class="theme-table">
+        <div class="theme-table__head">
+          评论等级
+          <span class="field__hint">达成条件 = 该邮箱已通过审核的评论数；系统会自动保留一档「0 条」作为兜底</span>
+        </div>
+        {#each commentLevels as level, index}
+          <div class="theme-table__row theme-table__row--level">
+            <input aria-label="等级名称" type="text" maxlength="24" bind:value={level.label} />
+            <input aria-label="达成条件（已通过审核的评论数）" type="number" min="0" bind:value={level.min} />
+            <button class="btn btn--ghost btn--sm" type="button" onclick={() => removeLevel(index)}>删除</button>
+          </div>
+        {/each}
+        <div>
+          <button class="btn btn--ghost btn--sm" type="button" onclick={addLevel}>+ 新增等级</button>
+        </div>
+      </div>
+
+      <div class="theme-table">
+        <div class="theme-table__head">评论邮箱 <span class="panel__legend-en">EMAIL</span></div>
+        <div class="form-grid">
+          <div class="field">
+            <span class="field__label">邮件通道</span>
+            <select value={str(commentSettings.emailProvider)} onchange={(e) => (commentSettings.emailProvider = e.currentTarget.value)}>
+              <option value="none">关闭</option>
+              <option value="resend">Resend</option>
+              <option value="webhook">Webhook</option>
+            </select>
+          </div>
+          <div class="field">
+            <span class="field__label">管理员邮箱（收通知）</span>
+            <input type="email" value={str(commentSettings.adminEmail)} oninput={(e) => (commentSettings.adminEmail = e.currentTarget.value)} />
+          </div>
+          <div class="field">
+            <span class="field__label">发件人邮箱</span>
+            <input type="email" value={str(commentSettings.fromEmail)} oninput={(e) => (commentSettings.fromEmail = e.currentTarget.value)} />
+          </div>
+          <div class="field field--full">
+            <span class="field__label">Webhook 地址</span>
+            <input type="url" value={str(commentSettings.emailWebhookUrl)} oninput={(e) => (commentSettings.emailWebhookUrl = e.currentTarget.value)} />
+            <div class="field__hint">
+              选 Resend 需要 RESEND_API_KEY 密钥；Webhook 的鉴权 token 走 COMMENT_EMAIL_WEBHOOK_TOKEN 环境变量，不在此处填写。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn--primary btn--sm mt-4" onclick={saveCommentSettings} disabled={commentSaving}>
+        {commentSaving ? '保存中...' : '保存评论设置'}
+      </button>
+    </div>
   </div>
 {/if}
 
@@ -521,6 +671,10 @@
     font-size: 12px;
     color: var(--color-text-muted);
   }
+  /* 评论等级：名称 + 达成条件 + 删除 */
+  .theme-table__row--level {
+    grid-template-columns: minmax(120px, 1fr) 140px auto;
+  }
   .check-list {
     display: flex;
     flex-wrap: wrap;
@@ -535,7 +689,8 @@
     font-size: 13px;
   }
   @media (max-width: 720px) {
-    .theme-table__row {
+    .theme-table__row,
+    .theme-table__row--level {
       grid-template-columns: 1fr;
       padding: 12px 0;
       border-bottom: 1px solid var(--color-border);

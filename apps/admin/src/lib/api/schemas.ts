@@ -152,6 +152,15 @@ export const themeSettingsSaveSchema = z.object({
   settings: z.record(z.unknown())
 });
 
+// --- 评论设置 ---
+// settings 只允许出现 CommentSettings 里已知的键，未知键由服务端忽略。
+// recomputeLevels：改了等级表后是否顺手重算历史评论的等级（默认重算）。
+export const commentSettingsSaveSchema = z.object({
+  event: z.literal('COMMENT_SETTINGS_SAVE'),
+  settings: z.record(z.unknown()),
+  recomputeLevels: z.boolean().optional()
+});
+
 // --- 审计 ---
 export const auditListSchema = z.object({
   event: z.literal('AUDIT_LIST'),
@@ -194,6 +203,7 @@ export function validateEvent(
     CONFIG_GET: z.object({ event: z.literal('CONFIG_GET') }),
     CONFIG_UPDATE: configUpdateSchema,
     THEME_SETTINGS_SAVE: themeSettingsSaveSchema,
+    COMMENT_SETTINGS_SAVE: commentSettingsSaveSchema,
     AUDIT_LIST: auditListSchema,
     HEALTH_CHECK: z.object({ event: z.literal('HEALTH_CHECK') }),
     STATS_GET: z.object({ event: z.literal('STATS_GET') })

@@ -1,7 +1,7 @@
 import { getRuntimeEnv } from './runtime';
 import { emailHash } from './crypto';
 import { externalCommentId, externalParentId } from './importers';
-import { levelForApprovedCount } from './levels';
+import { fallbackLevelLabel, levelForApprovedCount, type CommentLevel } from './levels';
 import type { CommentRow, CommentStatus, ExternalCommentInput, NewCommentInput, PublicComment } from './types';
 export function getDb(): D1Database { return getRuntimeEnv().DB; }
 
@@ -81,10 +81,12 @@ export async function insertComment(options: {
   userAgent: string;
   status: CommentStatus;
   approvedCount: number;
+  /** 后台可配置的等级表；省略时用默认等级 */
+  levels?: CommentLevel[];
 }) {
   const now = new Date().toISOString();
   const id = crypto.randomUUID();
-  const level = levelForApprovedCount(options.approvedCount);
+  const level = levelForApprovedCount(options.approvedCount, options.levels);
   const approvedAt = options.status === "approved" ? now : null;
 
   await getDb()
@@ -119,6 +121,46 @@ export async function insertComment(options: {
   const row = await getCommentById(id);
   if (!row) throw new Error("Comment insert failed.");
   return row;
+}
+
+/**
+ * 按当前等级表重算全部历史评论的等级。
+ *
+ * 等级是写入时算好并落库的（level_label / level_score 两列），所以改了后台的
+ * 等级设置之后既有评论不会自己变 —— 必须显式重算一次，否则「改了等级名称但
+ * 页面上没反应」会被当成 bug。
+ *
+ * 第一步按作者邮箱重算 level_score（= 该作者已通过审核的评论数），
+ * 第二步用等级表把 score 映射成 label。
+ */
+export async function recomputeCommentLevels(levels: CommentLevel[]) {
+  const db = getDb();
+
+  await db
+    .prepare(
+      `UPDATE fiscus_comments
+       SET level_score = (
+         SELECT COUNT(*) FROM fiscus_comments AS peer
+         WHERE peer.author_email_hash = fiscus_comments.author_email_hash
+           AND peer.status = 'approved'
+       )`,
+    )
+    .run();
+
+  const branches = levels.filter((level) => level.min > 0);
+  const fallback = fallbackLevelLabel(levels);
+
+  // 只剩兜底档时没有 WHEN 分支，CASE 会变成非法 SQL，单独处理
+  if (!branches.length) {
+    await db.prepare("UPDATE fiscus_comments SET level_label = ?").bind(fallback).run();
+    return;
+  }
+
+  const whenClauses = branches.map(() => "WHEN level_score >= ? THEN ?").join(" ");
+  await db
+    .prepare(`UPDATE fiscus_comments SET level_label = CASE ${whenClauses} ELSE ? END`)
+    .bind(...branches.flatMap((level) => [level.min, level.label]), fallback)
+    .run();
 }
 
 export async function updateCommentStatus(id: string, status: CommentStatus, reason = "") {

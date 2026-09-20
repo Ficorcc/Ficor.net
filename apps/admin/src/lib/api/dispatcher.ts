@@ -22,6 +22,10 @@ import { prepareCommunityPublication, publishCommunity } from '$lib/server/commu
 import { saveCommunityLinks } from '$lib/server/community';
 import { isSiteDataKey, writeJsonData } from '$lib/server/r2/site-data';
 import { listComments, moderateComment, countComments } from '$lib/server/fiscus/admin';
+import { updateCommentSettings } from '$lib/server/fiscus/settings';
+import { withFiscus } from '$lib/server/fiscus/runtime';
+import { parseLevels } from '$lib/server/fiscus/levels';
+import { recomputeCommentLevels } from '$lib/server/fiscus/db';
 
 export interface ApiContext {
   request: Request;
@@ -114,6 +118,8 @@ export async function dispatch(event: string, ctx: ApiContext): Promise<Response
       return handleConfigUpdate(ctx);
     case Event.THEME_SETTINGS_SAVE:
       return handleThemeSettingsSave(ctx);
+    case Event.COMMENT_SETTINGS_SAVE:
+      return handleCommentSettingsSave(ctx);
     case Event.AUDIT_LIST:
       return handleAuditList(ctx);
     case Event.HEALTH_CHECK:
@@ -595,6 +601,39 @@ async function handleThemeSettingsSave(ctx: ApiContext) {
 
 
   return json({ ok: true, settings: saved });
+}
+
+/**
+ * 保存评论设置（评论等级表 + 邮箱参数等）。
+ *
+ * 等级是在评论写入时算好并落库的，所以改了等级表之后既有评论不会自己变。
+ * 默认顺手重算一次（`recomputeLevels` 传 false 可跳过），
+ * 否则「改了等级名称但前台没反应」会被当成 bug。
+ */
+async function handleCommentSettingsSave(ctx: ApiContext) {
+  const { settings, recomputeLevels = true } = ctx.body as {
+    settings: Record<string, unknown>;
+    recomputeLevels?: boolean;
+  };
+
+  const saved = await withFiscus(ctx.env, () => updateCommentSettings(settings));
+
+  // 只有本次真的动了等级表才重算，避免每次保存文案都全表扫一遍
+  const levelsChanged = Object.prototype.hasOwnProperty.call(settings, 'commentLevels');
+  let recomputed = false;
+  if (recomputeLevels && levelsChanged) {
+    await withFiscus(ctx.env, () => recomputeCommentLevels(parseLevels(saved.commentLevels)));
+    recomputed = true;
+  }
+
+  await ctx.repos.audit.log({
+    sessionId: ctx.locals.session!.id,
+    action: 'COMMENT_SETTINGS_SAVE',
+    detail: { keys: Object.keys(settings), recomputed },
+    ip: ctx.locals.ip
+  });
+
+  return json({ ok: true, settings: saved, recomputed });
 }
 
 async function handleAuditList(ctx: ApiContext) {

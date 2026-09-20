@@ -3,14 +3,12 @@ interface Props {
   pageId?: string;
   pageTitle?: string;
   apiBase?: string;
-  heading?: string;
 }
 
 const {
   pageId = Astro.url.pathname,
   pageTitle = typeof Astro.props.pageTitle === "string" ? Astro.props.pageTitle : "",
   apiBase = "/admin/api/comments/",
-  heading = "评论",
 } = Astro.props;
 ---
 
@@ -21,39 +19,63 @@ const {
   data-page-title={pageTitle}
   data-api-base={apiBase}
 >
-  <header class="ac-header">
-    <h2>{heading}</h2>
-    <p data-count>正在载入评论...</p>
-  </header>
-
-  <ol class="ac-list" data-list></ol>
+  <h2 class="ac-count" data-count>正在载入评论...</h2>
 
   <form class="ac-form" data-form>
-    <div class="ac-grid">
-      <label>
-        <span>昵称</span>
-        <input name="authorName" autocomplete="name" maxlength="80" required />
+    <div class="ac-row">
+      <label class="ac-field">
+        <span class="ac-label">
+          昵称<span class="ac-required" aria-hidden="true">*</span>
+        </span>
+        <input
+          name="authorName"
+          autocomplete="name"
+          maxlength="80"
+          placeholder="必填"
+          required
+        />
       </label>
-      <label>
-        <span>邮箱</span>
-        <input name="authorEmail" type="email" autocomplete="email" required />
+      <label class="ac-field">
+        <span class="ac-label">
+          邮箱<span class="ac-required" aria-hidden="true">*</span>
+        </span>
+        <input
+          name="authorEmail"
+          type="email"
+          autocomplete="email"
+          placeholder="必填"
+          required
+        />
       </label>
     </div>
-    <label>
-      <span>网站</span>
-      <input name="authorUrl" type="url" autocomplete="url" placeholder="https://example.com" />
-    </label>
+
+    {/* 反垃圾蜜罐：视觉隐藏（CSS display:none），正常人不会填；
+        一旦有值，后端在 insertComment 之前直接返回 202 丢弃。
+        字段名必须是 website，与 +server.ts 里的判断对应，不要改名或删除。 */}
     <label class="ac-honeypot" aria-hidden="true">
       <span>Website</span>
       <input name="website" tabindex="-1" autocomplete="off" />
     </label>
-    <label>
-      <span>评论</span>
-      <textarea name="content" rows="5" minlength="2" maxlength="4000" required></textarea>
+
+    <label class="ac-field">
+      <span class="ac-sr-only">评论内容</span>
+      <textarea
+        name="content"
+        rows="5"
+        minlength="2"
+        maxlength="4000"
+        placeholder="欢迎评论"
+        required
+      ></textarea>
     </label>
-    <button type="submit">提交评论</button>
+
+    <div class="ac-actions">
+      <button type="submit">提交评论</button>
+    </div>
     <p class="ac-message" data-message role="status"></p>
   </form>
+
+  <ol class="ac-list" data-list></ol>
 </section>
 
 <script>
@@ -112,17 +134,11 @@ const {
     const pageId = root.dataset.pageId || window.location.pathname;
     const pageTitle = root.dataset.pageTitle || document.title;
     const apiBase = root.dataset.apiBase || "/admin/api/comments/";
-    const websiteLabel = root.querySelector('label:has(input[name="authorUrl"])');
     const submitButton = form.querySelector('button[type="submit"]');
 
     function applySettings(settings) {
       if (!settings) return;
-      const heading = root.querySelector("h2");
-      if (heading && settings.commentHeading) heading.textContent = settings.commentHeading;
       if (submitButton && settings.submitLabel) submitButton.textContent = settings.submitLabel;
-      if (websiteLabel instanceof HTMLElement) {
-        websiteLabel.hidden = settings.allowAuthorUrl === false;
-      }
       form.hidden = settings.commentsEnabled === false;
       if (settings.commentsEnabled === false) {
         message.textContent = "评论已关闭。";
@@ -138,7 +154,7 @@ const {
       list.innerHTML = comments.length
         ? comments.map(renderComment).join("")
         : `<li class="ac-empty">${escapeHtml(data.settings?.emptyText || "还没有评论。")}</li>`;
-      count.textContent = `${comments.length} 条已审核评论`;
+      count.textContent = `${comments.length} 条评论`;
     }
 
     form.addEventListener("submit", async (event) => {
@@ -185,48 +201,146 @@ const {
 
 <style>
   .ac-comments {
-    --ac-text: var(--text);
-    --ac-muted: var(--muted);
-    --ac-border: var(--border);
-    color: var(--ac-text, #172026);
-    font-family: var(--ac-font, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+    border-top: 1px solid var(--border);
+    color: var(--text);
     margin: 48px auto 0;
-    max-width: var(--ac-width, 760px);
+    max-width: 760px;
+    padding-top: 24px;
   }
 
-  .ac-header {
-    align-items: baseline;
-    border-bottom: 1px solid var(--ac-border, #d9e1e7);
-    display: flex;
+  /* 阅读模式下正文列宽放宽到 860px，评论区跟着自适应，避免比正文窄一截 */
+  :global(body.immersive-page[data-reading="immersive"]) .ac-comments {
+    max-width: none;
+  }
+
+  /* 表单 */
+  .ac-form {
+    display: grid;
     gap: 16px;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
   }
 
-  .ac-header h2 {
-    font-size: 1.35rem;
-    margin: 0;
+  .ac-row {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .ac-header p,
-  .ac-message {
-    color: var(--ac-muted, #66737f);
+  .ac-field {
+    display: grid;
+    gap: 8px;
+  }
+
+  .ac-label {
+    color: var(--text);
     font-size: 0.92rem;
+    line-height: 1.2;
+  }
+
+  .ac-required {
+    color: var(--accent);
+    margin-left: 2px;
+  }
+
+  /* 视觉隐藏但保留给读屏（textarea 需要一个 label） */
+  .ac-sr-only {
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .ac-form input,
+  .ac-form textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 9px 12px;
+    transition: border-color 0.15s ease;
+    width: 100%;
+  }
+
+  .ac-form input::placeholder,
+  .ac-form textarea::placeholder {
+    color: var(--faint);
+  }
+
+  /* 与 global.css 里 a:focus-visible 的约定保持一致 */
+  .ac-form input:focus,
+  .ac-form textarea:focus {
+    border-color: var(--accent);
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .ac-form textarea {
+    line-height: 1.7;
+    resize: vertical;
+  }
+
+  .ac-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .ac-form button {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.95rem;
+    min-width: 88px;
+    padding: 8px 20px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .ac-form button:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .ac-form button:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+
+  .ac-message {
+    color: var(--muted);
+    font-size: 0.88rem;
     margin: 0;
   }
 
+  .ac-message:empty {
+    display: none;
+  }
+
+  /* 评论数：位于分割线下方、表单上方 */
+  .ac-count {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 20px;
+  }
+
+  /* 评论列表 */
   .ac-list {
     display: grid;
     gap: 14px;
     list-style: none;
-    margin: 0 0 24px;
+    margin: 32px 0 0;
     padding: 0;
   }
 
   .ac-item {
-    border: 1px solid var(--ac-border, #d9e1e7);
-    border-radius: 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
     padding: 14px;
   }
 
@@ -245,7 +359,7 @@ const {
 
   .ac-meta span,
   .ac-empty {
-    color: var(--ac-muted, #66737f);
+    color: var(--muted);
     font-size: 0.88rem;
   }
 
@@ -255,65 +369,19 @@ const {
     overflow-wrap: anywhere;
   }
 
-  .ac-form {
-    display: grid;
-    gap: 14px;
-  }
-
-  .ac-grid {
-    display: grid;
-    gap: 14px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .ac-form label {
-    display: grid;
-    gap: 7px;
-  }
-
-  .ac-form span {
-    color: var(--ac-muted, #66737f);
-    font-size: 0.9rem;
-  }
-
-  .ac-form input,
-  .ac-form textarea {
-    background: var(--ac-field, #ffffff);
-    border: 1px solid var(--ac-border, #d9e1e7);
-    border-radius: 8px;
-    color: inherit;
-    font: inherit;
-    padding: 10px 12px;
-  }
-
-  .ac-form textarea {
-    resize: vertical;
-  }
-
-  .ac-form button {
-    background: var(--ac-button, #1f6feb);
-    border: 0;
-    border-radius: 8px;
-    color: #ffffff;
-    cursor: pointer;
-    font: inherit;
-    justify-self: start;
-    padding: 10px 16px;
-  }
-
+  /* 反垃圾蜜罐：必须保持不可见 */
   .ac-honeypot {
     display: none;
   }
 
   @media (max-width: 640px) {
-    .ac-header,
+    .ac-row {
+      grid-template-columns: 1fr;
+    }
+
     .ac-meta {
       align-items: flex-start;
       flex-direction: column;
-    }
-
-    .ac-grid {
-      grid-template-columns: 1fr;
     }
   }
 </style>

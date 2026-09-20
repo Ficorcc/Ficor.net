@@ -14,6 +14,7 @@ import { sendCommentNotification } from "$lib/server/fiscus/mail";
 import { moderateContent, shouldAutoApprove, validateCommentInput } from "$lib/server/fiscus/moderation";
 import { emailHash, getClientUserAgent, ipHash, normalizeUrl } from "$lib/server/fiscus/security";
 import { getCommentSettings, getPublicCommentSettings } from "$lib/server/fiscus/settings";
+import { parseLevels } from "$lib/server/fiscus/levels";
 import type { NewCommentInput } from "$lib/server/fiscus/types";
 
 
@@ -76,6 +77,7 @@ const postComment: RequestHandler = async (context) => {
     userAgent: getClientUserAgent(context.request),
     status,
     approvedCount,
+    levels: parseLevels(settings.commentLevels),
   });
   const publicComment = toPublicComment(row);
   const env = getRuntimeEnv();

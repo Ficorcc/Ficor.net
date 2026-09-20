@@ -1,5 +1,6 @@
 import { getRuntimeEnv } from "./runtime";
 import { getDb } from "./db";
+import { DEFAULT_LEVELS, parseLevels } from "./levels";
 
 export interface CommentSettings {
   commentsEnabled: boolean;
@@ -14,12 +15,12 @@ export interface CommentSettings {
   adminEmail: string;
   fromEmail: string;
   emailWebhookUrl: string;
-  commentHeading: string;
   emptyText: string;
   submitLabel: string;
   pendingMessage: string;
   approvedMessage: string;
-  allowAuthorUrl: boolean;
+  /** 评论等级表，JSON 数组字符串（见 levels.ts 的 CommentLevel） */
+  commentLevels: string;
   backupSyncEnabled: boolean;
   backupSyncWebhookUrl: string;
   authOpenRegistration: boolean;
@@ -41,26 +42,25 @@ const DEFAULTS: CommentSettings = {
   adminEmail: "",
   fromEmail: "",
   emailWebhookUrl: "",
-  commentHeading: "评论",
   emptyText: "还没有评论。",
   submitLabel: "提交评论",
   pendingMessage: "评论已提交，等待审核。",
   approvedMessage: "评论已发布。",
-  allowAuthorUrl: true,
+  commentLevels: JSON.stringify(DEFAULT_LEVELS),
   backupSyncEnabled: false,
   backupSyncWebhookUrl: "",
   authOpenRegistration: false,
   authSessionDays: 14,
 };
 
+// 暴露给前台的键。commentHeading / allowAuthorUrl 已在 2026-09-20 改版中废弃
+// （去掉标题栏与「网站」填入项），前端不再读取，所以这里也一并去掉。
 const PUBLIC_SETTING_KEYS: SettingKey[] = [
   "commentsEnabled",
-  "commentHeading",
   "emptyText",
   "submitLabel",
   "pendingMessage",
   "approvedMessage",
-  "allowAuthorUrl",
 ];
 
 export function getDefaultSettings() {
@@ -148,6 +148,10 @@ function coerceSettingValue(key: SettingKey, value: string) {
   if (key === "emailProvider") {
     return value === "resend" || value === "webhook" ? value : "none";
   }
+  // 等级表统一归一化后再落库，坏值自动回落默认，避免脏 JSON 流到判定逻辑里
+  if (key === "commentLevels") {
+    return JSON.stringify(parseLevels(value));
+  }
   return value;
 }
 
@@ -160,6 +164,10 @@ function serializeSettingValue(key: SettingKey, value: unknown) {
   }
   if (key === "emailProvider") {
     return value === "resend" || value === "webhook" ? value : "none";
+  }
+  // 前端可以直接传数组，也可以传 JSON 字符串；两种都归一化成紧凑 JSON
+  if (key === "commentLevels") {
+    return JSON.stringify(parseLevels(value));
   }
   return String(value ?? "").slice(0, 2000);
 }
