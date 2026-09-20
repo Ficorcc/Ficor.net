@@ -19,6 +19,8 @@ export interface CommentSettings {
   submitLabel: string;
   pendingMessage: string;
   approvedMessage: string;
+  /** 是否在评论表单里显示「网址」输入栏（选填项，前台据此隐藏 authorUrl） */
+  allowAuthorUrl: boolean;
   /** 评论等级表，JSON 数组字符串（见 levels.ts 的 CommentLevel） */
   commentLevels: string;
   backupSyncEnabled: boolean;
@@ -46,6 +48,7 @@ const DEFAULTS: CommentSettings = {
   submitLabel: "提交评论",
   pendingMessage: "评论已提交，等待审核。",
   approvedMessage: "评论已发布。",
+  allowAuthorUrl: true,
   commentLevels: JSON.stringify(DEFAULT_LEVELS),
   backupSyncEnabled: false,
   backupSyncWebhookUrl: "",
@@ -53,14 +56,15 @@ const DEFAULTS: CommentSettings = {
   authSessionDays: 14,
 };
 
-// 暴露给前台的键。commentHeading / allowAuthorUrl 已在 2026-09-20 改版中废弃
-// （去掉标题栏与「网站」填入项），前端不再读取，所以这里也一并去掉。
+// 暴露给前台的键。commentHeading 已在 2026-09-20 改版中废弃（去掉标题栏），前端不再读取。
+// allowAuthorUrl 曾在同一次改版里一起下线，09-21 恢复「网址」输入栏后重新启用。
 const PUBLIC_SETTING_KEYS: SettingKey[] = [
   "commentsEnabled",
   "emptyText",
   "submitLabel",
   "pendingMessage",
   "approvedMessage",
+  "allowAuthorUrl",
 ];
 
 export function getDefaultSettings() {

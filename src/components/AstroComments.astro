@@ -47,8 +47,9 @@ const {
           required
         />
       </label>
-      {/* 网址选填：后端 normalizeUrl 会做校验，空值落 null */}
-      <label class="ac-field">
+      {/* 网址选填：后端 normalizeUrl 会做校验，空值落 null。
+          后台设置 allowAuthorUrl=false 时由脚本把它藏起来。 */}
+      <label class="ac-field" data-url-field>
         <span class="ac-label">网址</span>
         <input
           name="authorUrl"
@@ -146,11 +147,14 @@ const {
     const pageTitle = root.dataset.pageTitle || document.title;
     const apiBase = root.dataset.apiBase || "/admin/api/comments/";
     const submitButton = form.querySelector('button[type="submit"]');
+    const urlField = root.querySelector<HTMLElement>("[data-url-field]");
 
     function applySettings(settings) {
       if (!settings) return;
       if (submitButton && settings.submitLabel) submitButton.textContent = settings.submitLabel;
       form.hidden = settings.commentsEnabled === false;
+      // 网址栏是否显示由后台设置决定（默认显示）
+      if (urlField) urlField.hidden = settings.allowAuthorUrl === false;
       if (settings.commentsEnabled === false) {
         message.textContent = "评论已关闭。";
       }
@@ -239,6 +243,14 @@ const {
   .ac-field {
     display: grid;
     gap: 8px;
+  }
+
+  /* [hidden] 的 UA 样式（display:none）会被上面/下面的 display:grid 盖掉，
+     author 样式优先级高于 UA 样式，所以必须显式兜底。
+     少了这段，「评论已关闭」时表单根本不会消失、「网址」栏也藏不住。 */
+  .ac-form[hidden],
+  .ac-field[hidden] {
+    display: none;
   }
 
   .ac-label {

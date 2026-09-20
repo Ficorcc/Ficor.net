@@ -552,14 +552,25 @@
 
       <div class="form-grid">
         <div class="field field--full">
-          <label class="fm-toggle">
-            <input
-              type="checkbox"
-              checked={commentSettings.commentsEnabled !== false}
-              onchange={(e) => (commentSettings.commentsEnabled = e.currentTarget.checked)}
-            />
-            <span>开放评论</span>
-          </label>
+          <div class="check-list">
+            <label class="fm-toggle">
+              <input
+                type="checkbox"
+                checked={commentSettings.commentsEnabled !== false}
+                onchange={(e) => (commentSettings.commentsEnabled = e.currentTarget.checked)}
+              />
+              <span>开放评论</span>
+            </label>
+            <label class="fm-toggle">
+              <input
+                type="checkbox"
+                checked={commentSettings.allowAuthorUrl !== false}
+                onchange={(e) => (commentSettings.allowAuthorUrl = e.currentTarget.checked)}
+              />
+              <span>显示「网址」栏</span>
+            </label>
+          </div>
+          <div class="field__hint">关闭「显示网址」后，评论表单只留昵称与邮箱两个空（网址为选填项）。</div>
         </div>
         <div class="field">
           <span class="field__label">提交按钮文案</span>
